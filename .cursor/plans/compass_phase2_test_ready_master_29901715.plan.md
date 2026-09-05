@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: execute-track-g
     content: "Execute Track G: deepen hop reward attribution (trajectory ids, delayed reward join on RouteDecision); document policies; do not claim solved credit assignment"
-    status: pending
+    status: completed
   - id: execute-track-h
     content: "Execute Track H: CC-9/CC-6 polish in real Cursor Agent Chat sessions; fail-open proofs under test-results/"
     status: pending

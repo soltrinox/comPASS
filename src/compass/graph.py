@@ -195,6 +195,67 @@ class GraphStore:
         return rid
 
 
+
+    def find_route_decisions(
+        self,
+        *,
+        trajectory_id: str | None = None,
+        episode_id: str | None = None,
+        route_decision_id: str | None = None,
+        active_only: bool = True,
+    ) -> list[dict[str, Any]]:
+        """Return RouteDecision nodes matching attribution join keys (fail-open)."""
+        nodes = (
+            self.active_nodes(kind="RouteDecision")
+            if active_only
+            else [n for n in self.load_document(fail_open=True).nodes if n.get("kind") == "RouteDecision"]
+        )
+        out: list[dict[str, Any]] = []
+        for n in nodes:
+            if route_decision_id and n.get("id") == route_decision_id:
+                out.append(n)
+                continue
+            attrs = n.get("attrs") if isinstance(n.get("attrs"), dict) else {}
+            if trajectory_id and attrs.get("trajectory_id") == trajectory_id:
+                out.append(n)
+                continue
+            if episode_id and attrs.get("episode_id") == episode_id:
+                out.append(n)
+                continue
+        return out
+
+    def attribute_delayed_reward(
+        self,
+        reward: Any,
+        *,
+        policy: str = "trajectory",
+        at: str | None = None,
+        posterior: Any | None = None,
+        update_bandit: bool | None = None,
+    ) -> Any:
+        """Post-hoc delayed reward join (Track G). Never call from decide()."""
+        from compass.score.attribution import DelayedReward, attach_delayed_reward
+
+        if not isinstance(reward, DelayedReward):
+            reward = DelayedReward(
+                value=float(getattr(reward, "value", reward["value"])),
+                source=str(getattr(reward, "source", "verifiable")),
+                trajectory_id=getattr(reward, "trajectory_id", None),
+                episode_id=getattr(reward, "episode_id", None),
+                route_decision_id=getattr(reward, "route_decision_id", None),
+                task_class_id=getattr(reward, "task_class_id", None),
+                observed_at=str(getattr(reward, "observed_at", "") or ""),
+            )
+        return attach_delayed_reward(
+            self,
+            reward,
+            policy=policy,  # type: ignore[arg-type]
+            at=at,
+            posterior=posterior,
+            update_bandit=update_bandit,
+        )
+
+
 def empty_graph() -> GraphDocument:
     """Factory for the fail-open empty graph."""
     return GraphDocument(schema=SCHEMA_ID, nodes=[], edges=[])

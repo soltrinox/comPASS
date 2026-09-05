@@ -1,0 +1,22 @@
+{
+  "track": "G",
+  "schema": "model-graph/v1",
+  "additive_attrs": [
+    "trajectory_id",
+    "hop_index",
+    "episode_id",
+    "attributed_reward",
+    "attribution_policy",
+    "credit_assignment_solved"
+  ],
+  "design_doc": "docs/schema/reward-attribution.v1.md",
+  "adr": "docs/adr/0004-reward-attribution.md",
+  "module": "src/compass/score/attribution.py",
+  "tests": "tests/test_reward_attribution.py",
+  "credit_assignment_solved": false,
+  "policies": [
+    "trajectory",
+    "episode",
+    "counterfactual_later"
+  ]
+}

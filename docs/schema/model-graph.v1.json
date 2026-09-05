@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://soltrinox.example/schema/model-graph.v1.json",
   "title": "model-graph/v1",
-  "description": "comPASS capability graph. Sibling to ctx-graph/v1 — do NOT widen ctx-graph enums. Product: comPASS (sister to comPREssOR). Bitemporal nodes; scoring quality - lambda*cost; bandits over (TaskClass, ModelVersion).",
+  "description": "comPASS capability graph. Sibling to ctx-graph/v1 \u2014 do NOT widen ctx-graph enums. Product: comPASS (sister to comPREssOR). Bitemporal nodes; scoring quality - lambda*cost; bandits over (TaskClass, ModelVersion). Track G: optional trajectory_id/hop_index/episode_id attrs for delayed reward joins (credit assignment NOT solved).",
   "type": "object",
   "required": [
     "schema",
@@ -112,6 +112,37 @@
               "additionalProperties": {
                 "$ref": "#/$defs/capabilityFigure"
               }
+            },
+            "trajectory_id": {
+              "type": "string",
+              "description": "Multi-hop trajectory join key (Track G). Optional."
+            },
+            "hop_index": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Hop order within trajectory (Track G). Optional."
+            },
+            "episode_id": {
+              "type": "string",
+              "description": "Short-episode / oracle join key (Track G). Optional."
+            },
+            "attributed_reward": {
+              "type": "number",
+              "description": "Delayed reward share recorded post-hoc (Track G). Optional."
+            },
+            "attribution_policy": {
+              "type": "string",
+              "enum": [
+                "trajectory",
+                "episode",
+                "counterfactual_later"
+              ],
+              "description": "Recording policy used for delayed join. Credit assignment NOT solved."
+            },
+            "credit_assignment_solved": {
+              "type": "boolean",
+              "const": false,
+              "description": "Always false \u2014 Track G records joins; does not claim solved credit assignment."
             }
           }
         }

@@ -47,9 +47,12 @@ class RouteDecisionResult:
     decided_at: str = ""
     route_decision_id: str | None = None
     constraints_applied: list[str] = field(default_factory=list)
+    trajectory_id: str | None = None
+    episode_id: str | None = None
+    hop_index: int | None = None
 
     def to_attrs(self) -> dict[str, Any]:
-        return {
+        attrs: dict[str, Any] = {
             "task_class_id": self.task_class_id,
             "selected_model_version_id": self.selected_model_version_id,
             "scores": dict(self.scores),
@@ -60,6 +63,13 @@ class RouteDecisionResult:
             "default_reason": self.default_reason,
             "decided_at": self.decided_at,
         }
+        if self.trajectory_id is not None:
+            attrs["trajectory_id"] = self.trajectory_id
+        if self.episode_id is not None:
+            attrs["episode_id"] = self.episode_id
+        if self.hop_index is not None:
+            attrs["hop_index"] = self.hop_index
+        return attrs
 
 
 def _now_iso() -> str:
@@ -176,6 +186,9 @@ def decide(
     envelope: BudgetEnvelope | dict[str, Any] | None = None,
     policy: dict[str, Any] | None = None,
     store: GraphStore | None = None,
+    trajectory_id: str | None = None,
+    episode_id: str | None = None,
+    hop_index: int | None = None,
 ) -> RouteDecisionResult:
     """Select a model version or return the configured default.
 
@@ -202,6 +215,9 @@ def decide(
                 lambda_cost=lam,
                 constraints_applied=constraints,
             )
+            result.trajectory_id = trajectory_id
+            result.episode_id = episode_id
+            result.hop_index = hop_index
             return _persist_decision(result, store)
 
         task_class = classify(request, graph_snapshot)
@@ -215,6 +231,9 @@ def decide(
                 lambda_cost=lam,
                 constraints_applied=constraints,
             )
+            result.trajectory_id = trajectory_id
+            result.episode_id = episode_id
+            result.hop_index = hop_index
             return _persist_decision(result, store)
 
         bandit = posterior or BanditPosterior()
@@ -236,6 +255,9 @@ def decide(
                 lambda_cost=lam,
                 constraints_applied=constraints,
             )
+            result.trajectory_id = trajectory_id
+            result.episode_id = episode_id
+            result.hop_index = hop_index
             return _persist_decision(result, store)
 
         # Envelope exceeded → clamp (documented fail-open), else best score.
@@ -276,6 +298,9 @@ def decide(
                 decided_at=_now_iso(),
                 constraints_applied=constraints,
             )
+            result.trajectory_id = trajectory_id
+            result.episode_id = episode_id
+            result.hop_index = hop_index
             return _persist_decision(result, store)
 
         best_id = max(scores, key=scores.get)  # type: ignore[arg-type]
@@ -291,6 +316,9 @@ def decide(
             decided_at=_now_iso(),
             constraints_applied=constraints,
         )
+        result.trajectory_id = trajectory_id
+        result.episode_id = episode_id
+        result.hop_index = hop_index
         return _persist_decision(result, store)
     except Exception as exc:  # noqa: BLE001 — fail-open discipline
         logger.exception("route decide exception")
@@ -300,4 +328,7 @@ def decide(
             lambda_cost=lam,
             constraints_applied=constraints,
         )
+        result.trajectory_id = trajectory_id
+        result.episode_id = episode_id
+        result.hop_index = hop_index
         return _persist_decision(result, store)

@@ -4,28 +4,28 @@ overview: Deepen retroactive reward attribution across hops using trajectory ids
 todos:
   - id: attribution-design-doc
     content: "Write design doc for trajectory/episode/counterfactual-later policies; explicitly state credit assignment is NOT solved"
-    status: pending
+    status: completed
   - id: trajectory-id-schema
     content: "Extend RouteDecision / Observation join fields with trajectory_id + hop_index; keep model-graph.v1 additive"
-    status: pending
+    status: completed
   - id: delayed-reward-recorder
     content: "Implement delayed reward recorder that joins outcomes onto prior RouteDecision nodes by trajectory_id"
-    status: pending
+    status: completed
   - id: retroactive-write-path
     content: "Graph write path for retroactive attribution with bitemporal supersede; never mutate Route hot path latency budget"
-    status: pending
+    status: completed
   - id: policy-trajectory-episode
     content: "Document and code policy switches: trajectory-level vs episode-level attribution; stub hook for counterfactual-later"
-    status: pending
+    status: completed
   - id: join-correctness-tests
     content: "Tests for join correctness — missing reward, late reward, multi-hop chain, fail-open when ids absent"
-    status: pending
+    status: completed
   - id: bandit-update-hook
     content: "Optional bandit posterior update from joined rewards without claiming optimality; gated feature flag"
-    status: pending
+    status: completed
   - id: proof-artifacts
     content: "Emit test-results/g-reward-attribution/ proof log linking schema + tests"
-    status: pending
+    status: completed
 isProject: true
 ---
 

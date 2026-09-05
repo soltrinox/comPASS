@@ -7,7 +7,7 @@
 |---|---|---|---|---|
 | R1 | Probe economics (models × classes × reps) dominate savings | Thesis failure | Thompson pruning; canary-only unconditional probes | C |
 | R2 | Provider terms restrict benchmarking / comparative publication | Legal / managed-graph scope | Per-provider terms review before probe daemon aimed | E + C |
-| R3 | Cross-hop reward attribution unsolved | Tier 4 policy wrong | Persist RouteDecision + recipient lineage; no claim of solved credit | C + B CC-1 |
+| R3 | Cross-hop reward attribution unsolved | Tier 4 policy wrong | Persist RouteDecision + recipient lineage; Track G records trajectory/episode delayed joins for later re-scoring — **still no claim of solved credit** | C + B CC-1 + G |
 | R4 | Bundled IDE auto-selection improves | Addressable market narrows | Compete on portability + governance, not generic quality | E |
 | R5 | API churn on catalog sources | Maintenance drag | Adapter layer per source; contract tests | C ingest |
 | R6 | Implementing against CHAT-COMPRESSOR 0.1.3 | Reintroduce personal paths; wrong version | Hard ban; master decision-working-copy; canonical only `soltrinox/comPREssOR` @ 0.2.0 | Master / E |
