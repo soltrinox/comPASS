@@ -44,6 +44,7 @@ Program master: make the offline stack **gated-live / session-proven / releasabl
 
 ### Phase 2 progress notes
 
+- Track J Wasmer browser/mobile completed 2026-09-05 (PT): headless Playwright smoke FULL; desktop `wasmer/desktop/run-decide.sh` FULL; size-budget/parity green; mobile device farm NOT_RUN (`wasmer/mobile/NOT_RUN.md`); evidence `test-results/j-wasmer-packaging/`.
 - Track H session polish (CC-9/CC-6) completed 2026-09-05 (PT): scripted harness + `docs/session/CC9-CC6-CHECKLIST.md` + evidence under `test-results/h-session-polish/` (live IDE optional; graded NOT_RUN for manual Chat).
 
 ### Phase 2 build order

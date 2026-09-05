@@ -22,7 +22,7 @@ todos:
     status: completed
   - id: execute-track-j
     content: "Execute Track J: headless browser + mobile packaging beyond current wasm artifacts; fail-open parity vs Python"
-    status: pending
+    status: completed
   - id: execute-track-l
     content: "Execute Track L: PyPI / release versioning for compass-router — changelog, TestPyPI dry-run, GitHub tag, CI release stub"
     status: pending

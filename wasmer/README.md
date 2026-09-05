@@ -5,9 +5,9 @@
 | Target | Status | Notes |
 |---|---|---|
 | Python `compass.core` (wasm-boundary stand-in) | **READY** | Import-graph + fail-open tests |
-| Browser sandbox `.wasm` | **READY** | `artifacts/compass_core_bg.wasm` + `browser/` |
-| Desktop Wasmer embed | **READY** | `artifacts/compass-decide.wasm` via Wasmer CLI |
-| Mobile Wasmer | **NOT_RUN** | Gap: no device farm / TestFlight — same module bytes when a host exists |
+| Browser sandbox `.wasm` | **READY** | `artifacts/compass_core_bg.wasm` + `browser/` + headless smoke |
+| Desktop Wasmer embed | **READY** | `artifacts/compass-decide.wasm` + `desktop/run-decide.sh` shell |
+| Mobile Wasmer | **NOT_RUN** | See `mobile/NOT_RUN.md` — same module bytes when a host exists |
 
 ## Artifacts (hashed)
 
@@ -45,7 +45,9 @@ wasmer/
   fixtures/snapshot_min.json
   crate/                 # Rust compass-core (cdylib + WASI bin)
   artifacts/             # hashed .wasm outputs
-  browser/               # CSP sandbox page + JS glue
+  browser/               # CSP sandbox page + JS glue + smoke package.json
+  desktop/               # packaged Wasmer shell (run-decide.sh, wasmer.toml)
+  mobile/                # NOT_RUN ADR + next steps
 ```
 
 ## Run (Python stand-in)
@@ -88,4 +90,25 @@ cd wasmer && python3 -m http.server 8765
 rg -i 'api_key|token|secret|authorization|openrouter|cursor_api' src/compass/core wasmer/crate/src
 # expect: no credential handling
 wasmer inspect wasmer/artifacts/compass_core_bg.wasm   # Imports: empty
+```
+
+## Headless browser smoke (Track J)
+
+```bash
+cd wasmer/browser && npm install && npx playwright install chromium
+node scripts/wasmer_browser_smoke.mjs   # from repo root; COMPASS_SMOKE_CHANNEL=chrome locally
+# evidence: test-results/j-wasmer-packaging/browser-smoke.json
+```
+
+## Desktop packaged shell
+
+```bash
+./wasmer/desktop/run-decide.sh
+COMPASS_FAIL_OPEN_DEMO=corrupt ./wasmer/desktop/run-decide.sh
+```
+
+## Size budget
+
+```bash
+python scripts/wasmer_size_budget.py
 ```

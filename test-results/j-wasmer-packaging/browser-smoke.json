@@ -1,0 +1,66 @@
+{
+  "track": "J",
+  "target": "browser-headless",
+  "recorded_at": "2026-09-05T21:13:30.228Z",
+  "grade": "FULL",
+  "pass": true,
+  "cases": {
+    "fixture": {
+      "abi_max": "1.999.0",
+      "abi_min": "1.0.0",
+      "constraints_applied": [],
+      "decided_at": "2026-09-05T00:00:00Z",
+      "default_reason": null,
+      "fail_open": false,
+      "lambda": 1,
+      "module_version": "0.1.0",
+      "rationale": "highest score under quality−λ·cost",
+      "score": 0.6,
+      "scores": {
+        "urn:mg:model:cheap": 0.6,
+        "urn:mg:model:pricey": 0.25
+      },
+      "selected_model_version_id": "urn:mg:model:cheap",
+      "task_class_id": "code_generation"
+    },
+    "missing": {
+      "abi_max": "1.999.0",
+      "abi_min": "1.0.0",
+      "constraints_applied": [],
+      "decided_at": "2026-09-05T00:00:00Z",
+      "default_reason": "snapshot_missing",
+      "fail_open": true,
+      "lambda": 1,
+      "module_version": "0.1.0",
+      "rationale": "fail-open: snapshot_missing",
+      "score": -0.5,
+      "scores": {
+        "default": -0.5
+      },
+      "selected_model_version_id": "default",
+      "task_class_id": "general"
+    },
+    "corrupt": {
+      "abi_max": "1.999.0",
+      "abi_min": "1.0.0",
+      "constraints_applied": [],
+      "decided_at": "2026-09-05T00:00:00Z",
+      "default_reason": "snapshot_corrupt",
+      "fail_open": true,
+      "lambda": 1,
+      "module_version": "0.1.0",
+      "rationale": "fail-open: snapshot_corrupt",
+      "score": -0.5,
+      "scores": {
+        "default": -0.5
+      },
+      "selected_model_version_id": "default",
+      "task_class_id": "general"
+    },
+    "imports": {
+      "importCount": 0,
+      "forbidden": []
+    }
+  },
+  "blocker": null
+}

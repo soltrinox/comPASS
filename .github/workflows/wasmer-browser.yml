@@ -1,0 +1,47 @@
+name: Wasmer browser smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: wasmer/browser/package.json
+      - name: Install browser automation
+        working-directory: wasmer/browser
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+      - name: Headless sandbox smoke
+        env:
+          CI: "1"
+          COMPSSS_SMOKE_CHANNEL: ""
+        run: node scripts/wasmer_browser_smoke.mjs
+      - name: Upload smoke log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: j-wasmer-browser-smoke
+          path: |
+            test-results/j-wasmer-packaging/browser-smoke.json
+            test-results/j-wasmer-packaging/browser-smoke.txt
+          if-no-files-found: warn
+
+  size-budget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: SHA256SUMS + browser size budget
+        run: python scripts/wasmer_size_budget.py

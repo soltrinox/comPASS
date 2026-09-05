@@ -1,6 +1,6 @@
-# Wasmer / WASM deploy runbook (Track D)
+# Wasmer / WASM deploy runbook (Track D + J)
 
-**Status (2026-09-05):** Rust `compass-core` crate builds `wasm32-unknown-unknown` (browser) and `wasm32-wasip1` (desktop Wasmer). Artifacts hashed under `wasmer/artifacts/`. Fail-open parity script green vs Python `compass.core`. Mobile device matrix remains **NOT_RUN**.
+**Status (2026-09-05 PT):** Rust `compass-core` crate builds `wasm32-unknown-unknown` (browser) and `wasm32-wasip1` (desktop Wasmer). Artifacts hashed under `wasmer/artifacts/`. Fail-open parity script green vs Python `compass.core`. **Headless browser smoke** + **desktop packaged shell** added in Track J. Mobile device matrix remains **NOT_RUN** (ADR: `wasmer/mobile/NOT_RUN.md`).
 
 **Contract:** [`STACK.md`](STACK.md) §3 · **ABI:** [`abi/host-abi.v1.md`](abi/host-abi.v1.md)
 
@@ -22,7 +22,7 @@
 | same `compass_core_bg.wasm` bytes | mobile (when host exists) | **NOT_RUN** on device; module is build-once |
 | Python `compass.core` | native CI / fail-open parity | available |
 
-Module size budget (browser cdylib): **~101 KiB** (track regressions in `SHA256SUMS`).
+Module size budget (browser cdylib): **≤ 150000 bytes** (~146 KiB). Guard: `python scripts/wasmer_size_budget.py` (also CI). Track regressions in `SHA256SUMS`.
 
 ## Host ABI version
 
@@ -42,13 +42,28 @@ Module size budget (browser cdylib): **~101 KiB** (track regressions in `SHA256S
 
 - No `eval` of host secrets into the module.
 - Do not expose `fetch` import on the browser build (verified: empty import table).
+- Chrome requires `script-src 'self' 'wasm-unsafe-eval'` for `WebAssembly.instantiate` (set in `wasmer/browser/index.html`).
 - Fail-open if instantiate/decide throws → configured default + `module_trap`.
 - Sandbox page: `wasmer/browser/` (serve `wasmer/` over HTTP).
+- Headless hooks: `window.__COMPASS_SMOKE__`, `?smoke=1`, `data-smoke-ready`.
+
+## Browser CI / headless smoke (Track J)
+
+```bash
+# Install deps once (wasmer/browser/package.json)
+cd wasmer/browser && npm install && npx playwright install chromium
+# From repo root:
+node scripts/wasmer_browser_smoke.mjs
+# Local with system Chrome:
+COMPASS_SMOKE_CHANNEL=chrome node scripts/wasmer_browser_smoke.mjs
+```
+
+Workflow: `.github/workflows/wasmer-browser.yml` (no provider keys; uploads `test-results/j-wasmer-packaging/browser-smoke.*`).
 
 ## Desktop / mobile packaging
 
-- **Desktop:** `wasmer run wasmer/artifacts/compass-decide.wasm --volume …`
-- **Mobile:** **NOT_RUN** — no CI device farm; reuse `compass_core_bg.wasm` when a Wasmer-capable mobile host is available.
+- **Desktop (FULL packaging path):** `./wasmer/desktop/run-decide.sh` — volume map, defaults, fail-open demos; see `wasmer/desktop/README.md` + `wasmer.toml`.
+- **Mobile:** **NOT_RUN** — no CI device farm. Exact next steps: [`wasmer/mobile/NOT_RUN.md`](../wasmer/mobile/NOT_RUN.md). Reuse `compass_core_bg.wasm` when a Wasmer-capable mobile host exists.
 
 ## Fail-open parity
 
@@ -63,16 +78,28 @@ Same reason codes on native core and WASM:
 | ABI mismatch | `abi_incompatible` |
 
 Proof: `python scripts/wasmer_parity.py` → `test-results/wasmer-parity/parity.json`.  
-Tests: `tests/test_wasmer_parity.py`, `tests/test_wasm_boundary.py`, `tests/test_core_decide.py`.
+Tests: `tests/test_wasmer_parity.py`, `tests/test_wasm_boundary.py`, `tests/test_core_decide.py`.  
+Browser path must match the same defaults on corrupt/missing snapshot (smoke asserts `snapshot_missing` / `snapshot_corrupt`).
+
+## Graded matrix (Track J)
+
+| Target | Grade | Evidence |
+|---|---|---|
+| Browser headless smoke | FULL when smoke green | `test-results/j-wasmer-packaging/browser-smoke.json` |
+| Desktop Wasmer shell | FULL when script + parity green | `wasmer/desktop/run-decide.sh` |
+| Artifact size / SHA256 | FULL when budget script green | `test-results/j-wasmer-packaging/size-budget.json` |
+| Mobile device farm | NOT_RUN | `wasmer/mobile/NOT_RUN.md` |
 
 ## CI matrix
 
 | Job | Target | Must pass |
 |---|---|---|
 | `core-native` | linux + macos Python | unit decide/classify (skip live wasmer) |
-| `core-wasm` | wasm32 + Wasmer | build, validate, decide fixture, no fetch import |
+| `core-wasm` | wasm32 + Wasmer | build, validate, decide fixture, no fetch import, size budget, desktop shell |
 | `fail-open-parity` | native vs wasm | identical defaulting |
-| `mobile` | placeholder | explicit NOT_RUN |
+| `browser-smoke` | Playwright chromium | headless sandbox decide + fail-open (`wasmer-browser.yml`) |
+| `size-budget` | committed artifacts | SHA256SUMS + ≤150000 browser bytes |
+| `mobile` | placeholder | explicit NOT_RUN docs present |
 
 No live provider keys in CI.
 

@@ -1,0 +1,16 @@
+# Wasmer package manifest for desktop decide shell (Track J).
+# Publish is optional; local `wasmer run` via run-decide.sh is the primary path.
+[package]
+name = "compass/decide"
+version = "0.1.0"
+description = "comPASS Route+Graph decide (WASI) — no provider keys"
+license = "Apache-2.0"
+
+[[module]]
+name = "compass-decide"
+source = "../artifacts/compass-decide.wasm"
+abi = "wasi"
+
+[[command]]
+name = "compass-decide"
+module = "compass-decide"

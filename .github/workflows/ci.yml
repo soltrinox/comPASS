@@ -60,6 +60,18 @@ jobs:
           ! grep -E 'fetch|keys' /tmp/inspect.txt
           test -f wasmer/browser/index.html
           test -f wasmer/browser/sandbox.js
+          test -f wasmer/browser/package.json
+          test -x wasmer/desktop/run-decide.sh
+      - name: Artifact SHA256SUMS + size budget
+        run: |
+          python3 scripts/wasmer_size_budget.py
+          test -f test-results/j-wasmer-packaging/size-budget.json
+      - name: Desktop shell packaging smoke
+        run: |
+          ./wasmer/desktop/run-decide.sh | tee /tmp/desktop-decide.json
+          grep -q 'urn:mg:model:cheap' /tmp/desktop-decide.json
+          COMPASS_FAIL_OPEN_DEMO=missing ./wasmer/desktop/run-decide.sh | tee /tmp/desktop-missing.json
+          grep -q 'snapshot_missing' /tmp/desktop-missing.json
 
   fail-open-parity:
     runs-on: ubuntu-latest
@@ -91,9 +103,15 @@ jobs:
           test -f test-results/wasmer-parity/parity.json
 
   # Mobile Wasmer device matrix: explicit NOT_RUN (no device farm in CI).
+  # Desktop packaged shell + browser headless covered elsewhere (wasmer-browser.yml / desktop/).
   mobile:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "mobile Wasmer target: NOT_RUN — document gap in docs/WASMER.md / wasmer/README.md"
-          echo "Desktop Wasmer + linux CI cover build-once-run-anywhere for Route+Graph module."
+      - uses: actions/checkout@v4
+      - name: Assert mobile NOT_RUN docs present
+        run: |
+          test -f wasmer/mobile/NOT_RUN.md
+          test -f wasmer/desktop/run-decide.sh
+          echo "mobile Wasmer target: NOT_RUN — see wasmer/mobile/NOT_RUN.md"
+          echo "Desktop shell: wasmer/desktop/run-decide.sh (packaged beyond raw wasm bytes)"
+          echo "Browser headless: workflow wasmer-browser.yml"

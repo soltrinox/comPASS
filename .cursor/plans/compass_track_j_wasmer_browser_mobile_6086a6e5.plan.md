@@ -1,28 +1,27 @@
----
-name: comPASS Track J — Wasmer browser/mobile
+---name: comPASS Track J — Wasmer browser/mobile
 overview: Advance beyond current wasm artifacts with headless browser smoke, CI job, and mobile packaging (or documented Wasmer desktop shell); keep fail-open parity vs Python.
 todos:
   - id: headless-browser-smoke
     content: "Headless browser smoke for wasmer/browser sandbox loading compass_core_bg.wasm and exercising decide()"
-    status: pending
+    status: completed
   - id: ci-browser-job
     content: "Add CI job for headless browser Wasmer smoke (no provider keys); artifact upload of log"
-    status: pending
+    status: completed
   - id: mobile-or-desktop-shell
     content: "Lift mobile NOT_RUN → at least one iOS/Android host OR documented Wasmer desktop shell packaging beyond raw wasm bytes"
-    status: pending
+    status: completed
   - id: packaging-runbook
     content: "Update docs/WASMER.md with browser CI, mobile/desktop packaging steps, and graded matrix"
-    status: pending
+    status: completed
   - id: fail-open-parity-reaffirm
     content: "Re-run scripts/wasmer_parity.py; ensure browser path matches Python defaults on corrupt/missing snapshot"
-    status: pending
+    status: completed
   - id: size-budget-guard
     content: "CI guard on wasmer/artifacts SHA256SUMS + size budget regression for browser cdylib"
-    status: pending
+    status: completed
   - id: proof-j
     content: "Emit test-results/j-wasmer-packaging/ with FULL/PARTIAL/NOT_RUN per target"
-    status: pending
+    status: completed
 isProject: true
 ---
 

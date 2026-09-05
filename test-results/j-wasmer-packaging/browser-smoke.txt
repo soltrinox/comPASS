@@ -1,0 +1,8 @@
+[2026-09-05T21:13:30.231Z] static server on http://127.0.0.1:8765/
+[2026-09-05T21:13:30.601Z] launched headless channel=chrome
+[2026-09-05T21:13:30.761Z] module ready
+[2026-09-05T21:13:30.762Z] fixture decide: ok=true selected=urn:mg:model:cheap
+[2026-09-05T21:13:30.764Z] missing fail-open: ok=true
+[2026-09-05T21:13:30.769Z] corrupt fail-open: ok=true
+[2026-09-05T21:13:30.771Z] import table empty: ok=true count=0
+[2026-09-05T21:13:30.771Z] RESULT grade=FULL pass=true

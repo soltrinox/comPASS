@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "budget_bytes": 150000,
+  "sizes": {
+    "compass-decide.wasm": 135419,
+    "compass_core.wasm": 103980,
+    "compass_core_bg.wasm": 103980
+  },
+  "sha256_expected": {
+    "compass-decide.wasm": "e77301bed6f3bcdf8541ba7256cb6a4e58e1da62d7a98edb52fa27bdc1fee553",
+    "compass_core.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "compass_core_bg.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db"
+  },
+  "sha256_actual": {
+    "compass-decide.wasm": "e77301bed6f3bcdf8541ba7256cb6a4e58e1da62d7a98edb52fa27bdc1fee553",
+    "compass_core.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "compass_core_bg.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db"
+  },
+  "errors": []
+}

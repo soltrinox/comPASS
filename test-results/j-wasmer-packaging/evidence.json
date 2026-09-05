@@ -1,0 +1,21 @@
+{
+  "track": "J",
+  "recorded_at": "2026-09-05T21:13:13Z",
+  "browser_headless": "FULL",
+  "browser_pass": true,
+  "desktop_shell": "FULL",
+  "desktop_notes": "wasmer/desktop/run-decide.sh decide fixture + fail-open missing exercised locally",
+  "size_budget": "FULL",
+  "fail_open_parity": "FULL",
+  "mobile_device_farm": "NOT_RUN",
+  "mobile_blocker": "No iOS/Android device farm in CI; see wasmer/mobile/NOT_RUN.md",
+  "overall": "FULL",
+  "overall_notes": "Track J exit met via browser smoke FULL + desktop packaged shell FULL; mobile remains honest NOT_RUN",
+  "artifacts": [
+    "test-results/j-wasmer-packaging/browser-smoke.json",
+    "test-results/j-wasmer-packaging/browser-smoke.txt",
+    "test-results/j-wasmer-packaging/size-budget.json",
+    "test-results/wasmer-parity/parity.json"
+  ],
+  "pass": true
+}
