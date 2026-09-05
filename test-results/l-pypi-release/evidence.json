@@ -1,0 +1,45 @@
+{
+  "track": "L",
+  "recorded_at": "2026-09-05T21:20:38Z",
+  "recorded_at_pt": "2026-09-05 PT",
+  "package": "compass-router",
+  "version": "0.1.0",
+  "tag_recommended": "v0.1.0",
+  "build": "FULL",
+  "twine_check": "FULL",
+  "wheel_pure_python": true,
+  "schema_in_wheel": true,
+  "wasm_in_wheel": false,
+  "testpypi_upload": "NOT_RUN",
+  "testpypi_blocker": "No TWINE/TestPyPI token in env; ~/.pypirc absent",
+  "pypi_upload": "NOT_RUN",
+  "ci_release_stub": "FULL",
+  "pytest": "FULL",
+  "pytest_passed": 147,
+  "publish_grade": "NOT_RUN",
+  "overall": "FULL",
+  "overall_notes": "Track L exit met via build+twine FULL and documented TestPyPI NOT_RUN; publish grade is NOT_RUN",
+  "artifacts": [
+    "dist/compass_router-0.1.0-py3-none-any.whl",
+    "dist/compass_router-0.1.0.tar.gz",
+    "test-results/l-pypi-release/artifacts.txt",
+    "test-results/l-pypi-release/twine-check.txt",
+    "test-results/l-pypi-release/NOT_RUN-testpypi.txt",
+    "test-results/l-pypi-release/pytest.txt"
+  ],
+  "checksums": [
+    {
+      "name": "compass_router-0.1.0-py3-none-any.whl",
+      "path": "dist/compass_router-0.1.0-py3-none-any.whl",
+      "size": 86130,
+      "sha256": "4dc3254e3e2117488e045eafbb0dd223fdff42978dcd66ba5250b7e9c55a29ae"
+    },
+    {
+      "name": "compass_router-0.1.0.tar.gz",
+      "path": "dist/compass_router-0.1.0.tar.gz",
+      "size": 96733,
+      "sha256": "20a05175e67df34118c108c182eda4d473fc49ba8b4023ffe5f187d9abe43b2a"
+    }
+  ],
+  "pass": true
+}

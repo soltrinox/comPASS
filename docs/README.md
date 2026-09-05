@@ -15,6 +15,7 @@ Track A deliverables. Implementation is Tracks B–D. Product/GTM is Track E. **
 | [`API.md`](API.md) | Route classify/score/decide; fail-open; CC-9 advisory; enforcement targets |
 | [`STACK.md`](STACK.md) | Python 3.11+, SQLite/JSON/safetensors/NumPy; Wasmer Route+Graph read; Probe native |
 | [`WASMER.md`](WASMER.md) | Track D Wasmer runbook: core split, ABI, packaging status, fail-open parity |
+| [`RELEASE.md`](RELEASE.md) | Track L: version scheme, tag policy, TestPyPI/PyPI publish (no secrets) |
 | [`abi/host-abi.v1.md`](abi/host-abi.v1.md) | Host ABI v1 (storage/clock/log/config; keys forbidden) |
 | [`INTEGRATION.md`](INTEGRATION.md) | CC-1–CC-10 touchpoints; ingestion; classification reuse; bundle pointer |
 | [`session/CC9-CC6-CHECKLIST.md`](session/CC9-CC6-CHECKLIST.md) | Track H: CC-9 advisory + CC-6 token counter session polish checklist + harness |

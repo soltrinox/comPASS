@@ -25,7 +25,7 @@ todos:
     status: completed
   - id: execute-track-l
     content: "Execute Track L: PyPI / release versioning for compass-router — changelog, TestPyPI dry-run, GitHub tag, CI release stub"
-    status: pending
+    status: completed
   - id: execute-track-n
     content: "Execute Track N: paid pillars test-ready surfaces — cross-machine sync automation, managed fleet graph stub, governance hooks"
     status: pending

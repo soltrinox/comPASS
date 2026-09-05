@@ -15,6 +15,8 @@ Contracts and architecture live under [`docs/`](docs/).
 | [`docs/API.md`](docs/API.md) | Route plane API, fail-open, advisory contract |
 | [`docs/STACK.md`](docs/STACK.md) | Stack + Wasmer boundary (Track D contract) |
 | [`docs/schema/model-graph.v1.json`](docs/schema/model-graph.v1.json) | Capability graph schema (also packaged) |
+| [`docs/RELEASE.md`](docs/RELEASE.md) | Version scheme, tags, TestPyPI / PyPI publish |
+| [`CHANGELOG.md`](CHANGELOG.md) | Keep-a-Changelog for compass-router |
 
 ## Three planes
 
@@ -55,20 +57,26 @@ pytest
 
 Default CI runs unit tests on Python 3.11/3.12 with **no provider keys**.
 
-## C1 status (early cut)
+## Status (`0.1.0`)
 
-Shipped:
+Shipped (Phase 1 offline stack + Phase 2 tracks F–J / H / M / L plumbing):
 
-- Package scaffold (`compass-router`) + CI workflow
-- Packaged `model-graph.v1.json` + `GraphDocument` loader
-- Graph store skeleton (SQLite + JSON) with fail-open reads
-- Bandit interface stubs (Thompson / UCB) with fail-open defaults
-- Route `classify` (keyword stub) + `decide()` fail-open
-- Probe daemon **offline** skeleton: synthetic fixture corpus, dry-run runner
-  (`COMPASS_PROBE_ALLOW_NETWORK` defaults OFF), canary → `GraphDocument.supersede`
-- Credential boundary documented: keys never in Route/Graph; Probe-only later
+- Package `compass-router` `0.1.0` — pure-Python sdist/wheel; see [`docs/RELEASE.md`](docs/RELEASE.md)
+- Graph / Probe / Route planes; Route **fail-open**; Probe network gate default OFF
+- Packaged `model-graph.v1.json`; Graph store (SQLite + JSON); Thompson / UCB stubs
+- Tier 1–4 surfaces (Observatory / Advisor / Router proxy+SDK / session orchestrator)
+- Probe-only credentials (Track M); gated live transports mocked in CI (Track F)
+- Wasmer artifacts + browser/desktop smoke (Track J); **not** bundled in the wheel
+- Hop reward attribution joins (Track G); CC-9/CC-6 session polish harness (Track H)
 
-**Not in C1:** Live provider probe HTTP, Tier 1–4 product surfaces, Tier 3 proxy, Wasmer (Track D).
+**Not claimed:** production SLA, solved credit assignment, unrestricted live benchmarking, PyPI production publish.
+
+Install from git until a TestPyPI/PyPI upload is operator-approved:
+
+```bash
+pip install "compass-router @ git+https://github.com/soltrinox/comPASS.git@v0.1.0"
+# or editable: pip install -e ".[dev]"
+```
 
 ## Explicit non-goals
 

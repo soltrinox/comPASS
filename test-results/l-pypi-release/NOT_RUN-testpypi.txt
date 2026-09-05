@@ -1,0 +1,24 @@
+TestPyPI upload: NOT_RUN
+
+Reason: no TWINE_PASSWORD / TWINE_TEST_TOKEN / TEST_PYPI_API_TOKEN / TESTPYPI_API_TOKEN
+in the environment, and ~/.pypirc is absent. Production PYPI_API_TOKEN also absent.
+
+Exact commands (do not commit the token):
+
+  python -m pip install -U build twine
+  python -m build
+  python -m twine check dist/*
+  export TWINE_USERNAME=__token__
+  export TWINE_PASSWORD='pypi-...'   # TestPyPI API token only
+  python -m twine upload --repository testpypi dist/*
+  # equivalent:
+  python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+Install check after upload:
+
+  python -m pip install \
+    --index-url https://test.pypi.org/simple/ \
+    --extra-index-url https://pypi.org/simple/ \
+    compass-router==0.1.0
+
+Production PyPI is intentionally not run. See docs/RELEASE.md.

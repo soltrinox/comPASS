@@ -1,0 +1,91 @@
+name: Release
+
+# Track L stub: build + twine check on tags / manual dispatch.
+# Publish is OPT-IN via workflow_dispatch input + repository secrets.
+# Tag push alone NEVER publishes. Regular pushes/PRs do not run this workflow.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      publish_target:
+        description: "Where to publish (none = build+check only)"
+        required: true
+        default: none
+        type: choice
+        options:
+          - none
+          - testpypi
+          - pypi
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install build tooling
+        run: |
+          python -m pip install -U pip
+          pip install build twine
+      - name: Build sdist + wheel
+        run: python -m build
+      - name: Twine check
+        run: python -m twine check dist/*
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: compass-router-dist
+          path: dist/
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.publish_target != 'none'
+    runs-on: ubuntu-latest
+    environment: >-
+      ${{ github.event.inputs.publish_target == 'pypi' && 'pypi' || 'testpypi' }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: compass-router-dist
+          path: dist
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install twine
+        run: |
+          python -m pip install -U pip
+          pip install twine
+      - name: Publish to TestPyPI
+        if: github.event.inputs.publish_target == 'testpypi'
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TESTPYPI_API_TOKEN }}
+        run: |
+          if [ -z "${TWINE_PASSWORD}" ]; then
+            echo "TESTPYPI_API_TOKEN secret is not set; refusing publish."
+            exit 1
+          fi
+          python -m twine upload --repository testpypi dist/*
+      - name: Publish to PyPI
+        if: github.event.inputs.publish_target == 'pypi'
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          if [ -z "${TWINE_PASSWORD}" ]; then
+            echo "PYPI_API_TOKEN secret is not set; refusing publish."
+            exit 1
+          fi
+          echo "Production PyPI publish requires an intentional workflow_dispatch."
+          python -m twine upload dist/*

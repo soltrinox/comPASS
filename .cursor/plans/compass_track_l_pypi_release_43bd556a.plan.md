@@ -4,25 +4,25 @@ overview: Define version scheme, changelog, build/publish dry-run (TestPyPI or d
 todos:
   - id: version-scheme
     content: "Document semver scheme for compass-router (0.1.x test-ready → 0.2.0 when gate passes) in docs/RELEASE.md"
-    status: pending
+    status: completed
   - id: changelog
     content: "Author CHANGELOG.md covering Phase 1 offline stack + Phase 2 test-ready notes placeholders"
-    status: pending
+    status: completed
   - id: build-sdist-wheel
     content: "Verify python -m build produces sdist+wheel from pyproject; fix packaging metadata gaps"
-    status: pending
+    status: completed
   - id: testpypi-dry-run
     content: "Dry-run publish via twine --repository-url TestPyPI OR document equivalent gated command; never put tokens in repo"
-    status: pending
+    status: completed
   - id: github-tag-policy
     content: "Document GitHub tag policy (v0.1.x) and create tag when dry-run succeeds on chosen commit"
-    status: pending
+    status: completed
   - id: ci-release-stub
     content: "Add CI release workflow stub (manual dispatch) that builds artifacts and optionally publishes with secrets"
-    status: pending
+    status: completed
   - id: proof-l
     content: "Record release dry-run evidence under test-results/l-pypi-release/"
-    status: pending
+    status: completed
 isProject: true
 ---
 
@@ -71,3 +71,7 @@ comPASS/
 - Yanking or breaking existing public git history.
 - Publishing secrets.
 - Claiming PyPI package = production SLA.
+
+## Completion (2026-09-05 PT)
+
+Exit criteria met: `docs/RELEASE.md`, `CHANGELOG.md` [0.1.0], `python -m build` + `twine check` FULL, TestPyPI **NOT_RUN** (no token; commands in `test-results/l-pypi-release/NOT_RUN-testpypi.txt`), CI release stub on tag/manual dispatch. Publish grade: NOT_RUN. Tag recommendation: annotated `v0.1.0` on main.

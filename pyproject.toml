@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,15 +8,46 @@ version = "0.1.0"
 description = "comPASS sibling engine: Graph / Probe / Route planes for capability-aware model routing."
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [
+  { name = "soltrinox" },
+]
+keywords = [
+  "routing",
+  "llm",
+  "capability-graph",
+  "fail-open",
+  "compass",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 dependencies = [
   "numpy>=1.26",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "build>=1.0"]
+dev = ["pytest>=8", "build>=1.0", "twine>=5"]
 hf = []
 sdk = ["httpx>=0.27"]
+# WASM / Wasmer artifacts are NOT a wheel extra. They live in the git tree
+# (wasmer/artifacts/) and are documented in docs/WASMER.md + docs/RELEASE.md.
+# The published sdist/wheel is pure-Python.
+
+[project.urls]
+Homepage = "https://github.com/soltrinox/comPASS"
+Repository = "https://github.com/soltrinox/comPASS"
+Issues = "https://github.com/soltrinox/comPASS/issues"
+Changelog = "https://github.com/soltrinox/comPASS/blob/main/CHANGELOG.md"
+Documentation = "https://github.com/soltrinox/comPASS/tree/main/docs"
+Release = "https://github.com/soltrinox/comPASS/blob/main/docs/RELEASE.md"
 
 [project.scripts]
 compass-proxy = "compass.serve.proxy:main"

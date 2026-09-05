@@ -1,0 +1,3 @@
+147 passed in 2.60s
+command: python -m pytest tests --ignore=tests/test_wasmer_parity.py
+note: test_wasmer_parity.py is CI wasm job (Track J/D); not required for packaging.
