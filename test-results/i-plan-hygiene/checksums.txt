@@ -1,0 +1,13 @@
+# Track I plan hygiene evidence
+Date: 2026-09-05 PT
+Ground truth: comPREssOR main @ 44460ba (PRs #1-#4 MERGED); comPASS public Tier 1-4 + Wasmer; ADRs 0001/0002 Accepted
+
+## Three-copy SHA-256 (work / home / comPASS/.cursor/plans)
+MATCH 804d8f024f11974d27206e37046735f4752ea1980b5d997471afef266a3e60f3  compass_master_orchestration_b029ab33.plan.md
+MATCH f21994697980b8ee4b0e4cb6dd61f82d80b4459069d16cf0b5be9f0f2fe566c5  compass_track_a_specs_docs_31e0c88a.plan.md
+MATCH 9036c6c880ed0014cb1bd0d8a1f40976bc6879636422201435102afc0192d445  compass_track_b_compressor_prereqs_2f4c3239.plan.md
+MATCH c1494f05158ced92b83c26ff9077ed615bc7b99536ca23548581558e447ac658  compass_track_c_sibling_engine_6b7641d9.plan.md
+MATCH 96b4084ecda429c8ae55bb40d1def112072fe621a405e0343afd227158c8dd8f  compass_track_d_wasmer_deploy_de4e7aa1.plan.md
+MATCH ba5d6db5aee26aea9511484e9a3efbc5fd45cd53797c291b98ca4baf2475ebe4  compass_track_e_product_gtm_30bdaa6f.plan.md
+MATCH 1135417a44965c28101030dee8683e3168cc2c7c3eef99ee43cb5166879a553d  compass_phase2_test_ready_master_29901715.plan.md
+MATCH 3c216f22cd0e3f0422bdc0c380446f03851880fc07be2a64e9638dfeb8a7798d  compass_track_i_plan_hygiene_9dd2800c.plan.md

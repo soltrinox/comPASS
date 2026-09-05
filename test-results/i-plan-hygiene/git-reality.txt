@@ -1,0 +1,10 @@
+comPREssOR:
+44460ba Merge pull request #4 from soltrinox/compass/m4-cc6-cc7-cc8-cc10
+4	feat(engine): CC-6/7/8/10 M4 tokens, hop_legal, bundle, quantization	compass/m4-cc6-cc7-cc8-cc10	MERGED	2026-09-05T07:59:46Z
+3	feat(engine): CC-9 fail-open advisory handoff (M3 / Tier 2)	compass/cc9-advisory-handoff	MERGED	2026-09-05T07:40:10Z
+2	Compass/m1 hop safety	compass/m1-hop-safety	MERGED	2026-09-05T07:00:58Z
+1	CC-1/M0: optional recipient meta on StateNode	compass/m0-cc1-recipient-meta	MERGED	2026-09-05T06:47:55Z
+
+comPASS:
+eb33089 Add Phase 2 test-ready stack Cursor plans (tracks F–N).
+eb33089628726f995f76b69d0b617df8373286d1

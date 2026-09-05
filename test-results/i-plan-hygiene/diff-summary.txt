@@ -1,0 +1,23 @@
+# Diff summary — Track I flips
+
+## Frontmatter status flips
+- master execute-track-c: pending -> completed (Tier 1-4 landed)
+- master execute-track-d: pending -> completed (Wasmer landed)
+- master decision-name content: awaiting Rosario / Proposed -> ADR 0001 Accepted
+- track E name-decision-record: in-progress -> completed; ADR status proposed -> Accepted
+- track E working-copy ADR body status: proposed -> Accepted
+- track B pr-to-main content: Open PR -> Merged PRs #1-#4 @ 44460ba; PR section marked completed
+- track C remote-gate note: do-not-init until decision-name -> ADR 0001 closed / public remote exists
+- phase2 execute-track-i: in-progress -> completed
+- track I all todos: pending -> completed
+
+## Unchanged (already completed, left as-is)
+- Tracks A, D frontmatter (all completed)
+- Track B CC-1..CC-10 + M0/M1 todos (already completed)
+- Track C all todos (already completed)
+- master execute-track-a/b/e, decision-working-copy (already completed)
+
+## Intentionally NOT flipped
+- Phase 2 tracks F/G/H/J/L/M/N and gate-test-ready-stack-exit remain pending
+- Phase 2 execute-track-k left in-progress (owned by Track K agent)
+- Did not start Track F or M

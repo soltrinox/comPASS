@@ -10,7 +10,7 @@ Each plan is registered in three places (identical bytes). Prefer the work copy 
 
 ## Phase 1 — Offline stack (A–E) — complete
 
-Offline Tier 1–4 + Wasmer artifacts with Python fail-open parity. Track checkbox hygiene vs reality is Phase 2 Track I.
+Offline Tier 1–4 + Wasmer artifacts with Python fail-open parity. Phase 2 Track I plan-checkbox hygiene completed 2026-09-05 (PT): A–E + Phase 1 master todos aligned with merged reality (comPREssOR `main` @ `44460ba` PRs #1–#4; comPASS public with Tier 1–4 + Wasmer; ADRs 0001/0002 Accepted). Further program work continues under the Phase 2 master below.
 
 | Track | Name | Cursor plan (work) | User plans | Repo copy |
 | --- | --- | --- | --- | --- |

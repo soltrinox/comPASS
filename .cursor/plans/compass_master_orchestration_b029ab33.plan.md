@@ -7,19 +7,19 @@ todos:
     status: completed
   - id: execute-track-b
     content: "Execute Track B: land CC-1..CC-10 on soltrinox/comPREssOR (M0 then M1 then remaining CCs) with hop-safety tests and PR to main"
-    status: in-progress
+    status: completed
   - id: execute-track-c
-    content: "Execute Track C: scaffold comPASS sibling engine and implement Graph, Probe, Route planes through Tiers 1–4"
-    status: pending
+    content: "Execute Track C: scaffold comPASS sibling engine and implement Graph, Probe, Route planes through Tiers 1–4 — landed on soltrinox/comPASS (Tier 1–4 @ 16e22ec+)"
+    status: completed
   - id: execute-track-d
-    content: "Execute Track D: cut Route+Graph read path for Wasmer WASM (browser sandbox + desktop/mobile); Probe remains native sidecar"
-    status: pending
+    content: "Execute Track D: cut Route+Graph read path for Wasmer WASM (browser sandbox + desktop/mobile); Probe remains native sidecar — Wasmer artifacts + parity proofs landed"
+    status: completed
   - id: execute-track-e
     content: "Execute Track E: positioning, free vs paid five pillars, enterprise value, naming and working-copy decision records, GTM one-pager"
     status: completed
   - id: decision-name
-    content: "Record product-name decision (comPASS placeholder vs MODEL-GRAPH / ROUTE-GRAPH / ENI6MA-namespaced) before creating the public remote — ADR filed Proposed keep-comPASS; awaiting Rosario confirmation"
-    status: in-progress
+    content: "Record product-name decision — ADR 0001 Accepted 2026-09-05: keep comPASS / package compass-router; public remote authorized"
+    status: completed
   - id: decision-working-copy
     content: "Record CHAT-COMPRESSOR working-copy disposition (delete vs re-point at canonical remote); never implement against 0.1.3"
     status: completed
@@ -44,7 +44,7 @@ This master plan does **not** implement code. It is the program index. Child pla
 - Sibling product (this program): [`/Users/rosario/work/comPASS`](/Users/rosario/work/comPASS)
 - Plan index: [`/Users/rosario/work/comPASS/PLANS.md`](/Users/rosario/work/comPASS/PLANS.md)
 
-**Working name:** `comPASS` (placeholder — Appendix A.1 of the prototype). Sister to `comPREssOR`. Three planes: **Probe / Graph / Route**. Four shippable tiers: **Observatory / Advisor / Router / Session orchestrator**.
+**Working name:** `comPASS` (Accepted ADR 0001 — Appendix A.1 of the prototype). Sister to `comPREssOR`. Three planes: **Probe / Graph / Route**. Four shippable tiers: **Observatory / Advisor / Router / Session orchestrator**.
 
 ## Locked defaults
 
@@ -52,7 +52,7 @@ These are not open for re-litigation inside a track unless the named decision re
 
 | Default | Value |
 |---|---|
-| Product placeholder | `comPASS` until `decision-name` closes |
+| Product name | `comPASS` (ADR 0001 Accepted) |
 | Canonical compressor remote | `git@github.com:soltrinox/comPREssOR.git` |
 | Canonical compressor path | `/Users/rosario/work/comPREssOR` |
 | Engine version in scope | `0.2.0` on `main` |
@@ -163,14 +163,14 @@ flowchart TD
 
 Tracked as todos `decision-name` and `decision-working-copy` on this plan. Full list is prototype Appendix A.
 
-1. **Product name.** `comPASS` is a placeholder matching `comPREssOR` house style. Alternatives: `MODEL-GRAPH`, `ROUTE-GRAPH`, or an ENI6MA-namespaced name. Decide before creating the public remote.
-2. **Working-copy disposition.** `/Users/rosario/work/CHAT-COMPRESSOR` is not a git repo, engine `0.1.3`, and contains pre-sanitization identifiers (`FORBIDDEN_WORKSPACE = Path("/Users/rosario/work")` in `live_models.py`; `rosario` in `graph.py` identifier regex). Delete it, or re-point it at the canonical remote as a checkout. Leaving an untracked near-duplicate invites edits in the wrong tree.
+1. **Product name.** **Closed** — ADR 0001 Accepted 2026-09-05: keep `comPASS` / package `compass-router`; public remote `soltrinox/comPASS` authorized.
+2. **Working-copy disposition.** **Closed** — ADR 0002 Accepted 2026-09-05: re-point `/Users/rosario/work/CHAT-COMPRESSOR` as a fresh checkout of canonical `soltrinox/comPREssOR` (do not merge 0.1.3 identifiers). Physical archive cleanup is Phase 2 Track K.
 3. **Aggregator dependency posture.** OpenRouter as hard probe-execution dependency vs one interchangeable backend.
 4. **Managed-graph data terms.** What may be aggregated from opt-in users given per-provider benchmarking terms.
 5. **Free-tier boundary on sync.** Bundle format + manual export/import stays free; only automated sync is paid. Confirm in writing.
 6. **ENI6MA registry.** Whether this project is ENI6MA-derived and needs `ENI6MA-REGISTRY/projects/`.
 
-Decisions 3–6 are owned by Track E writeups but must not block A/B/C start.
+Decisions 3–6 remain Track E / Phase 2 follow-ups and must not block Phase 1 closeout (A–E already landed).
 
 ## Dependency notes
 

@@ -145,7 +145,7 @@ flowchart TB
 - `README.md` at repo root: what it is, three planes, four tiers, link to `PROTOTYPE.md` and `docs/`
 - CI: lint + unit tests on Python 3.11/3.12; do **not** require live provider keys in default CI
 - `.gitignore` covering `.venv`, `test-results/**/*.log.txt` policy (keep proofs, ignore secrets), env files
-- **Do not** `git init` against a remote until `decision-name` is recorded (master todo). Local scaffold is fine.
+- Remote gate closed: ADR 0001 Accepted; public remote is `soltrinox/comPASS`. (Historical note: do not invent renames mid-flight.)
 
 ### Acceptance
 

@@ -4,10 +4,10 @@ overview: Orchestrate Phase 2 Tracks F–N so the offline Tier 1–4 + Wasmer st
 todos:
   - id: execute-track-i
     content: "Execute Track I: residual plan-checkbox hygiene — audit A–E + Phase 1 master vs merged reality; flip completed; sync three plan copies"
-    status: pending
+    status: completed
   - id: execute-track-k
     content: "Execute Track K: archive disposition for CHAT-COMPRESSOR.archived-0.1.3 (delete or keep with README pointer); never restore 0.1.3 identifiers"
-    status: pending
+    status: in-progress
   - id: execute-track-m
     content: "Execute Track M: real OpenRouter/HF/Cursor credentials behind Probe-only loaders (env/keychain); audit Route/core/wasm never read secrets"
     status: pending

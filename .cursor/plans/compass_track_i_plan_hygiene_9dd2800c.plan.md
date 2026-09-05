@@ -4,22 +4,22 @@ overview: Audit Phase 1 Tracks A–E and master plan todos against merged realit
 todos:
   - id: audit-master-ae
     content: "Audit compass_master_orchestration_b029ab33 + Tracks A–E todos vs git reality (comPREssOR 44460ba, comPASS 16e22ec)"
-    status: pending
+    status: completed
   - id: flip-completed-todos
     content: "Flip todos that are done in reality to status completed; leave genuinely open items pending with notes"
-    status: pending
+    status: completed
   - id: fix-stale-pr-wording
     content: "Fix stale 'PR open' / awaiting-merge wording in plan bodies where PRs already merged"
-    status: pending
+    status: completed
   - id: sync-three-copies
     content: "Byte-sync all Phase 1 plan files across work/.cursor/plans, ~/.cursor/plans, and comPASS/.cursor/plans"
-    status: pending
+    status: completed
   - id: update-plans-md-phase1-note
     content: "Ensure PLANS.md Phase 1 section notes completion and points at Phase 2 master"
-    status: pending
+    status: completed
   - id: hygiene-proof
     content: "Record hygiene pass evidence under test-results/i-plan-hygiene/ (diff summary + checksum list)"
-    status: pending
+    status: completed
 isProject: false
 ---
 

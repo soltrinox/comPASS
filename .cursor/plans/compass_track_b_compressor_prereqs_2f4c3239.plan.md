@@ -39,7 +39,7 @@ todos:
     content: "M1 exit: scripted hop at turn 20 delivers full unsuppressed full-budget payload; no-hop session matches 0.2.0 token accounting"
     status: completed
   - id: pr-to-main
-    content: "Open PR against soltrinox/comPREssOR main with CC changes, tests, env.example + HOOK_CONTRACT updates"
+    content: "Merged PRs #1–#4 onto soltrinox/comPREssOR main @ 44460ba (CC-1..CC-10, tests, env.example + HOOK_CONTRACT updates)"
     status: completed
 isProject: true
 ---
@@ -59,7 +59,7 @@ All changes target:
 
 **Do not touch** `/Users/rosario/work/CHAT-COMPRESSOR` (untracked working copy at **0.1.3**, pre-sanitization). Implementing there and porting later reintroduces `FORBIDDEN_WORKSPACE = Path("/Users/rosario/work")` and `rosario` identifier regexes that 0.2.0 deliberately removed.
 
-This track does **not** implement comPASS planes. It only lands CC-1..CC-10 plus the two milestone tests and a PR.
+This track does **not** implement comPASS planes. It landed CC-1..CC-10 plus the two milestone tests; PRs #1–#4 are merged on `main` @ `44460ba`.
 
 **Ground truth:** `/Users/rosario/work/comPASS/PROTOTYPE.md` §14 (especially §14.3 table), §15, §17.1, §17.3 M0/M1/M4.  
 **Contract from Track A:** `/Users/rosario/work/comPASS/docs/schema/statenode-meta.v1.md` and `/Users/rosario/work/comPASS/docs/INTEGRATION.md` (read if they exist; otherwise use this plan + the prototype).
@@ -391,12 +391,15 @@ Behavioral, not merely numerical: cosine similarity of original vs reconstructed
 5. **Sanitize check in CI / PR:** no `/Users/rosario`, no `FORBIDDEN_WORKSPACE` absolute home paths, no personal username literals in identifier regexes.
 6. Do not modify files outside the engine + docs + tests needed for these CCs.
 
-## PR to main (todo `pr-to-main`)
+## PR to main (todo `pr-to-main`) — completed
 
-- Branch from `main` on `soltrinox/comPREssOR` (not a CHAT-COMPRESSOR copy).
-- Preferred stack: M0 PR (CC-1) then M1 PR (CC-2..CC-5 + hop script) then later PR(s) for CC-6..CC-10 as M3/M4 approach.
-- PR body links this plan, prototype §14.3, and the proof logs.
-- Checklist in PR: sanitize grep clean; no-hop token accounting; hop-script green; fail-open advisory (when CC-9 included).
+- **Merged** onto `soltrinox/comPREssOR` `main` @ `44460ba` via PRs **#1–#4** (2026-09-05 PT):
+  - #1 CC-1/M0 recipient meta
+  - #2 M1 hop safety (CC-2..CC-5)
+  - #3 CC-9 advisory handoff
+  - #4 CC-6/7/8/10 M4 tokens, hop_legal, bundle, quantization
+- Historical stack note: M0 PR then M1 PR then later CCs — executed as above.
+- Checklist satisfied: sanitize grep clean; no-hop token accounting; hop-script green; fail-open advisory.
 
 ## Out of scope
 

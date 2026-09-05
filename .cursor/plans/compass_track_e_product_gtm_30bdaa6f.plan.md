@@ -1,6 +1,6 @@
 ---
 name: comPASS Track E — Product & GTM
-overview: Positioning, free vs paid five pillars, enterprise value, open naming and working-copy decisions.
+overview: Positioning, free vs paid five pillars, enterprise value, naming and working-copy ADRs (Accepted).
 todos:
   - id: positioning-vs-aggregators
     content: "Write positioning vs OpenRouter, Hugging Face, Cursor auto-select, LiteLLM, and eval vendors"
@@ -15,8 +15,8 @@ todos:
     content: "Write enterprise governance narrative for Finance, Security/compliance, and Engineering leadership buyers"
     status: completed
   - id: name-decision-record
-    content: "ADR: product name (comPASS placeholder vs MODEL-GRAPH / ROUTE-GRAPH / ENI6MA-namespaced) before public remote — Proposed keep-comPASS / compass-router; awaiting Rosario confirmation"
-    status: in-progress
+    content: "ADR 0001 Accepted 2026-09-05: keep comPASS / package compass-router; public remote authorized"
+    status: completed
   - id: working-copy-disposition
     content: "ADR: CHAT-COMPRESSOR 0.1.3 untracked tree — delete vs re-point at canonical comPREssOR 0.2.0"
     status: completed
@@ -201,9 +201,9 @@ Three-buyer structure; procurement-leverage paragraph present; no "we lock you i
 
 File: `docs/adr/0001-product-name.md`
 
-**Status:** proposed (close before creating the public remote).
+**Status:** Accepted 2026-09-05 (keep `comPASS` / `compass-router`; public remote authorized).
 
-**Context:** `comPASS` is a placeholder chosen to match `comPREssOR` house style. Remote name is awkward to change later.
+**Context:** `comPASS` matched `comPREssOR` house style; remote name is awkward to change later. Decision locked before public remote.
 
 **Options:**
 
@@ -212,11 +212,11 @@ File: `docs/adr/0001-product-name.md`
 3. `ROUTE-GRAPH`
 4. ENI6MA-namespaced name if this sits in that portfolio (also tick Appendix A.6 registry)
 
-**Decision needed from:** product owner (Rosario). This ADR records the choice and the date. Do **not** invent a rename in Track C CI.
+**Decision:** Rosario accepted keep-`comPASS` / `compass-router` 2026-09-05 (PT). Do **not** invent a mid-flight rename in CI.
 
-**Consequences:** GitHub repo name, PyPI name, WASM artifact prefix, marketing one-pager header.
+**Consequences:** GitHub repo name, PyPI name, WASM artifact prefix, marketing one-pager header all follow the accepted name.
 
-Until closed, all tracks keep using `comPASS`.
+All tracks use `comPASS` / `compass-router` per ADR 0001.
 
 ---
 
@@ -224,7 +224,7 @@ Until closed, all tracks keep using `comPASS`.
 
 File: `docs/adr/0002-working-copy-disposition.md`
 
-**Status:** proposed (close before any compressor edit).
+**Status:** Accepted 2026-09-05 — re-point to canonical checkout (physical archive cleanup → Phase 2 Track K).
 
 **Facts (from prototype §17.1, verified in-spec):**
 
