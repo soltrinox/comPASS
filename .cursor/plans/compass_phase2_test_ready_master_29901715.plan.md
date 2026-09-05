@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: execute-track-k
     content: "Execute Track K: archive disposition for CHAT-COMPRESSOR.archived-0.1.3 (delete or keep with README pointer); never restore 0.1.3 identifiers"
-    status: in-progress
+    status: completed
   - id: execute-track-m
     content: "Execute Track M: real OpenRouter/HF/Cursor credentials behind Probe-only loaders (env/keychain); audit Route/core/wasm never read secrets"
     status: completed
@@ -28,10 +28,10 @@ todos:
     status: completed
   - id: execute-track-n
     content: "Execute Track N: paid pillars test-ready surfaces — cross-machine sync automation, managed fleet graph stub, governance hooks"
-    status: pending
+    status: completed
   - id: gate-test-ready-stack-exit
     content: "Gate: Phase 2 test-ready stack exit — all F–N exit criteria met with log evidence; update PLANS.md Phase 2 section; do not declare production-ready"
-    status: pending
+    status: completed
 isProject: true
 ---
 
@@ -183,3 +183,9 @@ All must be true with artifacts under `comPASS/test-results/`:
 - Prototype: `/Users/rosario/work/comPASS/PROTOTYPE.md`
 - PLANS index: `/Users/rosario/work/comPASS/PLANS.md`
 - Paid pillars: `/Users/rosario/work/comPASS/docs/gtm/PAID-PILLARS.md`
+
+## Phase 2 exit gate flipped
+
+**Date:** 2026-09-05 (PT)  
+**Status:** test-ready stack exit criteria met with evidence under `comPASS/test-results/` (F–N).  
+**Non-claim:** test-ready ≠ production fleet, ≠ solved credit assignment, ≠ identical-text multi-model insertion, ≠ unrestricted live benchmarking.

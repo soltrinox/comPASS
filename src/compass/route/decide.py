@@ -195,8 +195,10 @@ def decide(
     Fail-open on any exception, empty candidates, or corrupt inputs.
     When the budget envelope is exceeded, clamp to cheapest allowed candidate
     (or configured default) — see ``compass.route.envelope`` module docstring.
-    When ``store`` is provided, persist a RouteDecision node (including
-    fail-open outcomes). Persistence errors are logged and swallowed.
+    When ``policy`` is provided, ``compass.serve.governance`` filters eligibility
+    (deny providers, PII-local-only, budget ceilings). Missing/corrupt policy
+    engines fail-open. When ``store`` is provided, persist a RouteDecision node
+    (including fail-open outcomes). Persistence errors are logged and swallowed.
     """
     cfg = config or RouteConfig()
     constraints: list[str] = []
@@ -204,9 +206,32 @@ def decide(
     env: BudgetEnvelope | None = None
 
     try:
-        lam, constraints, env = _resolve_lambda(cfg, envelope)
-        if policy:
-            constraints.append("policy")
+        # Governance (Pillar 4): filter candidates + optional org budget merge.
+        # Missing/corrupt policy engine → fail-open (unconstrained).
+        gov = None
+        try:
+            from compass.serve.governance import apply_policy_engine
+
+            cand_pre = list(candidates or [])
+            cand_pre, gov_constraints, envelope, gov = apply_policy_engine(
+                cand_pre, policy, envelope=envelope
+            )
+            candidates = cand_pre
+            constraints.extend(gov_constraints)
+        except Exception:  # noqa: BLE001 — policy engine must never block Route
+            logger.exception("governance policy engine failed — fail-open")
+            constraints.append("governance:missing_engine")
+
+        lam, constraints_env, env = _resolve_lambda(cfg, envelope)
+        constraints.extend(constraints_env)
+        # Keep unique order-preserving constraint tags.
+        seen: set[str] = set()
+        deduped: list[str] = []
+        for c in constraints:
+            if c not in seen:
+                seen.add(c)
+                deduped.append(c)
+        constraints = deduped
 
         if graph_snapshot is not None and not isinstance(graph_snapshot, dict):
             result = _fail_open(
@@ -224,9 +249,22 @@ def decide(
 
         cand_list = list(candidates or [])
         if not cand_list:
+            empty_reason = "empty_candidates"
+            if gov is not None:
+                empty_reason = (
+                    "governance_block"
+                    if getattr(gov, "enforce_block", False)
+                    else "governance_filtered_empty"
+                )
+                if "governance:no_eligible" not in constraints:
+                    constraints.append("governance:no_eligible")
+                if getattr(gov, "enforce_block", False):
+                    constraints.append("governance:enforce_block")
+                else:
+                    constraints.append("governance:fail_open")
             result = _fail_open(
                 cfg,
-                reason="empty_candidates",
+                reason=empty_reason,
                 task_class_id=task_class,
                 lambda_cost=lam,
                 constraints_applied=constraints,

@@ -7,10 +7,8 @@ Versioning follows [SemVer](https://semver.org/) as described in [`docs/RELEASE.
 
 ## [Unreleased]
 
-Phase 2 test-ready notes (placeholders until each track exits):
-
-- Track N — paid pillars (cross-machine sync automation, managed fleet graph stub, governance hooks) — pending.
-- Phase 2 exit gate — not declared; test-ready ≠ production SLA.
+- Track N — paid pillars test-ready: `compass.sync` (paid automate / free manual), `compass.fleet` stub (opt-in), `compass.serve.governance` hooks; evidence `test-results/n-paid-pillars/`.
+- Phase 2 **test-ready stack exit** flipped 2026-09-05 (PT) — F–N evidence present; **not** production-ready / SLA.
 
 ## [0.1.0] — 2026-09-05
 

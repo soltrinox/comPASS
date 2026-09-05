@@ -78,3 +78,18 @@ Paid sells **marginal cost** and **network effects**. Free already includes corr
 ## Aggregator note
 
 Pillars assume reachability plumbing (OpenRouter / LiteLLM / direct APIs) already exists. comPASS does not sell access aggregation; it sells the decision layer and portable memory on top (see [POSITIONING.md](POSITIONING.md)).
+
+---
+
+## Engineering surfaces (Track N)
+
+Test-ready acceptance surfaces (not production SaaS). Map: [PAID-SURFACES.md](PAID-SURFACES.md).
+
+| Pillar | Module | Gate |
+|---|---|---|
+| 1 Automated sync | `compass.sync` | `COMPASS_PAID_SYNC` — manual `compass.bundle` / `export_local_bundle` stays free |
+| 3 Fleet graph stub | `compass.fleet` | `COMPASS_FLEET_OPT_IN` — default local-only; anonymize + ToS denylist before share |
+| 4 Governance hooks | `compass.serve.governance` | `policy=` on `decide` / proxy — fail-open when engine missing |
+
+Pillar 2 remains **measurement-gated** — do not claim outcome bands or identical text.
+

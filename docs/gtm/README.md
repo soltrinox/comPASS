@@ -7,6 +7,7 @@ Working name: **comPASS** (package `compass-router`) until [ADR 0001](../adr/000
 | [POSITIONING.md](POSITIONING.md) | vs OpenRouter, Hugging Face, Cursor auto-select, LiteLLM, eval vendors |
 | [FREE-TIER.md](FREE-TIER.md) | What stays free; accuracy never paywalled; sync boundary |
 | [PAID-PILLARS.md](PAID-PILLARS.md) | Five paid pillars; Pillar 2 non-claim; Pillar 3 recurring-revenue core |
+| [PAID-SURFACES.md](PAID-SURFACES.md) | Track N code↔pillar map; gates; productization non-goals |
 | [ENTERPRISE.md](ENTERPRISE.md) | Finance / Security / Engineering-leadership buyers |
 | [GTM-ONE-PAGER.md](GTM-ONE-PAGER.md) | Print-length wedge, free/paid, non-claims, ask |
 

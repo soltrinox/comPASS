@@ -4,28 +4,28 @@ overview: Implement or spike test-ready surfaces for automated cross-machine bun
 todos:
   - id: pillar1-sync-automation
     content: "Spike/implement automated cross-machine bundle sync surface (paid); manual export/import remains free; acceptance tests"
-    status: pending
+    status: completed
   - id: pillar3-fleet-graph-stub
     content: "Managed fleet capability graph service stub — opt-in ingest API + anonymization hooks; terms-safe; acceptance tests"
-    status: pending
+    status: completed
   - id: pillar4-governance-hooks
     content: "Enterprise governance policy hooks — budget envelopes + eligibility filters as enforced routing constraints; acceptance tests"
-    status: pending
+    status: completed
   - id: link-paid-pillars-doc
     content: "Link each surface to docs/gtm/PAID-PILLARS.md with honest scope and non-claims (esp. Pillar 2 equivalence)"
-    status: pending
+    status: completed
   - id: free-vs-paid-tests
     content: "Tests proving manual bundle path stays free and sync automation is feature-gated as paid"
-    status: pending
+    status: completed
   - id: fleet-opt-in-default-off
     content: "Fleet stub defaults opt-out/local-only; no silent upload; document consent flag"
-    status: pending
+    status: completed
   - id: audit-trail-route-decision
     content: "Governance audit trail consumes persisted RouteDecision fields; fail-open when policy engine missing"
-    status: pending
+    status: completed
   - id: proof-n
     content: "Emit test-results/n-paid-pillars/ evidence for all three surfaces"
-    status: pending
+    status: completed
 isProject: true
 ---
 

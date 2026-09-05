@@ -44,6 +44,7 @@ Program master: make the offline stack **gated-live / session-proven / releasabl
 
 ### Phase 2 progress notes
 
+- Track N paid pillars completed 2026-09-05 (PT): sync automation + fleet stub + governance hooks; `docs/gtm/PAID-SURFACES.md`; evidence `test-results/n-paid-pillars/`; Phase 2 test-ready exit gate flipped (≠ production).
 - Track L PyPI release completed 2026-09-05 (PT): `compass-router` `0.1.0`; CHANGELOG + `docs/RELEASE.md`; sdist/wheel + twine check FULL; TestPyPI upload NOT_RUN (no token); release workflow stub; evidence `test-results/l-pypi-release/`.
 - Track J Wasmer browser/mobile completed 2026-09-05 (PT): headless Playwright smoke FULL; desktop `wasmer/desktop/run-decide.sh` FULL; size-budget/parity green; mobile device farm NOT_RUN (`wasmer/mobile/NOT_RUN.md`); evidence `test-results/j-wasmer-packaging/`.
 - Track H session polish (CC-9/CC-6) completed 2026-09-05 (PT): scripted harness + `docs/session/CC9-CC6-CHECKLIST.md` + evidence under `test-results/h-session-polish/` (live IDE optional; graded NOT_RUN for manual Chat).

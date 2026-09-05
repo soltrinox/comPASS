@@ -1,0 +1,27 @@
+{
+  "track": "N",
+  "recorded_at": "2026-09-05T21:30:41Z",
+  "recorded_at_pt": "2026-09-05 PT",
+  "surfaces": {
+    "pillar1_sync": "FULL",
+    "pillar3_fleet_stub": "FULL",
+    "pillar4_governance": "FULL",
+    "pillar2_equivalence": "NOT_RUN"
+  },
+  "pytest_full": 167,
+  "pytest_track_n": 19,
+  "overall": "FULL",
+  "overall_notes": "Test-ready spikes only; not production SaaS. Free-tier paths unchanged.",
+  "modules": [
+    "src/compass/sync/",
+    "src/compass/fleet/",
+    "src/compass/serve/governance.py",
+    "src/compass/bundle.py",
+    "src/compass/route/decide.py"
+  ],
+  "docs": [
+    "docs/gtm/PAID-SURFACES.md",
+    "docs/gtm/PAID-PILLARS.md"
+  ],
+  "pass": true
+}
