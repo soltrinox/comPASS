@@ -1,11 +1,16 @@
 # comPASS program plans
 
-**Date:** 2026-09-03  
+**Date:** 2026-09-05  
 **Ground truth:** [`/Users/rosario/work/comPASS/PROTOTYPE.md`](/Users/rosario/work/comPASS/PROTOTYPE.md)  
 **Summary:** [`/Users/rosario/work/comPASS/SUMMARY/2026-09-03-comPASS-prototype-session.md`](/Users/rosario/work/comPASS/SUMMARY/2026-09-03-comPASS-prototype-session.md)  
-**Canonical compressor:** `git@github.com:soltrinox/comPREssOR.git` at [`/Users/rosario/work/comPREssOR`](/Users/rosario/work/comPREssOR) (engine 0.2.0)
+**Canonical compressor:** `git@github.com:soltrinox/comPREssOR.git` at [`/Users/rosario/work/comPREssOR`](/Users/rosario/work/comPREssOR) (engine 0.2.0, `main` @ `44460ba`, CC-1..CC-10)  
+**Public sibling:** [`https://github.com/soltrinox/comPASS`](https://github.com/soltrinox/comPASS) @ `16e22ec`
 
 Each plan is registered in three places (identical bytes). Prefer the work copy when opening from this tree.
+
+## Phase 1 — Offline stack (A–E) — complete
+
+Offline Tier 1–4 + Wasmer artifacts with Python fail-open parity. Track checkbox hygiene vs reality is Phase 2 Track I.
 
 | Track | Name | Cursor plan (work) | User plans | Repo copy |
 | --- | --- | --- | --- | --- |
@@ -16,8 +21,29 @@ Each plan is registered in three places (identical bytes). Prefer the work copy 
 | D | comPASS Track D — Wasmer Deployment | [`/Users/rosario/work/.cursor/plans/compass_track_d_wasmer_deploy_de4e7aa1.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_d_wasmer_deploy_de4e7aa1.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_d_wasmer_deploy_de4e7aa1.plan.md`](/Users/rosario/.cursor/plans/compass_track_d_wasmer_deploy_de4e7aa1.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_d_wasmer_deploy_de4e7aa1.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_d_wasmer_deploy_de4e7aa1.plan.md) |
 | E | comPASS Track E — Product & GTM | [`/Users/rosario/work/.cursor/plans/compass_track_e_product_gtm_30bdaa6f.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_e_product_gtm_30bdaa6f.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_e_product_gtm_30bdaa6f.plan.md`](/Users/rosario/.cursor/plans/compass_track_e_product_gtm_30bdaa6f.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_e_product_gtm_30bdaa6f.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_e_product_gtm_30bdaa6f.plan.md) |
 
-Repo-local copies + short index: [`/Users/rosario/work/comPASS/.cursor/plans/README.md`](/Users/rosario/work/comPASS/.cursor/plans/README.md)
-
-## Build order
+### Phase 1 build order (historical)
 
 Track A → Track B M0/M1 → Track C scaffold/graph/route → Track D Wasmer cut → Track C tiers → Track E (ADRs for name and working-copy should close before public remote / compressor edits).
+
+## Phase 2 — Test-ready stack
+
+Program master: make the offline stack **gated-live / session-proven / releasable** without weakening fail-open or putting keys on Route/WASM.
+
+| Track | Name | Cursor plan (work) | User plans | Repo copy |
+| --- | --- | --- | --- | --- |
+| P2 Master | Phase 2 — Test-ready stack | [`/Users/rosario/work/.cursor/plans/compass_phase2_test_ready_master_29901715.plan.md`](/Users/rosario/work/.cursor/plans/compass_phase2_test_ready_master_29901715.plan.md) | [`/Users/rosario/.cursor/plans/compass_phase2_test_ready_master_29901715.plan.md`](/Users/rosario/.cursor/plans/compass_phase2_test_ready_master_29901715.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_phase2_test_ready_master_29901715.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_phase2_test_ready_master_29901715.plan.md) |
+| F | Live Probe/Observatory | [`/Users/rosario/work/.cursor/plans/compass_track_f_live_probe_observatory_1ece50e5.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_f_live_probe_observatory_1ece50e5.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_f_live_probe_observatory_1ece50e5.plan.md`](/Users/rosario/.cursor/plans/compass_track_f_live_probe_observatory_1ece50e5.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_f_live_probe_observatory_1ece50e5.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_f_live_probe_observatory_1ece50e5.plan.md) |
+| G | Hop reward attribution | [`/Users/rosario/work/.cursor/plans/compass_track_g_hop_reward_attribution_10a51057.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_g_hop_reward_attribution_10a51057.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_g_hop_reward_attribution_10a51057.plan.md`](/Users/rosario/.cursor/plans/compass_track_g_hop_reward_attribution_10a51057.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_g_hop_reward_attribution_10a51057.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_g_hop_reward_attribution_10a51057.plan.md) |
+| H | Session polish CC-9/CC-6 | [`/Users/rosario/work/.cursor/plans/compass_track_h_session_polish_cc9_cc6_a9d611b2.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_h_session_polish_cc9_cc6_a9d611b2.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_h_session_polish_cc9_cc6_a9d611b2.plan.md`](/Users/rosario/.cursor/plans/compass_track_h_session_polish_cc9_cc6_a9d611b2.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_h_session_polish_cc9_cc6_a9d611b2.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_h_session_polish_cc9_cc6_a9d611b2.plan.md) |
+| I | Plan hygiene | [`/Users/rosario/work/.cursor/plans/compass_track_i_plan_hygiene_9dd2800c.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_i_plan_hygiene_9dd2800c.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_i_plan_hygiene_9dd2800c.plan.md`](/Users/rosario/.cursor/plans/compass_track_i_plan_hygiene_9dd2800c.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_i_plan_hygiene_9dd2800c.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_i_plan_hygiene_9dd2800c.plan.md) |
+| J | Wasmer browser/mobile | [`/Users/rosario/work/.cursor/plans/compass_track_j_wasmer_browser_mobile_6086a6e5.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_j_wasmer_browser_mobile_6086a6e5.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_j_wasmer_browser_mobile_6086a6e5.plan.md`](/Users/rosario/.cursor/plans/compass_track_j_wasmer_browser_mobile_6086a6e5.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_j_wasmer_browser_mobile_6086a6e5.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_j_wasmer_browser_mobile_6086a6e5.plan.md) |
+| K | Archive disposition | [`/Users/rosario/work/.cursor/plans/compass_track_k_archive_disposition_69873459.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_k_archive_disposition_69873459.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_k_archive_disposition_69873459.plan.md`](/Users/rosario/.cursor/plans/compass_track_k_archive_disposition_69873459.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_k_archive_disposition_69873459.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_k_archive_disposition_69873459.plan.md) |
+| L | PyPI release | [`/Users/rosario/work/.cursor/plans/compass_track_l_pypi_release_43bd556a.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_l_pypi_release_43bd556a.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_l_pypi_release_43bd556a.plan.md`](/Users/rosario/.cursor/plans/compass_track_l_pypi_release_43bd556a.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_l_pypi_release_43bd556a.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_l_pypi_release_43bd556a.plan.md) |
+| M | Probe credentials | [`/Users/rosario/work/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md`](/Users/rosario/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md) |
+| N | Paid pillars | [`/Users/rosario/work/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md`](/Users/rosario/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md) |
+
+### Phase 2 build order
+
+**I hygiene ∥ K archive → M credentials → F live probe → G reward (parallel after F schema hooks) → H session polish → J wasmer packaging → L release → N paid pillars (after L + F) → test-ready exit gate.**
+
+Repo-local copies + short index: [`/Users/rosario/work/comPASS/.cursor/plans/README.md`](/Users/rosario/work/comPASS/.cursor/plans/README.md)
