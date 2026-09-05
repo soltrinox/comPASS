@@ -10,7 +10,7 @@ todos:
     status: in-progress
   - id: execute-track-m
     content: "Execute Track M: real OpenRouter/HF/Cursor credentials behind Probe-only loaders (env/keychain); audit Route/core/wasm never read secrets"
-    status: pending
+    status: completed
   - id: execute-track-f
     content: "Execute Track F: live gated Probe/Observatory HTTP transports + terms-safe fleet probing; Observation persistence; never block Route"
     status: pending

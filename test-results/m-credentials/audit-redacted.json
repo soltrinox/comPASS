@@ -1,0 +1,40 @@
+{
+  "track": "M",
+  "generated_at_pt": "2026-09-05 13:13:47 PDT",
+  "note": "Redacted presence only \u2014 no secret values",
+  "providers": [
+    {
+      "provider": "openrouter",
+      "env_var": "OPENROUTER_API_KEY",
+      "present_in_env": false,
+      "present_in_keychain": false,
+      "value_redacted": true
+    },
+    {
+      "provider": "huggingface",
+      "env_var": "HF_TOKEN",
+      "present_in_env": false,
+      "present_in_keychain": false,
+      "value_redacted": true
+    },
+    {
+      "provider": "cursor",
+      "env_var": "CURSOR_API_KEY",
+      "present_in_env": false,
+      "present_in_keychain": false,
+      "value_redacted": true
+    }
+  ],
+  "env_var_names": [
+    "OPENROUTER_API_KEY",
+    "HF_TOKEN",
+    "CURSOR_API_KEY"
+  ],
+  "loaders_module": "compass.probe.credentials",
+  "forbidden_importers": [
+    "compass.core",
+    "compass.route",
+    "compass.serve.proxy",
+    "wasmer/*"
+  ]
+}

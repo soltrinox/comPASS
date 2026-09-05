@@ -7,7 +7,8 @@ Credential boundary (normative)
 * Only the Probe process is allowed to hold provider credentials — and only
   when live probing is explicitly enabled later. This offline skeleton does
   **not** load keys and does **not** make provider HTTP calls.
-* Route and hook code must not import ``compass.probe.runner``.
+* Route and hook code must not import ``compass.probe.runner`` or
+  ``compass.probe.credentials`` (Probe-only secret loaders).
 * Network egress defaults **OFF** (``COMPASS_PROBE_ALLOW_NETWORK`` unset/false).
 
 See ``docs/ARCHITECTURE.md`` §1 and repo ``.env.example``.

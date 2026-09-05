@@ -4,25 +4,25 @@ overview: Real OpenRouter/HF/Cursor credentials behind Probe-only loaders (env/k
 todos:
   - id: secret-storage-pattern
     content: "Document secret storage pattern — env vars, OS keychain optional, .env never committed; update .env.example"
-    status: pending
+    status: completed
   - id: probe-only-loaders
     content: "Implement Probe-only credential loaders in src/compass/probe/ (or native/); refuse load outside Probe process boundary"
-    status: pending
+    status: completed
   - id: provider-docs-openrouter-hf-cursor
     content: "Docs for obtaining/rotating OpenRouter, Hugging Face, and Cursor API credentials for Probe"
-    status: pending
+    status: completed
   - id: rotation-runbook
     content: "Write rotation runbook (compromise response, env rename, keychain update) under docs/probe/"
-    status: pending
+    status: completed
   - id: import-boundary-audit
     content: "Automated audit test — Route/core/wasm/serve-hook paths never import secret loaders or os.environ key names for providers"
-    status: pending
+    status: completed
   - id: proxy-boundary-note
     content: "Clarify Tier-3 proxy may hold upstream keys as a service process — still never in WASM/hooks; document separation from Probe catalog keys"
-    status: pending
+    status: completed
   - id: proof-m
     content: "Emit test-results/m-credentials/ with audit log (redacted); no real secrets in artifacts"
-    status: pending
+    status: completed
 isProject: true
 ---
 

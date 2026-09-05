@@ -61,6 +61,8 @@ Compatibility: additive or env-gated. Absent recipient info, paths behave exactl
 
 Proxy owns provider credentials in the **service** process — never in the hook process or browser WASM ([`STACK.md`](STACK.md)).
 
+Probe catalog keys (`OPENROUTER_API_KEY` / `HF_TOKEN` / `CURSOR_API_KEY`) are loaded only via `compass.probe.credentials` in the Probe sidecar — see [`probe/CREDENTIALS.md`](probe/CREDENTIALS.md). Tier-3 proxy upstream keys (`COMPASS_PROXY_UPSTREAM*`) are a separate service-process concern; do not import Probe credential loaders from `compass.serve.proxy`.
+
 In-IDE Cursor Agent Chat: **advisory only** (no model field in hooks).
 
 ---
