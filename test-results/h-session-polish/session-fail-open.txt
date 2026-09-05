@@ -1,0 +1,4 @@
+cc9_fail_open_missing=FULL
+cc9_fail_open_corrupt=FULL
+cc9_fail_open_stale=FULL
+Harness proved fail-open without live IDE; manual checklist §B optional.

@@ -19,7 +19,7 @@ todos:
     status: completed
   - id: execute-track-h
     content: "Execute Track H: CC-9/CC-6 polish in real Cursor Agent Chat sessions; fail-open proofs under test-results/"
-    status: pending
+    status: completed
   - id: execute-track-j
     content: "Execute Track J: headless browser + mobile packaging beyond current wasm artifacts; fail-open parity vs Python"
     status: pending

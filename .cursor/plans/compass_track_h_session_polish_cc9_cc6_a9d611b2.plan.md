@@ -4,25 +4,25 @@ overview: Prove CC-9 advisory handoff and CC-6 cost counters in real Cursor Agen
 todos:
   - id: session-checklist-doc
     content: "Write manual + scripted checklist for Agent Chat advisory (CC-9) and cost counters (CC-6) under docs/ and scripts/"
-    status: pending
+    status: completed
   - id: cc9-advisory-path-verify
     content: "Verify advisory appears in Cursor Agent Chat via CC-9 file-based handoff; corrupt advisory never blocks continue"
-    status: pending
+    status: completed
   - id: cc6-cost-counters-verify
     content: "Verify cost path uses CC-6 counters where registered; document gaps as PARTIAL not silent success"
-    status: pending
+    status: completed
   - id: fail-open-session-proof
     content: "Capture real session log proving fail-open under advisory corruption / missing router under test-results/h-session-polish/"
-    status: pending
+    status: completed
   - id: scripted-harness
     content: "Add scripted harness (hook event fixtures) that replays beforeSubmitPrompt/sessionStart shapes without live IDE when possible"
-    status: pending
+    status: completed
   - id: compressor-docs-only
     content: "Touch comPREssOR docs only if checklist gaps require it — no engine source changes unless explicitly approved later"
-    status: pending
+    status: completed
   - id: evidence-pack
     content: "Package evidence JSON + .log.txt with FULL/PARTIAL/NOT_RUN grades for CC-9 and CC-6 claims"
-    status: pending
+    status: completed
 isProject: true
 ---
 

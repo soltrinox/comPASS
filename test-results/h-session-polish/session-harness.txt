@@ -1,0 +1,10 @@
+compressor_root=/Users/rosario/work/comPREssOR
+CC9 wrote advisory → /var/folders/f1/_jlm457d6ts_f77gqp7z08q40000gn/T/h-session-polish-e44bqkrn/context-graphs/advisory/latest.json
+CC9 CHAT_COMPRESSOR_ADVISORY_PATH=/var/folders/f1/_jlm457d6ts_f77gqp7z08q40000gn/T/h-session-polish-e44bqkrn/context-graphs/advisory/latest.json
+CC9 compose fresh: ok=True
+CC9 compose snippet: COMPASS_ADVISORY: task_class=multi_file_refactor; recommended_model=cursor-harness-cc9; Track H harness: fresh advisory must appear in additional_context.
+CC9 beforeSubmitPrompt fresh: continue=True ok=True
+CC9 fail-open missing: ok=True
+CC9 fail-open corrupt: ok=True
+CC9 fail-open stale: ok=True
+CC6 packing_ok=True fallback_ok=True accurate_ok=True packing_ignores_registry=True counter_fail_open=True after_unreg=True

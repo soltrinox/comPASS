@@ -17,6 +17,7 @@ Track A deliverables. Implementation is Tracks B–D. Product/GTM is Track E. **
 | [`WASMER.md`](WASMER.md) | Track D Wasmer runbook: core split, ABI, packaging status, fail-open parity |
 | [`abi/host-abi.v1.md`](abi/host-abi.v1.md) | Host ABI v1 (storage/clock/log/config; keys forbidden) |
 | [`INTEGRATION.md`](INTEGRATION.md) | CC-1–CC-10 touchpoints; ingestion; classification reuse; bundle pointer |
+| [`session/CC9-CC6-CHECKLIST.md`](session/CC9-CC6-CHECKLIST.md) | Track H: CC-9 advisory + CC-6 token counter session polish checklist + harness |
 | [`RISKS.md`](RISKS.md) | Risk register (R1–R12) |
 | [`schema/model-graph.v1.json`](schema/model-graph.v1.json) | Sibling capability-graph JSON Schema (`model-graph/v1`) — do not widen `ctx-graph.v1` |
 | [`schema/statenode-meta.v1.md`](schema/statenode-meta.v1.md) | CC-1 recipient fields on `StateNode.meta` |

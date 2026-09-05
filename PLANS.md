@@ -42,6 +42,10 @@ Program master: make the offline stack **gated-live / session-proven / releasabl
 | M | Probe credentials | [`/Users/rosario/work/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md`](/Users/rosario/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_m_probe_credentials_acfb34f5.plan.md) |
 | N | Paid pillars | [`/Users/rosario/work/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md`](/Users/rosario/work/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md) | [`/Users/rosario/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md`](/Users/rosario/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_track_n_paid_pillars_fae9b18d.plan.md) |
 
+### Phase 2 progress notes
+
+- Track H session polish (CC-9/CC-6) completed 2026-09-05 (PT): scripted harness + `docs/session/CC9-CC6-CHECKLIST.md` + evidence under `test-results/h-session-polish/` (live IDE optional; graded NOT_RUN for manual Chat).
+
 ### Phase 2 build order
 
 **I hygiene ∥ K archive → M credentials → F live probe → G reward (parallel after F schema hooks) → H session polish → J wasmer packaging → L release → N paid pillars (after L + F) → test-ready exit gate.**

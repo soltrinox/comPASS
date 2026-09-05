@@ -1,0 +1,28 @@
+{
+  "track": "H",
+  "recorded_at": "2026-09-05T20:59:02Z",
+  "schema": "compass-advisory/v1",
+  "compressor_root": "/Users/rosario/work/comPREssOR",
+  "cc9_compose_fresh": "FULL",
+  "cc9_beforeSubmitPrompt_fresh": "FULL",
+  "cc9_fail_open_missing": "FULL",
+  "cc9_fail_open_corrupt": "FULL",
+  "cc9_fail_open_stale": "FULL",
+  "cc9_live_ide_session": "NOT_RUN",
+  "cc9_live_ide_blocker": "Live Cursor Agent Chat not required when harness proves path; see docs/session/CC9-CC6-CHECKLIST.md \u00a7B for one-time manual run.",
+  "cc6_register_counter": "FULL",
+  "cc6_estimate_vs_accurate": "FULL",
+  "cc6_counter_fail_open": "FULL",
+  "cc6_live_session_registration": "PARTIAL",
+  "cc6_live_session_gaps": [
+    "No in-IDE tokenizer registry UI; live sessions use estimate_tokens unless a process registers counters for recipient tokenizer_id."
+  ],
+  "overall_cc9": "FULL",
+  "overall_cc6": "FULL",
+  "overall": "FULL",
+  "pass": true,
+  "checklist": "docs/session/CC9-CC6-CHECKLIST.md",
+  "harness": "scripts/session_polish_harness.py",
+  "log": "test-results/h-session-polish/session-harness.log.txt",
+  "compressor_tests_hint": "cd comPREssOR/engine && .venv/bin/python -m pytest tests/test_cc9_advisory.py tests/test_cc6_tokens.py -q"
+}
