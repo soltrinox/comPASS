@@ -1,6 +1,6 @@
 # ADR 0002 — Working-copy disposition (CHAT-COMPRESSOR)
 
-**Status:** Accepted — re-point to canonical checkout  
+**Status:** Accepted — re-point complete; archive KEEP per ADR 0003  
 **Date:** 2026-09-05 (PT filing)  
 **Deciders:** Rosario (repo owner); coordinator may treat **G2 as closed** on the recommended default below  
 **Track:** E (Product & GTM)  
@@ -72,3 +72,14 @@ Coordinator **may mark G2 closed**: the disposition decision is recorded with a 
 ## Acceptance
 
 Accepted by Rosario via chat 2026-09-05 (PT): **re-point** `/Users/rosario/work/CHAT-COMPRESSOR` as a fresh checkout of `soltrinox/comPREssOR` (do not merge 0.1.3 identifiers). Prior tree archived aside if needed.
+## Track K follow-up (2026-09-05 PT)
+
+Physical cleanup completed as follows:
+
+| Item | Outcome |
+| --- | --- |
+| `/Users/rosario/work/CHAT-COMPRESSOR` | Re-pointed (fresh clone of `soltrinox/comPREssOR` @ `44460ba`) |
+| Prior 0.1.3 tree | Kept at `/Users/rosario/work/CHAT-COMPRESSOR.archived-0.1.3` with loud README |
+| Decision record | ADR 0003 |
+
+Checklist items for delete-vs-re-point of the live folder are **satisfied by re-point**. Archive delete was **not** chosen (KEEP).

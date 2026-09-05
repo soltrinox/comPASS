@@ -4,22 +4,22 @@ overview: Decide and execute delete-or-keep for CHAT-COMPRESSOR.archived-0.1.3 w
 todos:
   - id: inventory-archive-trees
     content: "Inventory /Users/rosario/work/CHAT-COMPRESSOR and CHAT-COMPRESSOR.archived-0.1.3 vs canonical comPREssOR; note unique uncommitted work if any"
-    status: pending
+    status: completed
   - id: decision-record
     content: "Write decision record (ADR or docs/adr extension) — delete OR keep-with-README-pointer; cite ADR 0002"
-    status: pending
+    status: completed
   - id: execute-disposition
     content: "Execute delete OR keep; if keep, add README pointer forbidding implementation and linking canonical"
-    status: pending
+    status: completed
   - id: identifier-scan
     content: "Scan canonical comPREssOR for reintroduced 0.1.3 personal identifiers / absolute /Users/rosario paths in source"
-    status: pending
+    status: completed
   - id: agent-refuse-note
     content: "Ensure PLANS.md / archive README state agents must refuse edits under archived/0.1.3 trees"
-    status: pending
+    status: completed
   - id: proof-k
     content: "Record disposition evidence under comPASS/test-results/k-archive/ (no secret leakage)"
-    status: pending
+    status: completed
 isProject: false
 ---
 

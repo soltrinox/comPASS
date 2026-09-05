@@ -47,3 +47,11 @@ Program master: make the offline stack **gated-live / session-proven / releasabl
 **I hygiene ∥ K archive → M credentials → F live probe → G reward (parallel after F schema hooks) → H session polish → J wasmer packaging → L release → N paid pillars (after L + F) → test-ready exit gate.**
 
 Repo-local copies + short index: [`/Users/rosario/work/comPASS/.cursor/plans/README.md`](/Users/rosario/work/comPASS/.cursor/plans/README.md)
+## Archive / agent refuse rule (Track K)
+
+Agents **must refuse** edits under:
+
+- `/Users/rosario/work/CHAT-COMPRESSOR.archived-0.1.3` (and any `*.archived*` / 0.1.3 lab copy)
+- Any attempt to merge 0.1.3 personal identifiers or absolute `/Users/rosario/...` paths into canonical `comPREssOR`
+
+Canonical implementation target: `/Users/rosario/work/comPREssOR` only. See ADR 0002 and ADR 0003.
