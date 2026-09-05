@@ -1,0 +1,21 @@
+{
+  "schema": "compass-probe-canary/v1",
+  "description": "Fixed offline canary prompts for fingerprint drift detection. Not bandit-pruned.",
+  "canaries": [
+    {
+      "id": "urn:mg:canary:hello-echo",
+      "prompt": "Reply with exactly: CANARY_OK",
+      "expected_fingerprint_hint": "echo"
+    },
+    {
+      "id": "urn:mg:canary:arith-tiny",
+      "prompt": "What is 17 + 25? Answer with digits only.",
+      "expected_fingerprint_hint": "arith"
+    },
+    {
+      "id": "urn:mg:canary:json-shape",
+      "prompt": "Return a one-key JSON object {\"status\":\"ok\"} and nothing else.",
+      "expected_fingerprint_hint": "json"
+    }
+  ]
+}

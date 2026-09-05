@@ -1,0 +1,20 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.env
+.env.*
+!.env.example
+*.log
+test-results/**/*.log.txt
+!test-results/**/.gitkeep
+.DS_Store
+
+# Rust / Wasmer crate
+wasmer/crate/target/

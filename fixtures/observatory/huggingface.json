@@ -1,0 +1,49 @@
+{
+  "schema": "compass-observatory-catalog/v1",
+  "source": "huggingface",
+  "card_source": "huggingface:fixture",
+  "fetched_at": "2026-09-05T00:00:00Z",
+  "models": [
+    {
+      "served_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "display_name": "Llama 3.1 8B Instruct",
+      "model_family": "llama-3.1-8b",
+      "provider": "huggingface",
+      "context_window": 131072,
+      "tokenizer_id": "llama3",
+      "price_in_per_mtok": 0.06,
+      "price_out_per_mtok": 0.06,
+      "currency": "USD",
+      "capability_prior": {
+        "code_generation": {
+          "mean": 0.62,
+          "n": 0,
+          "ci95": 1.0
+        },
+        "language_generation": {
+          "mean": 0.7,
+          "n": 0,
+          "ci95": 1.0
+        }
+      }
+    },
+    {
+      "served_id": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "display_name": "Qwen2.5 Coder 7B Instruct",
+      "model_family": "qwen2.5-coder-7b",
+      "provider": "huggingface",
+      "context_window": 32768,
+      "tokenizer_id": "qwen2",
+      "price_in_per_mtok": 0.05,
+      "price_out_per_mtok": 0.05,
+      "currency": "USD",
+      "capability_prior": {
+        "code_generation": {
+          "mean": 0.68,
+          "n": 0,
+          "ci95": 1.0
+        }
+      }
+    }
+  ]
+}

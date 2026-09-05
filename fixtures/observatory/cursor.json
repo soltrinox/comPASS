@@ -1,0 +1,73 @@
+{
+  "schema": "compass-observatory-catalog/v1",
+  "source": "cursor",
+  "card_source": "cursor:models.list:fixture",
+  "fetched_at": "2026-09-05T00:00:00Z",
+  "models_list": {
+    "models": [
+      {
+        "id": "cursor-grok-4.6-high-fast",
+        "name": "Grok 4.6 High Fast",
+        "provider": "cursor",
+        "contextLength": 262144,
+        "pricing": {
+          "input": 0.0,
+          "output": 0.0
+        }
+      },
+      {
+        "id": "cursor-composer-1",
+        "name": "Composer 1",
+        "provider": "cursor",
+        "contextLength": 200000,
+        "pricing": {
+          "input": 0.0,
+          "output": 0.0
+        }
+      }
+    ]
+  },
+  "models": [
+    {
+      "served_id": "cursor-grok-4.6-high-fast",
+      "display_name": "Grok 4.6 High Fast",
+      "model_family": "grok-4.6",
+      "provider": "cursor",
+      "context_window": 262144,
+      "tokenizer_id": "unknown",
+      "price_in_per_mtok": 0.0,
+      "price_out_per_mtok": 0.0,
+      "currency": "USD",
+      "capability_prior": {
+        "code_generation": {
+          "mean": 0.81,
+          "n": 0,
+          "ci95": 1.0
+        },
+        "multi_step_plan": {
+          "mean": 0.74,
+          "n": 0,
+          "ci95": 1.0
+        }
+      }
+    },
+    {
+      "served_id": "cursor-composer-1",
+      "display_name": "Composer 1",
+      "model_family": "composer-1",
+      "provider": "cursor",
+      "context_window": 200000,
+      "tokenizer_id": "unknown",
+      "price_in_per_mtok": 0.0,
+      "price_out_per_mtok": 0.0,
+      "currency": "USD",
+      "capability_prior": {
+        "code_generation": {
+          "mean": 0.78,
+          "n": 0,
+          "ci95": 1.0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "milestone": "M3",
+  "tier": "Tier 2 Advisor + CC-9 handoff",
+  "comPASS_tests_total": 74,
+  "advisory_tests": 6,
+  "writer": "src/compass/serve/advisory.py",
+  "schema": "compass-advisory/v1",
+  "freshness": "expires_at must be in the future; required fields present",
+  "fail_open": "consumers ignore missing/stale/malformed; writer soft-fails by default",
+  "recorded_at": "2026-09-05T07:34:39Z"
+}

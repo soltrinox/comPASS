@@ -1,0 +1,54 @@
+{
+  "schema": "compass-observatory-catalog/v1",
+  "source": "openrouter",
+  "card_source": "openrouter:fixture",
+  "fetched_at": "2026-09-05T00:00:00Z",
+  "models": [
+    {
+      "served_id": "anthropic/claude-sonnet-4",
+      "display_name": "Claude Sonnet 4",
+      "model_family": "claude-sonnet-4",
+      "provider": "openrouter",
+      "context_window": 200000,
+      "tokenizer_id": "claude",
+      "price_in_per_mtok": 3.0,
+      "price_out_per_mtok": 15.0,
+      "currency": "USD",
+      "capability_prior": {
+        "code_generation": {
+          "mean": 0.88,
+          "n": 0,
+          "ci95": 1.0
+        },
+        "multi_step_plan": {
+          "mean": 0.86,
+          "n": 0,
+          "ci95": 1.0
+        }
+      }
+    },
+    {
+      "served_id": "openai/gpt-4.1-mini",
+      "display_name": "GPT-4.1 Mini",
+      "model_family": "gpt-4.1-mini",
+      "provider": "openrouter",
+      "context_window": 1047576,
+      "tokenizer_id": "o200k_base",
+      "price_in_per_mtok": 0.4,
+      "price_out_per_mtok": 1.6,
+      "currency": "USD",
+      "capability_prior": {
+        "code_generation": {
+          "mean": 0.8,
+          "n": 0,
+          "ci95": 1.0
+        },
+        "structured_output": {
+          "mean": 0.9,
+          "n": 0,
+          "ci95": 1.0
+        }
+      }
+    }
+  ]
+}

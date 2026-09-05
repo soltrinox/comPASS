@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://soltrinox.example/schema/bundle.v1.json",
+  "title": "bundle.v1 (outline)",
+  "description": "Forward-ref Track B CC-8 / prototype §15. Portable state bundle outline. Full schema fleshed with Track B. Equivalence: outcome band, never identical text.",
+  "type": "object",
+  "required": [
+    "schema",
+    "layout"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "bundle/v1"
+    },
+    "layout": {
+      "type": "object",
+      "description": "Logical layout of bundle.v1/ directory",
+      "properties": {
+        "manifest.json": {
+          "type": "string",
+          "description": "schema, version, producer id, d, k_max, tokenizer_id, quantization, lineage head, checksums"
+        },
+        "graph.json": {
+          "type": "string",
+          "description": "ctx-graph/v1 document"
+        },
+        "states": {
+          "type": "string",
+          "description": "tNNNN.safetensors — C, M (+ KV), optionally quantized"
+        },
+        "inject_ledger.json": {
+          "type": "string",
+          "description": "per-recipient injection history (CC-2)"
+        },
+        "lineage.json": {
+          "type": "string",
+          "description": "state_id / parent_id / t chain with recipient per turn"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "const": "stub",
+      "description": "Outline only until Track B CC-8"
+    }
+  },
+  "examples": [
+    {
+      "schema": "bundle/v1",
+      "status": "stub",
+      "layout": {
+        "manifest.json": "present",
+        "graph.json": "ctx-graph/v1",
+        "states": "t0001.safetensors…",
+        "inject_ledger.json": "per-recipient",
+        "lineage.json": "with recipient per turn"
+      }
+    }
+  ]
+}

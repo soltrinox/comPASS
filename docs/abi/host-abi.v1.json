@@ -1,0 +1,87 @@
+{
+  "name": "compass-host-abi",
+  "version": "1.0.0",
+  "abi_min": "1.0.0",
+  "abi_max": "1.999.0",
+  "paired_graph_schema": "model-graph/v1",
+  "imports": [
+    {
+      "namespace": "storage",
+      "name": "read_snapshot",
+      "params": [
+        {
+          "name": "agent_or_project_id",
+          "type": "string"
+        }
+      ],
+      "returns": "bytes",
+      "browser": true,
+      "native": true,
+      "notes": "Sanitized graph snapshot only; no secrets."
+    },
+    {
+      "namespace": "clock",
+      "name": "now_iso",
+      "params": [],
+      "returns": "string",
+      "browser": true,
+      "native": true
+    },
+    {
+      "namespace": "log",
+      "name": "write",
+      "params": [
+        {
+          "name": "level",
+          "type": "string"
+        },
+        {
+          "name": "msg",
+          "type": "string"
+        }
+      ],
+      "returns": "void",
+      "browser": true,
+      "native": true
+    },
+    {
+      "namespace": "config",
+      "name": "get",
+      "params": [
+        {
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "returns": "any",
+      "browser": true,
+      "native": true,
+      "notes": "Non-secret config only."
+    },
+    {
+      "namespace": "fetch",
+      "name": "http",
+      "params": [
+        {
+          "name": "request",
+          "type": "bytes"
+        }
+      ],
+      "returns": "bytes",
+      "browser": false,
+      "native": true,
+      "optional": true,
+      "notes": "Absent from browser WASM import table."
+    }
+  ],
+  "forbidden_namespaces": [
+    "keys"
+  ],
+  "forbidden_in_module": [
+    "provider_api_keys",
+    "CURSOR_API_KEY",
+    "OPENROUTER_API_KEY",
+    "probe_http_clients",
+    "unrestricted_filesystem"
+  ]
+}

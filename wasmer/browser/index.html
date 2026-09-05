@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'" />
+  <title>comPASS browser sandbox — Route+Graph WASM</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, sans-serif; margin: 1.5rem; max-width: 52rem; }
+    pre { background: #111; color: #eee; padding: 1rem; overflow: auto; }
+    .ok { color: #0a0; } .err { color: #a00; }
+    button { margin-right: 0.5rem; }
+  </style>
+</head>
+<body>
+  <h1>comPASS browser sandbox</h1>
+  <p>Loads <code>../artifacts/compass_core_bg.wasm</code> (no <code>fetch</code> import, no keys).
+     Snapshot is embedded fixture JSON fed through <code>compass_decide_json</code>.</p>
+  <p id="status">idle</p>
+  <button id="run">Decide fixture</button>
+  <button id="missing">Fail-open missing</button>
+  <button id="corrupt">Fail-open corrupt</button>
+  <pre id="out"></pre>
+  <script src="./sandbox.js"></script>
+</body>
+</html>

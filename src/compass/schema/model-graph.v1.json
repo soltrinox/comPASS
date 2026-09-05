@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://soltrinox.example/schema/model-graph.v1.json",
+  "title": "model-graph/v1",
+  "description": "comPASS capability graph. Sibling to ctx-graph/v1 — do NOT widen ctx-graph enums. Product: comPASS (sister to comPREssOR). Bitemporal nodes; scoring quality - lambda*cost; bandits over (TaskClass, ModelVersion).",
+  "type": "object",
+  "required": [
+    "schema",
+    "nodes",
+    "edges"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "model-graph/v1"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    }
+  },
+  "$defs": {
+    "capabilityFigure": {
+      "type": "object",
+      "required": [
+        "mean",
+        "n",
+        "ci95"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mean": {
+          "type": "number"
+        },
+        "n": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ci95": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "status",
+        "valid_start",
+        "valid_end"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Provider",
+            "Model",
+            "ModelVersion",
+            "TaskClass",
+            "CapabilityAxis",
+            "Probe",
+            "Observation",
+            "PriceQuote",
+            "Policy",
+            "RouteDecision"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "valid_start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "valid_end": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "superseded",
+            "deprecated"
+          ]
+        },
+        "attrs": {
+          "type": "object",
+          "description": "Kind-specific attributes. Capability maps use capabilityFigure values.",
+          "additionalProperties": true,
+          "properties": {
+            "capability": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/capabilityFigure"
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "edge": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "from",
+        "to",
+        "status",
+        "valid_start",
+        "valid_end"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "serves",
+            "version_of",
+            "measures",
+            "observed_on",
+            "evidences",
+            "priced_by",
+            "supersedes",
+            "derived_from",
+            "constrains",
+            "selected"
+          ]
+        },
+        "from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1
+        },
+        "valid_start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "valid_end": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "active",
+            "superseded",
+            "deprecated"
+          ]
+        },
+        "attrs": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "examples": [
+    {
+      "schema": "model-graph/v1",
+      "nodes": [
+        {
+          "id": "urn:mg:modelversion:8f2c1d",
+          "kind": "ModelVersion",
+          "label": "cursor-grok-4.6-high-fast@2026-08-14",
+          "status": "active",
+          "valid_start": "2026-08-14T00:00:00Z",
+          "valid_end": null,
+          "attrs": {
+            "model_id": "cursor-grok-4.6-high-fast",
+            "provider": "cursor",
+            "context_window": 262144,
+            "tokenizer_id": "unknown",
+            "price_in_per_mtok": 0.0,
+            "price_out_per_mtok": 0.0,
+            "card_source": "cursor:models.list",
+            "drift_fingerprint": "cn_4a91f0",
+            "capability": {
+              "code_generation": {
+                "mean": 0.81,
+                "n": 42,
+                "ci95": 0.06
+              },
+              "multi_step_plan": {
+                "mean": 0.74,
+                "n": 18,
+                "ci95": 0.11
+              },
+              "recursion_loop": {
+                "mean": 0.69,
+                "n": 9,
+                "ci95": 0.19
+              },
+              "structured_output": {
+                "mean": 0.94,
+                "n": 51,
+                "ci95": 0.03
+              }
+            }
+          }
+        }
+      ],
+      "edges": []
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "schema": "compass-probe-corpus/v1",
+  "description": "Synthetic offline fixture tasks. No user secrets. Drawn from Fact/OpenItem/Event episode shapes.",
+  "tasks": [
+    {
+      "id": "urn:mg:probe-task:synth-decision-001",
+      "task_class": "code_generation",
+      "kind_hint": "decision",
+      "prompt": "Choose between caching layer A vs B for a read-heavy API; justify briefly.",
+      "known_outcome": "Chose layer A; p95 latency dropped 18%.",
+      "source_episode": {
+        "fact_kind_hint": "decision",
+        "open_item_state": "done",
+        "event_outcome": "success"
+      },
+      "attrs": {"synthetic": true, "contamination_safe": true}
+    },
+    {
+      "id": "urn:mg:probe-task:synth-design-002",
+      "task_class": "multi_step_planning",
+      "kind_hint": "design",
+      "prompt": "Sketch a three-step migration from sync jobs to a queue without downtime.",
+      "known_outcome": "Plan accepted; dual-write window documented.",
+      "source_episode": {
+        "fact_kind_hint": "design",
+        "open_item_state": "done",
+        "event_outcome": "success"
+      },
+      "attrs": {"synthetic": true, "contamination_safe": true}
+    },
+    {
+      "id": "urn:mg:probe-task:synth-outcome-003",
+      "task_class": "code_comprehension",
+      "kind_hint": "outcome",
+      "prompt": "Locate the fail-open path in a routing decide() function and summarize the default.",
+      "known_outcome": "Identified catch-all returning configured default.",
+      "source_episode": {
+        "fact_kind_hint": "outcome",
+        "open_item_state": "done",
+        "event_outcome": "success"
+      },
+      "attrs": {"synthetic": true, "contamination_safe": true}
+    },
+    {
+      "id": "urn:mg:probe-task:synth-open-004",
+      "task_class": "agentic_tool_use",
+      "kind_hint": "decision",
+      "prompt": "Given an open item 'wire canary supersede', propose the next concrete change.",
+      "known_outcome": "Open item remains open until fingerprint mock lands.",
+      "source_episode": {
+        "fact_kind_hint": "decision",
+        "open_item_state": "open",
+        "event_outcome": "deferred"
+      },
+      "attrs": {"synthetic": true, "contamination_safe": true}
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "artifact": "wasmer/artifacts/compass-decide.wasm",
+  "wasmer": "wasmer 7.4.0",
+  "cases": [
+    {
+      "name": "fixture_min",
+      "python": {
+        "selected_model_version_id": "urn:mg:model:cheap",
+        "task_class_id": "code_generation",
+        "score": 0.6,
+        "lambda": 1.0,
+        "scores": {
+          "urn:mg:model:cheap": 0.6,
+          "urn:mg:model:pricey": 0.25
+        },
+        "rationale": "highest score under quality\u2212\u03bb\u00b7cost",
+        "fail_open": false,
+        "default_reason": null,
+        "decided_at": "2026-09-05T00:00:00Z",
+        "constraints_applied": []
+      },
+      "wasm": {
+        "abi_max": "1.999.0",
+        "abi_min": "1.0.0",
+        "constraints_applied": [],
+        "decided_at": "2026-09-05T00:00:00Z",
+        "default_reason": null,
+        "fail_open": false,
+        "lambda": 1.0,
+        "module_version": "0.1.0",
+        "rationale": "highest score under quality\u2212\u03bb\u00b7cost",
+        "score": 0.6,
+        "scores": {
+          "urn:mg:model:cheap": 0.6,
+          "urn:mg:model:pricey": 0.25
+        },
+        "selected_model_version_id": "urn:mg:model:cheap",
+        "task_class_id": "code_generation"
+      }
+    },
+    {
+      "name": "missing",
+      "python": {
+        "selected_model_version_id": "default",
+        "task_class_id": "general",
+        "score": -0.5,
+        "lambda": 1.0,
+        "scores": {
+          "default": -0.5
+        },
+        "rationale": "fail-open: snapshot_missing",
+        "fail_open": true,
+        "default_reason": "snapshot_missing",
+        "decided_at": "2026-09-05T00:00:00Z",
+        "constraints_applied": []
+      },
+      "wasm": {
+        "abi_max": "1.999.0",
+        "abi_min": "1.0.0",
+        "constraints_applied": [],
+        "decided_at": "2026-09-05T00:00:00Z",
+        "default_reason": "snapshot_missing",
+        "fail_open": true,
+        "lambda": 1.0,
+        "module_version": "0.1.0",
+        "rationale": "fail-open: snapshot_missing",
+        "score": -0.5,
+        "scores": {
+          "default": -0.5
+        },
+        "selected_model_version_id": "default",
+        "task_class_id": "general"
+      }
+    },
+    {
+      "name": "corrupt",
+      "python": {
+        "selected_model_version_id": "default",
+        "task_class_id": "general",
+        "score": -0.5,
+        "lambda": 1.0,
+        "scores": {
+          "default": -0.5
+        },
+        "rationale": "fail-open: snapshot_corrupt",
+        "fail_open": true,
+        "default_reason": "snapshot_corrupt",
+        "decided_at": "2026-09-05T00:00:00Z",
+        "constraints_applied": []
+      },
+      "wasm": {
+        "abi_max": "1.999.0",
+        "abi_min": "1.0.0",
+        "constraints_applied": [],
+        "decided_at": "2026-09-05T00:00:00Z",
+        "default_reason": "snapshot_corrupt",
+        "fail_open": true,
+        "lambda": 1.0,
+        "module_version": "0.1.0",
+        "rationale": "fail-open: snapshot_corrupt",
+        "score": -0.5,
+        "scores": {
+          "default": -0.5
+        },
+        "selected_model_version_id": "default",
+        "task_class_id": "general"
+      }
+    },
+    {
+      "name": "empty",
+      "python": {
+        "selected_model_version_id": "default",
+        "task_class_id": "code_generation",
+        "score": -0.5,
+        "lambda": 1.0,
+        "scores": {
+          "default": -0.5
+        },
+        "rationale": "fail-open: no_candidates",
+        "fail_open": true,
+        "default_reason": "no_candidates",
+        "decided_at": "2026-09-05T00:00:00Z",
+        "constraints_applied": []
+      },
+      "wasm": {
+        "abi_max": "1.999.0",
+        "abi_min": "1.0.0",
+        "constraints_applied": [],
+        "decided_at": "2026-09-05T00:00:00Z",
+        "default_reason": "no_candidates",
+        "fail_open": true,
+        "lambda": 1.0,
+        "module_version": "0.1.0",
+        "rationale": "fail-open: no_candidates",
+        "score": -0.5,
+        "scores": {
+          "default": -0.5
+        },
+        "selected_model_version_id": "default",
+        "task_class_id": "code_generation"
+      }
+    }
+  ],
+  "errors": [],
+  "ok": true
+}

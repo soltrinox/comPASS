@@ -1,0 +1,67 @@
+{
+  "schema": "model-graph/v1",
+  "active_priced": [
+    {
+      "model_version_id": "urn:mg:modelversion:cursor:dc6e37e9813f",
+      "provider": "cursor",
+      "served_id": "cursor-composer-1",
+      "status": "active",
+      "valid_start": "2026-09-05T00:00:00Z",
+      "context_window": 200000,
+      "tokenizer_id": "unknown",
+      "card_source": "cursor:models.list:fixture",
+      "price_in_per_mtok": 0.0,
+      "price_out_per_mtok": 0.0,
+      "currency": "USD",
+      "price_quote_id": "urn:mg:pricequote:cursor:8593b84a38"
+    },
+    {
+      "model_version_id": "urn:mg:modelversion:cursor:8525165cc7f3",
+      "provider": "cursor",
+      "served_id": "cursor-grok-4.6-high-fast",
+      "status": "active",
+      "valid_start": "2026-09-05T00:00:00Z",
+      "context_window": 262144,
+      "tokenizer_id": "unknown",
+      "card_source": "cursor:models.list:fixture",
+      "price_in_per_mtok": 0.0,
+      "price_out_per_mtok": 0.0,
+      "currency": "USD",
+      "price_quote_id": "urn:mg:pricequote:cursor:069fecd5a6"
+    },
+    {
+      "model_version_id": "urn:mg:modelversion:huggingface:217acc82e9a2",
+      "provider": "huggingface",
+      "served_id": "Qwen/Qwen2.5-Coder-7B-Instruct",
+      "status": "active",
+      "valid_start": "2026-09-05T00:00:00Z",
+      "context_window": 32768,
+      "tokenizer_id": "qwen2",
+      "card_source": "huggingface:fixture",
+      "price_in_per_mtok": 0.05,
+      "price_out_per_mtok": 0.05,
+      "currency": "USD",
+      "price_quote_id": "urn:mg:pricequote:huggingface:656b869e7b"
+    },
+    {
+      "model_version_id": "urn:mg:modelversion:huggingface:869a1083d444",
+      "provider": "huggingface",
+      "served_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "status": "active",
+      "valid_start": "2026-09-05T00:00:00Z",
+      "context_window": 131072,
+      "tokenizer_id": "llama3",
+      "card_source": "huggingface:fixture",
+      "price_in_per_mtok": 0.06,
+      "price_out_per_mtok": 0.06,
+      "currency": "USD",
+      "price_quote_id": "urn:mg:pricequote:huggingface:9b5f091f09"
+    }
+  ],
+  "node_kinds": [
+    "Model",
+    "ModelVersion",
+    "PriceQuote",
+    "Provider"
+  ]
+}

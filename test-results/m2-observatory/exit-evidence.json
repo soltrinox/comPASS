@@ -1,0 +1,23 @@
+{
+  "milestone": "M2",
+  "catalog_active_model_versions_before_drift": 6,
+  "priced_active_before": 6,
+  "superseded_id": "urn:mg:modelversion:huggingface:869a1083d444",
+  "new_model_version_id": "urn:mg:modelversion:huggingface:869a1083d444:drift:cn_d8a69c2bdef7",
+  "old_status": "superseded",
+  "old_capability_preserved": {
+    "code_generation": {
+      "mean": 0.82,
+      "n": 40,
+      "ci95": 0.05
+    }
+  },
+  "new_has_capability": false,
+  "fingerprint_previous": "cn_baseline_observatory",
+  "fingerprint_current": "cn_d8a69c2bdef7",
+  "sources": [
+    "huggingface",
+    "openrouter",
+    "cursor"
+  ]
+}
