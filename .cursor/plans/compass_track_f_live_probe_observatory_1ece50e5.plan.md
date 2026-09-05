@@ -4,31 +4,31 @@ overview: Enable env-gated live Probe/Observatory HTTP transports (HF/OpenRouter
 todos:
   - id: network-gate-allowlist
     content: "Wire COMPASS_PROBE_ALLOW_NETWORK behind explicit host allowlist; default deny; document in .env.example and docs/INTEGRATION.md"
-    status: pending
+    status: completed
   - id: http-transport-hf-openrouter
     content: "Implement HTTP transports for Hugging Face + OpenRouter catalog ingest and canary probe calls (native Probe only)"
-    status: pending
+    status: completed
   - id: http-transport-cursor-catalog
     content: "Implement Cursor catalog/canary transport using Probe-only credentials; never import into Route/WASM"
-    status: pending
+    status: completed
   - id: tos-benchmark-denylist
     content: "Encode provider ToS / automated-benchmarking denylist; block fleet redistribution of forbidden comparative outputs"
-    status: pending
+    status: completed
   - id: rate-limits-backoff
     content: "Add per-provider rate limits, jittered backoff, and budget caps for live probe fan-out"
-    status: pending
+    status: completed
   - id: observation-persistence
     content: "Persist Observation nodes into Graph store with {mean,n,ci95} and bitemporal supersede on fingerprint change"
-    status: pending
+    status: completed
   - id: route-isolation-proof
     content: "Prove Route/decide path never awaits Probe HTTP; fail-open when network denied or Probe down"
-    status: pending
+    status: completed
   - id: mocked-http-tests
     content: "Add mocked HTTP unit/integration tests for transports, denylist, and rate-limit behavior"
-    status: pending
+    status: completed
   - id: live-smoke-doc
     content: "Optional env-gated live smoke + committed dry-run live smoke doc and terms checklist under docs/ and test-results/"
-    status: pending
+    status: completed
 isProject: true
 ---
 

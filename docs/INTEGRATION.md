@@ -123,6 +123,24 @@ Equivalence under substitution: **outcome-equivalence band**, never identical te
 
 ---
 
+---
+
+## 8. Live Probe / Observatory (Track F)
+
+**Default:** `COMPASS_PROBE_ALLOW_NETWORK=0`. Observatory serves offline fixtures under `fixtures/observatory/`.
+
+**Live path (Probe sidecar only):**
+
+1. Set `COMPASS_PROBE_ALLOW_NETWORK=1` and ensure the target host is on `COMPASS_PROBE_HOST_ALLOWLIST` (or the built-in allowlist — no `*`).
+2. Supply keys via Track M loaders (`compass.probe.credentials`) — never into Route/core/WASM.
+3. Catalog + canary transports: `compass.probe.live_transports` (HF / OpenRouter / Cursor).
+4. Rate limits / budget: `compass.probe.rate_limit`. ToS denylist: `compass.probe.tos_policy`.
+5. Persist Observations with `{mean,n,ci95}`; fingerprint change → bitemporal supersede (`compass.probe.observations`).
+
+When the network gate denies egress, ingest adapters **fail-open** to the last-known fixture snapshot so Route consumers are never blocked on Probe HTTP.
+
+Operator docs: [`probe/TERMS-CHECKLIST.md`](probe/TERMS-CHECKLIST.md), [`probe/LIVE-SMOKE.md`](probe/LIVE-SMOKE.md).
+
 ## References
 
 - [`../PROTOTYPE.md`](../PROTOTYPE.md) §14 change summary and Appendix C path map

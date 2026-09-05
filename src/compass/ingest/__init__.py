@@ -1,6 +1,9 @@
 """Catalog ingest (Hugging Face, OpenRouter, Cursor) — Tier 1 Observatory.
 
-Offline/mocked: adapters load fixtures under fixtures/observatory/. No network.
+Offline/mocked by default: adapters load fixtures under fixtures/observatory/.
+Live HTTP is env-gated (COMPASS_PROBE_ALLOW_NETWORK) behind host allowlist;
+credentials via compass.probe.credentials only. When live is denied, adapters
+fail-open to the last-known fixture snapshot for Route consumers.
 """
 
 from compass.ingest.catalog import (

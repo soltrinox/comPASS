@@ -1,8 +1,8 @@
-"""Cursor model-list ingest — offline fixtures only (Tier 1 Observatory).
+"""Cursor model-list ingest — offline fixtures + gated live HTTP.
 
 Reuses extract_model_ids / resolve_model_ids semantics against a fixture
-``models_list`` payload. Does not hardcode machine-specific workspace paths.
-No network. No provider API keys.
+``models_list`` payload. Live path is Probe-gated; credentials via
+compass.probe.credentials only. Never import into Route/WASM.
 """
 
 from __future__ import annotations
@@ -16,6 +16,9 @@ from compass.ingest.catalog import (
     load_fixture,
     normalize_entry,
 )
+from compass.probe.http_transport import HttpTransport
+from compass.probe.network_gate import ProbeNetworkDenied, fixture_fallback_reason, network_allowed
+from compass.probe.rate_limit import ProviderRateLimiter
 
 
 def extract_model_ids(payload: Any) -> list[str]:
@@ -102,11 +105,34 @@ def resolve_model_ids(
     return resolved
 
 
-def fetch_catalog(path: Path | str | None = None) -> list[dict[str, Any]]:
-    """Return normalized Cursor catalog entries from the offline fixture.
+def fetch_catalog(
+    path: Path | str | None = None,
+    *,
+    live: bool = False,
+    transport: HttpTransport | None = None,
+    token: str | None = None,
+    limiter: ProviderRateLimiter | None = None,
+) -> list[dict[str, Any]]:
+    """Return normalized Cursor catalog entries.
 
-    Prefers the rich ``models`` list; if absent, resolves ids from ``models_list``.
+    Prefers the rich ``models`` list from fixtures when offline. Live mode
+    uses Probe-gated HTTP and fail-opens to fixtures when denied.
     """
+    if live:
+        if not network_allowed():
+            _ = fixture_fallback_reason("api2.cursor.sh")
+        else:
+            from compass.probe.live_transports import fetch_live_catalog
+
+            try:
+                result = fetch_live_catalog(
+                    "cursor", transport=transport, token=token, limiter=limiter
+                )
+                if result.entries:
+                    return result.entries
+            except ProbeNetworkDenied:
+                pass
+
     data = load_fixture("cursor", path=path)
     models = data.get("models")
     if isinstance(models, list) and models:
@@ -125,3 +151,11 @@ def fetch_catalog(path: Path | str | None = None) -> list[dict[str, Any]]:
 def load_raw(path: Path | str | None = None) -> dict[str, Any]:
     """Load the raw Cursor fixture document."""
     return load_fixture("cursor", path=path or fixture_path("cursor"))
+
+
+__all__ = [
+    "extract_model_ids",
+    "fetch_catalog",
+    "load_raw",
+    "resolve_model_ids",
+]

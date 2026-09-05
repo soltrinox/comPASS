@@ -1,0 +1,9 @@
+{
+  "openrouter": {
+    "calls_total": 3,
+    "in_flight": 0,
+    "window_count": 3,
+    "consecutive_failures": 0,
+    "remaining_budget": 0
+  }
+}

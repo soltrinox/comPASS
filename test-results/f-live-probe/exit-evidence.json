@@ -1,0 +1,7 @@
+{
+  "route_core_wasmer_reference_network_gate": false,
+  "route_core_reference_live_transports": false,
+  "mocked_http_suite": "tests/test_probe_live_transports_mocked.py",
+  "terms_checklist": "docs/probe/TERMS-CHECKLIST.md",
+  "live_smoke_doc": "docs/probe/LIVE-SMOKE.md"
+}

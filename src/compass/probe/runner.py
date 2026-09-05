@@ -1,40 +1,44 @@
-"""Probe runner — execute bandit-chosen probes (offline / dry-run skeleton).
+"""Probe runner — execute bandit-chosen probes (dry-run + gated live).
 
-Holds provider credentials in the Probe process only (future live mode).
+Holds provider credentials in the Probe process only.
 Never import this module from route/ or compressor hooks.
 
 Network policy
 --------------
 * Default mode is **dry-run**: mock Observation payloads, no HTTP.
 * Live/network mode requires ``COMPASS_PROBE_ALLOW_NETWORK`` in
-  {1, true, yes, on}. The env defaults OFF when unset.
-* Even when network is allowed, this offline skeleton does **not** call
-  providers (no API keys in repo; live transport not wired). Callers that
-  request live execution get ``ProbeNetworkDisabledError`` or
-  ``NotImplementedError`` rather than silent egress.
+  {1, true, yes, on} **and** an allowlisted host.
+* Live calls use injectable ``HttpTransport`` (mocked in CI) and
+  ``compass.probe.credentials`` for secrets.
 """
 
 from __future__ import annotations
 
 import hashlib
-import os
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Literal
+from typing import Any, Literal, Mapping
 
-NETWORK_ENV = "COMPASS_PROBE_ALLOW_NETWORK"
-_TRUTHY = frozenset({"1", "true", "yes", "on"})
+from compass.probe.http_transport import HttpTransport
+from compass.probe.live_transports import run_live_canary
+from compass.probe.network_gate import (
+    NETWORK_ENV,
+    ProbeNetworkDenied,
+    network_allowed,
+)
+from compass.probe.observations import build_observation_node, capability_figure
+from compass.probe.rate_limit import ProviderRateLimiter
+from compass.probe.tos_policy import gate_observation_payload
+
+# Re-export for existing tests / callers
+ProbeNetworkDisabledError = ProbeNetworkDenied
 
 Mode = Literal["dry-run", "live"]
 
 
-class ProbeNetworkDisabledError(RuntimeError):
-    """Raised when live/network probe execution is requested but egress is OFF."""
-
-
 @dataclass
 class ProbeResult:
-    """Offline probe outcome (mock Observation-shaped attrs)."""
+    """Probe outcome (Observation-shaped attrs)."""
 
     probe_id: str
     mode: str
@@ -54,12 +58,6 @@ class ProbeResult:
         }
 
 
-def network_allowed() -> bool:
-    """Return True only when COMPASS_PROBE_ALLOW_NETWORK is explicitly truthy."""
-    raw = os.environ.get(NETWORK_ENV, "")
-    return raw.strip().lower() in _TRUTHY
-
-
 def _now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -67,21 +65,27 @@ def _now_iso() -> str:
 def _mock_observation(probe_id: str, *, task: dict[str, Any] | None = None) -> dict[str, Any]:
     prompt = (task or {}).get("prompt", "")
     digest = hashlib.sha256(f"{probe_id}:{prompt}".encode("utf-8")).hexdigest()[:12]
+    attrs = gate_observation_payload(
+        {
+            "probe_id": probe_id,
+            "quality": capability_figure(0.5, 0),
+            "cost": capability_figure(0.0, 0, 0.0),
+            "mock": True,
+            "mode": "dry-run",
+            "task_class": (task or {}).get("task_class"),
+            "response_fingerprint": f"mock_{digest}",
+            "fleet_redistribute": False,
+            "comparative": False,
+            "provider": (task or {}).get("provider"),
+        }
+    )
     return {
         "id": f"urn:mg:observation:mock:{digest}",
         "kind": "Observation",
         "status": "active",
         "valid_start": _now_iso(),
         "valid_end": None,
-        "attrs": {
-            "probe_id": probe_id,
-            "quality": {"mean": 0.5, "n": 0, "ci95": 1.0},
-            "cost": {"mean": 0.0, "n": 0, "ci95": 0.0},
-            "mock": True,
-            "mode": "dry-run",
-            "task_class": (task or {}).get("task_class"),
-            "response_fingerprint": f"mock_{digest}",
-        },
+        "attrs": attrs,
     }
 
 
@@ -91,12 +95,16 @@ def run_probe(
     mode: Mode = "dry-run",
     task: dict[str, Any] | None = None,
     allow_network: bool | None = None,
+    transport: HttpTransport | None = None,
+    limiter: ProviderRateLimiter | None = None,
+    token: str | None = None,
 ) -> ProbeResult:
     """Run a single probe.
 
     ``mode="dry-run"`` (default) returns a mock Observation and never touches
-    the network. ``mode="live"`` requires network permission and is not
-    implemented in this offline skeleton.
+    the network. ``mode="live"`` requires network permission and an injectable
+    or default transport; credentials come from Track M loaders when ``token``
+    is omitted.
     """
     if not probe_id:
         raise ValueError("probe_id must be non-empty")
@@ -113,8 +121,59 @@ def run_probe(
         raise ProbeNetworkDisabledError(
             f"live probes require {NETWORK_ENV}=1 (defaults OFF); refusing network"
         )
-    # Offline skeleton: even with the gate open, do not perform real HTTP or
-    # read API keys. Live transport lands in a later milestone.
-    raise NotImplementedError(
-        "live provider probe transport is not wired in the offline daemon skeleton"
+
+    task = task or {}
+    provider = str(task.get("provider") or "").strip().lower()
+    model_id = str(task.get("model_id") or task.get("served_id") or "").strip()
+    prompt = str(task.get("prompt") or "")
+    if not provider or not model_id:
+        raise ValueError("live probe requires task.provider and task.model_id/served_id")
+    if not prompt:
+        raise ValueError("live probe requires task.prompt")
+
+    canary = run_live_canary(
+        provider,
+        model_id,
+        prompt,
+        transport=transport,
+        token=token,
+        limiter=limiter,
+        allow_network=True,
     )
+    quality_mean = 0.0 if canary.error else 0.6
+    obs = build_observation_node(
+        probe_id=probe_id,
+        model_version_id=str(task.get("model_version_id") or f"urn:mg:modelversion:{provider}:{model_id}"),
+        quality=capability_figure(quality_mean, 1),
+        cost=capability_figure(0.0, 1, 0.0),
+        provider=provider,
+        task_class=task.get("task_class"),
+        response_fingerprint=canary.fingerprint,
+        fleet_redistribute=False,
+        comparative=False,
+        extra_attrs={
+            "mock": False,
+            "mode": "live",
+            "http_status": canary.status,
+            "live_error": canary.error,
+        },
+    )
+    return ProbeResult(
+        probe_id=probe_id,
+        mode=mode,
+        observation=obs,
+        mock=False,
+        network_used=canary.network_used,
+        extras=canary.to_dict(),
+    )
+
+
+__all__ = [
+    "NETWORK_ENV",
+    "Mode",
+    "ProbeNetworkDenied",
+    "ProbeNetworkDisabledError",
+    "ProbeResult",
+    "network_allowed",
+    "run_probe",
+]

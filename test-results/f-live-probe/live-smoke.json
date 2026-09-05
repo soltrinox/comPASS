@@ -1,0 +1,11 @@
+{
+  "grade": "NOT_RUN",
+  "network_allowed": false,
+  "keys_present": {
+    "OPENROUTER_API_KEY": false,
+    "HF_TOKEN": false,
+    "CURSOR_API_KEY": false
+  },
+  "reason": "COMPASS_PROBE_ALLOW_NETWORK off/default; no provider env keys present",
+  "how_to_run": "See docs/probe/LIVE-SMOKE.md \u2014 set COMPASS_PROBE_ALLOW_NETWORK=1 and a provider key, then fetch_live_catalog."
+}

@@ -13,7 +13,7 @@ todos:
     status: completed
   - id: execute-track-f
     content: "Execute Track F: live gated Probe/Observatory HTTP transports + terms-safe fleet probing; Observation persistence; never block Route"
-    status: pending
+    status: completed
   - id: execute-track-g
     content: "Execute Track G: deepen hop reward attribution (trajectory ids, delayed reward join on RouteDecision); document policies; do not claim solved credit assignment"
     status: pending

@@ -59,10 +59,10 @@ def test_runner_refuses_live_when_network_env_off(monkeypatch: pytest.MonkeyPatc
         run_probe("urn:mg:probe:live", mode="live")
 
 
-def test_runner_live_not_implemented_even_when_env_on(monkeypatch: pytest.MonkeyPatch):
+def test_runner_live_requires_task_fields_when_env_on(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setenv(NETWORK_ENV, "1")
     assert network_allowed() is True
-    with pytest.raises(NotImplementedError, match="offline daemon skeleton"):
+    with pytest.raises(ValueError, match="provider"):
         run_probe("urn:mg:probe:live", mode="live")
 
 
