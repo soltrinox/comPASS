@@ -44,16 +44,25 @@ jobs:
       - name: Install Wasmer
         run: |
           set -euo pipefail
-          # Official installer; pin so CI is reproducible (matches Track D Wasmer 7.4.x line).
-          curl -sSfL https://get.wasmer.io | sh -s "v7.4.0"
+          # get.wasmer.io is often unreachable from GHA; install from GitHub Releases.
+          VERSION="v7.4.0"
+          ARCH="$(uname -m)"
+          case "$ARCH" in
+            x86_64|amd64) ASSET="wasmer-linux-amd64.tar.gz" ;;
+            aarch64|arm64) ASSET="wasmer-linux-aarch64.tar.gz" ;;
+            *) echo "unsupported arch: $ARCH" >&2; exit 1 ;;
+          esac
+          URL="https://github.com/wasmerio/wasmer/releases/download/${VERSION}/${ASSET}"
+          mkdir -p "$HOME/.wasmer/bin" /tmp/wasmer-extract
+          curl -fL --retry 5 --retry-delay 2 --connect-timeout 30 --max-time 300 \
+            -o /tmp/wasmer.tgz "$URL"
+          tar -xzf /tmp/wasmer.tgz -C /tmp/wasmer-extract
+          BIN="$(find /tmp/wasmer-extract -type f -name wasmer | head -n1)"
+          test -n "$BIN"
+          install -m 755 "$BIN" "$HOME/.wasmer/bin/wasmer"
           WASMER_BIN="$HOME/.wasmer/bin"
-          if [[ ! -x "$WASMER_BIN/wasmer" ]]; then
-            echo "Wasmer binary missing after install; listing $HOME/.wasmer:" >&2
-            ls -laR "$HOME/.wasmer" >&2 || true
-            exit 1
-          fi
+          test -x "$WASMER_BIN/wasmer"
           echo "$WASMER_BIN" >> "$GITHUB_PATH"
-          # Same-step PATH so subsequent commands in later steps are not the only consumers.
           echo "WASMER_BIN=$WASMER_BIN" >> "$GITHUB_ENV"
           "$WASMER_BIN/wasmer" --version
       - name: Instantiate + decide fixture
@@ -105,7 +114,22 @@ jobs:
       - name: Install Wasmer
         run: |
           set -euo pipefail
-          curl -sSfL https://get.wasmer.io | sh -s "v7.4.0"
+          # get.wasmer.io is often unreachable from GHA; install from GitHub Releases.
+          VERSION="v7.4.0"
+          ARCH="$(uname -m)"
+          case "$ARCH" in
+            x86_64|amd64) ASSET="wasmer-linux-amd64.tar.gz" ;;
+            aarch64|arm64) ASSET="wasmer-linux-aarch64.tar.gz" ;;
+            *) echo "unsupported arch: $ARCH" >&2; exit 1 ;;
+          esac
+          URL="https://github.com/wasmerio/wasmer/releases/download/${VERSION}/${ASSET}"
+          mkdir -p "$HOME/.wasmer/bin" /tmp/wasmer-extract
+          curl -fL --retry 5 --retry-delay 2 --connect-timeout 30 --max-time 300 \
+            -o /tmp/wasmer.tgz "$URL"
+          tar -xzf /tmp/wasmer.tgz -C /tmp/wasmer-extract
+          BIN="$(find /tmp/wasmer-extract -type f -name wasmer | head -n1)"
+          test -n "$BIN"
+          install -m 755 "$BIN" "$HOME/.wasmer/bin/wasmer"
           WASMER_BIN="$HOME/.wasmer/bin"
           test -x "$WASMER_BIN/wasmer"
           echo "$WASMER_BIN" >> "$GITHUB_PATH"
