@@ -21,3 +21,7 @@ wasmer/crate/target/
 
 # Track J browser smoke
 wasmer/browser/node_modules/
+
+# Local Node microservices (agy-bridge, etc.)
+node_modules/
+services/**/node_modules/
