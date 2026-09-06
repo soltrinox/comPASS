@@ -13,6 +13,7 @@ SUMS = ART / "SHA256SUMS"
 OUT = ROOT / "test-results" / "j-wasmer-packaging" / "size-budget.json"
 
 # Soft ceiling for browser cdylib (~101 KiB today). Fail if regresses past this.
+# ENI6MA Path-B wasm is intentionally larger and is digest-checked only (not size-budgeted).
 BROWSER_BUDGET_BYTES = 150_000
 BROWSER_NAME = "compass_core_bg.wasm"
 
@@ -26,15 +27,60 @@ def sha256(path: Path) -> str:
 
 
 def parse_sums(text: str) -> dict[str, str]:
+    """Map logical artifact key -> digest.
+
+    Keys are basenames for flat compass artifacts, or repo-relative paths under
+    wasmer/artifacts/ when the SUMS line includes a nested path (e.g. eni6ma/...).
+    """
     out: dict[str, str] = {}
     for line in text.splitlines():
         line = line.strip()
         if not line:
             continue
         digest, name = line.split(None, 1)
-        name = Path(name).name
-        out[name] = digest
+        key = _sum_key(name)
+        out[key] = digest
     return out
+
+
+def _sum_key(name_field: str) -> str:
+    raw = Path(name_field)
+    parts = list(raw.parts)
+    # Normalize legacy "../artifacts/..." entries written relative to wasmer/.
+    while parts and parts[0] == "..":
+        parts = parts[1:]
+    if parts and parts[0] == "artifacts":
+        parts = parts[1:]
+    if not parts:
+        return raw.name
+    # Flat file in ART root → basename key (backward compatible).
+    if len(parts) == 1:
+        return parts[0]
+    return "/".join(parts)
+
+
+def resolve_artifact(key: str) -> Path | None:
+    """Resolve a SUMS key to a file under wasmer/artifacts/."""
+    direct = ART / key
+    if direct.is_file():
+        return direct
+    # Basename fallback + unique rglob (nested Path-B layouts).
+    base = Path(key).name
+    flat = ART / base
+    if flat.is_file():
+        return flat
+    matches = [p for p in ART.rglob(base) if p.is_file()]
+    if len(matches) == 1:
+        return matches[0]
+    if len(matches) > 1:
+        # Prefer path that ends with the key when key is nested.
+        for m in matches:
+            try:
+                if m.relative_to(ART).as_posix() == key:
+                    return m
+            except ValueError:
+                pass
+    return None
 
 
 def main() -> int:
@@ -50,16 +96,18 @@ def main() -> int:
     expected = parse_sums(SUMS.read_text(encoding="utf-8"))
     sizes: dict[str, int] = {}
     actual: dict[str, str] = {}
-    for name, digest in sorted(expected.items()):
-        path = ART / name
-        if not path.is_file():
-            errors.append(f"missing artifact: {name}")
+    for key, digest in sorted(expected.items()):
+        path = resolve_artifact(key)
+        if path is None:
+            errors.append(f"missing artifact: {key}")
             continue
         got = sha256(path)
-        actual[name] = got
-        sizes[name] = path.stat().st_size
+        # Report under basename for flat keys; nested keys keep relative path.
+        report_name = Path(key).name if "/" not in key else key
+        actual[report_name] = got
+        sizes[report_name] = path.stat().st_size
         if got != digest:
-            errors.append(f"SHA256 mismatch {name}: expected {digest} got {got}")
+            errors.append(f"SHA256 mismatch {key}: expected {digest} got {got}")
 
     browser_size = sizes.get(BROWSER_NAME)
     if browser_size is None:
