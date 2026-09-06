@@ -1,10 +1,12 @@
-# comPASS API — Route plane & advisory
+# comPASS API — Route plane, advisory & generic LLM adapter
 
 **Product:** comPASS (sister to comPREssOR)  
-**Planes:** Probe (never on prompt path) / Graph / Route (fail-open)  
-**Related:** [`ARCHITECTURE.md`](ARCHITECTURE.md), [`INTEGRATION.md`](INTEGRATION.md), [`schema/statenode-meta.v1.md`](schema/statenode-meta.v1.md)
+**Planes:** Probe / Graph / Route (fail-open)  
+**Runtime (Phase 3):** browser Wasmer agent — [`ARCHITECTURE.md`](ARCHITECTURE.md), [`adr/0005-eni6ma-gated-browser-agent.md`](adr/0005-eni6ma-gated-browser-agent.md)  
+**Adapter decision:** [`adr/0006-generic-llm-adapter.md`](adr/0006-generic-llm-adapter.md)  
+**Related:** [`INTEGRATION.md`](INTEGRATION.md), [`schema/statenode-meta.v1.md`](schema/statenode-meta.v1.md)
 
-This document defines the **logical** Route plane API, fail-open semantics, `RouteDecision` persistence, the CC-9 advisory file contract, and the enforcement vs advisory distinction. Implementations land in Track C (engine) and Track B (CC-9 hook inclusion).
+This document defines the **logical** Route plane API, fail-open semantics, `RouteDecision` persistence, the **generic LLM adapter** (decide / catalog / proxy override), the CC-9 advisory file contract (historical Cursor path), and enforcement vs advisory.
 
 ---
 
@@ -63,7 +65,9 @@ When fail-open fires, still persist a decision with `fail_open: true` and `defau
 
 ## 2. Advisory hook contract (CC-9)
 
-Cursor hook return shapes are **unchanged** and have **no model field**:
+> **Historical (Phase 1–2).** Cursor/IDE is **not** a Phase 3 product surface ([ADR 0005](adr/0005-eni6ma-gated-browser-agent.md)). CC-9 remains the compressor file handoff contract for any host that still injects advisory context. Prefer the **generic adapter** (§6) for enforcement.
+
+Cursor hook return shapes (when used) have **no model field**:
 
 - `beforeSubmitPrompt` → `{"continue": true}` (+ optional `additional_context`)
 - `sessionStart` → `{"additional_context": ""}`
@@ -109,11 +113,12 @@ Track B implements inclusion in `hook_cli.py`. This doc is the contract.
 
 | # | Target | Tier | Enforcement? | Notes |
 |---|---|---|---|---|
-| 1 | Advisory inside Cursor | 2 | **No** — advise only | Hook has no model field |
-| 2 | Cursor SDK wrapper | 3 | **Yes** — first real enforcement | Explicit model parameter on agent construction |
-| 3 | OpenAI-compatible local proxy | 3–4 | **Yes** — broadest coverage | Owns provider credentials → lives in probe/route **service** process, **never** hook path |
+| 1 | **Generic LLM adapter** (`POST /v1/chat/completions`) | 3–4 | **Yes** — primary Phase 3 path | Decide / catalog / proxy override; §6 |
+| 2 | Advisory file (CC-9) | 2 | **No** — advise only | Historical Cursor / any inject host |
+| 3 | Cursor SDK wrapper | 3 | Deprecated for product | No IDE integration (ADR 0005) |
 
 Do not document Cursor hooks as capable of enforcing model selection.
+
 
 ---
 
@@ -128,3 +133,128 @@ Do not document Cursor hooks as capable of enforcing model selection.
 
 - Capability graph: [`schema/model-graph.v1.json`](schema/model-graph.v1.json) (`RouteDecision` node kind)
 - Compressor recipient meta (CC-1): [`schema/statenode-meta.v1.md`](schema/statenode-meta.v1.md) — `route_decision_id` joins advisory/routing to lineage
+
+---
+
+## 6. Generic LLM adapter (normative, Phase 3)
+
+One ingress. OpenAI-compatible shape. comPASS selects or honors a target, optionally runs **comPREssOR** hop-safe forward injection, then forwards (or dry-runs).
+
+### Endpoint
+
+```
+POST /v1/chat/completions
+Content-Type: application/json
+```
+
+Body is a normal chat-completions object (`messages`, optional `model`, `stream`, …) plus optional **comPASS routing extensions** under `compass` (extensions MUST be stripped or ignored by upstreams that do not understand them; the adapter removes `compass` before forward).
+
+### Selection modes
+
+Exactly one mode applies per request, resolved in this order:
+
+| Priority | Mode | How the client asks | Behavior |
+|---|---|---|---|
+| 1 | **Proxy override** | `compass.target` present (see below) | Use explicit scheme/host/port/path; skip catalog decide for *selection*; still persist `RouteDecision` with `selection_mode: "proxy_override"` |
+| 2 | **Catalog pin** | `compass.model_version_id` **or** `model` matching a linked Graph `ModelVersion` / served id | Pin that catalog entry’s upstream; `selection_mode: "catalog"` |
+| 3 | **Decide (default)** | Neither override nor resolvable pin | Route `classify → candidates → score → decide` over weighted Graph posteriors; `selection_mode: "decide"` |
+
+Fail-open (MUST): on decide/catalog resolution failure → configured default endpoint + `fail_open: true` + `default_reason`. Proxy override with unreachable host returns transport error to the client (routing already succeeded); do not silently re-decide unless `compass.fallback_to_decide: true`.
+
+### `compass` extension object
+
+```json
+{
+  "compass": {
+    "selection_mode": "decide",
+    "model_version_id": "urn:mg:modelversion:…",
+    "target": {
+      "scheme": "http",
+      "host": "192.168.1.50",
+      "port": 8080,
+      "path": "/v1/chat/completions",
+      "model": "local-llama"
+    },
+    "fallback_to_decide": false,
+    "compress": {
+      "enabled": true,
+      "hop": true,
+      "recipient_model_id": null
+    },
+    "session_id": "…",
+    "trajectory_id": "…"
+  }
+}
+```
+
+**`compass.target` fields (proxy override)**
+
+| Field | Required | Notes |
+|---|---|---|
+| `host` | yes | IP or domain |
+| `port` | no | Default 443 for `https`, 80 for `http` |
+| `scheme` | no | `https` (default) or `http` |
+| `path` | no | Default `/v1/chat/completions` |
+| `model` | no | Rewrites outbound `model` if set |
+
+Alternate shorthand (also accepted): `compass.target_url` as an absolute URL (`http://10.0.0.5:8080/v1/chat/completions`). If both `target` and `target_url` are set, `target_url` wins.
+
+**Catalog pin** may use either:
+
+- `compass.model_version_id` (URN), or  
+- top-level `model` equal to a Graph `served_id` / catalog alias.
+
+### Weighted catalog (decide mode)
+
+Candidates come from Graph `ModelVersion` nodes with `status=active` and valid bitemporal interval. Weights / posteriors are bandit state (`quality`, `cost`, optional arm prior). Score remains:
+
+```
+score(m, c) = E[quality(m, c)] − λ · E[cost(m, c)]
+```
+
+Linked endpoints on each node (or provider policy) supply the upstream base URL used after decide. No provider keys in Route/WASM; browser egress uses the host JS bridge + Gate ([ADR 0005](adr/0005-eni6ma-gated-browser-agent.md)).
+
+### comPREssOR coupling (MUST)
+
+When the adapter changes model mid-session (hop), or `compass.compress.hop` is true, call **comPREssOR** to build hop-safe forward text / recipient meta **before** the outbound request. That package travels with the prompt so the target LLM receives continuity without assuming a shared KV cache across models. Do not reimplement compressor logic inside the adapter.
+
+Reference: `soltrinox/comPREssOR` hop-safe path (CC-1 recipient meta, CC hop legality). Join via `route_decision_id` / `trajectory_id` on `StateNode.meta` when present.
+
+### Response
+
+Upstream OpenAI-shaped body on success. Adapter MAY add a non-breaking `compass` object on dry-run or when `compass.include_decision: true`:
+
+```json
+{
+  "compass": {
+    "selection_mode": "decide",
+    "selected_model": "…",
+    "upstream": "https://…/v1/chat/completions",
+    "route_decision": { },
+    "compressed": true,
+    "dry_run": false
+  }
+}
+```
+
+### Dry-run
+
+If no upstream can be resolved and dry-run is enabled (default in tests / when bridge denied), return an OpenAI-shaped stub describing the selection without calling a model—same spirit as today’s `compass.serve.proxy` dry-run.
+
+### Security
+
+- Proxy override hosts are **deny-by-default** unless allowlisted in Gate-bound policy or explicitly ceremonied.  
+- Strip `compass` from the outbound JSON.  
+- Never put long-lived provider keys in the static page or WASM module.
+
+### Mapping to code (implementation target)
+
+| Concern | Module (planned / extend) |
+|---|---|
+| Mode resolution | `compass.serve.adapter` (new) or extend `compass.serve.proxy` |
+| Decide / catalog | `compass.route.decide`, GraphStore |
+| Forward | `forward_upstream` + browser JS bridge |
+| Compress / hop inject | comPREssOR API from serve plane |
+| Persist | `RouteDecision` with `selection_mode` |
+
+---

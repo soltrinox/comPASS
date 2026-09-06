@@ -62,3 +62,11 @@ Agents **must refuse** edits under:
 - Any attempt to merge 0.1.3 personal identifiers or absolute `/Users/rosario/...` paths into canonical `comPREssOR`
 
 Canonical implementation target: `/Users/rosario/work/comPREssOR` only. See ADR 0002 and ADR 0003.
+
+## Phase 3 — Browser agent + generic adapter
+
+Browser-only Wasmer appliance (ADR 0005) and generic LLM adapter (ADR 0006).
+
+| Track | Name | Cursor plan (work) | User plans | Repo copy |
+| --- | --- | --- | --- | --- |
+| O | Generic LLM adapter | [`/Users/rosario/work/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md`](/Users/rosario/work/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md) | [`/Users/rosario/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md`](/Users/rosario/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md) |

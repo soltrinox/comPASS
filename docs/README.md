@@ -13,7 +13,8 @@ Track A deliverables. Implementation is Tracks B–D. Product/GTM is Track E. **
 | [`CHARTER.md`](CHARTER.md) | Problem, wedge, tiers 1–4, free vs paid, non-claims, success metrics |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | **Phase 3:** browser Wasmer agent zones; ENI6MA Gate; planes remapped; extract→exec loop |
 | [`adr/0005-eni6ma-gated-browser-agent.md`](adr/0005-eni6ma-gated-browser-agent.md) | **Accepted:** browser-only + ENI6MA ceremony; supersedes sidecar/Cursor runtime |
-| [`API.md`](API.md) | Route classify/score/decide; fail-open; CC-9 advisory; enforcement targets |
+| [`API.md`](API.md) | Route API + **generic LLM adapter** (§6: decide/catalog/proxy override) |
+| [`adr/0006-generic-llm-adapter.md`](adr/0006-generic-llm-adapter.md) | **Accepted:** single completions ingress; three selection modes |
 | [`STACK.md`](STACK.md) | Python 3.11+, SQLite/JSON/…; Phase 1–2 process layout marked superseded by ADR 0005 |
 | [`WASMER.md`](WASMER.md) | Wasmer artifacts/ABI + Phase 3 browser appliance notes |
 | [`RELEASE.md`](RELEASE.md) | Track L: version scheme, tag policy, TestPyPI/PyPI publish (no secrets) |

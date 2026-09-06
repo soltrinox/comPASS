@@ -172,7 +172,13 @@ Enforcement is the **in-tab agent + Gate**, not IDE hooks.
 
 ---
 
-## 10. Equivalence and compressor coupling
+## 10. Generic LLM adapter
+
+Single OpenAI-compatible ingress (`POST /v1/chat/completions`). Modes: **decide** (weighted Graph), **catalog pin**, **proxy override** (explicit host/IP/port). comPREssOR supplies hop-safe forward injection when the target model changes. Normative API: [`API.md`](API.md) §6 · [`adr/0006-generic-llm-adapter.md`](adr/0006-generic-llm-adapter.md).
+
+---
+
+## 11. Equivalence and compressor coupling
 
 - Outcome-equivalence band, never identical text.  
 - Canonical compressor: `soltrinox/comPREssOR` (hop-safe CC-1..CC-10). Never implement against archived `CHAT-COMPRESSOR`.  
@@ -180,7 +186,7 @@ Enforcement is the **in-tab agent + Gate**, not IDE hooks.
 
 ---
 
-## 11. Explicit non-goals
+## 12. Explicit non-goals
 
 - Cursor plugin / IDE advisory as primary product path  
 - Native Probe / proxy / comPREssOR **sidecars** as default deploy  
@@ -190,11 +196,13 @@ Enforcement is the **in-tab agent + Gate**, not IDE hooks.
 
 ---
 
-## 12. Related docs
+## 13. Related docs
 
 | Doc | Role |
 |---|---|
 | [`adr/0005-eni6ma-gated-browser-agent.md`](adr/0005-eni6ma-gated-browser-agent.md) | Accepted deploy + authority decision |
+| [`adr/0006-generic-llm-adapter.md`](adr/0006-generic-llm-adapter.md) | Accepted generic LLM adapter modes |
+| [`API.md`](API.md) | Route + adapter §6 |
 | [`WASMER.md`](WASMER.md) | Artifacts, ABI, Phase 3 browser notes |
 | [`STACK.md`](STACK.md) | Language/deps; historical process layout marked superseded |
 | [`API.md`](API.md) | Route/Graph API shapes |
