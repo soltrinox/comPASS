@@ -1,0 +1,19 @@
+Apply these files onto Mac repo /Users/rosario/work/comPASS/services/agy-bridge/ then:
+  git add services/agy-bridge/src/circuitGate.js services/agy-bridge/src/server.js \
+          services/agy-bridge/README.md services/agy-bridge/docs/ \
+          services/agy-bridge/scripts/
+  # do NOT add node_modules
+  git commit -m "feat: harden eni6maValidate with DEMO-MINT ABI probe"
+  git push origin main
+
+Files:
+  src/circuitGate.js   — digest + compile + abi_probe + STRICT/DEV modes
+  src/server.js        — comment only (ABI probe wording)
+  README.md            — AGY_GATE_STRICT + ABI short notes
+  docs/CIRCUIT-ABI.md  — export inventory
+  docs/client-example.json — proxy_override + circuit example
+  scripts/*            — unchanged smoke/unit helpers
+
+Box smoke (2026-09-06 PT): SMOKE_OK on :8791 — miss, cache hit, bad digest 403.
+WASM sha256 853717e421a36fc93d0791d3f2718ecf3e9c449fb3c60d4084dedab3af75c389
+Exports: shape prove_only; build_minimal_proof; 1384 exports; wbindgen; soft-inst stub_wbindgen.

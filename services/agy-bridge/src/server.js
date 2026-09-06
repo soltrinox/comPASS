@@ -3,7 +3,7 @@
  * agy-bridge — thin local OpenAI-compatible chat → Google Antigravity CLI (agy).
  *
  * Browser / Wasmer agent → POST http://127.0.0.1:<port>/v1/chat/completions
- * → ENI6MA circuit Gate (digest + stub validate) → spawn `agy --print`
+ * → ENI6MA circuit Gate (digest + ABI probe validate) → spawn `agy --print`
  * → wrap stdout as chat.completion.
  *
  * No provider API keys here; agy uses its own local auth. Bind loopback only.

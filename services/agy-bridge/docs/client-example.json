@@ -1,0 +1,22 @@
+{
+  "proxy_override": {
+    "base_url": "http://127.0.0.1:8791",
+    "chat_completions_path": "/v1/chat/completions"
+  },
+  "model": "agy",
+  "messages": [
+    {
+      "role": "user",
+      "content": "ping"
+    }
+  ],
+  "compass": {
+    "circuit": {
+      "url": "https://raw.githubusercontent.com/eni6ma/REGISTRY/feat/wasm-circuits/circuits/demo-wasm/v1/eni6ma_wasm.wasm",
+      "sha256": "853717e421a36fc93d0791d3f2718ecf3e9c449fb3c60d4084dedab3af75c389",
+      "proof": {
+        "dev": true
+      }
+    }
+  }
+}

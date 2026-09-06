@@ -17,6 +17,7 @@ Track A deliverables. Implementation is Tracks B–D. Product/GTM is Track E. **
 | [`adr/0006-generic-llm-adapter.md`](adr/0006-generic-llm-adapter.md) | **Accepted:** single completions ingress; three selection modes |
 | [`STACK.md`](STACK.md) | Python 3.11+, SQLite/JSON/…; Phase 1–2 process layout marked superseded by ADR 0005 |
 | [`WASMER.md`](WASMER.md) | Wasmer artifacts/ABI + Phase 3 browser appliance notes |
+| [`WASMER-DEPLOYMENT.md`](WASMER-DEPLOYMENT.md) | **Phase 3 lifecycle:** zones A–D, Gate auth, adapter→bridge→agy, module maps, ports, operator cheat sheet |
 | [`RELEASE.md`](RELEASE.md) | Track L: version scheme, tag policy, TestPyPI/PyPI publish (no secrets) |
 | [`abi/host-abi.v1.md`](abi/host-abi.v1.md) | Host ABI v1 (storage/clock/log/config; keys forbidden) |
 | [`INTEGRATION.md`](INTEGRATION.md) | CC-1–CC-10 touchpoints; ingestion; classification reuse; bundle pointer |

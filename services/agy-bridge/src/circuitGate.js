@@ -2,9 +2,10 @@
  * ENI6MA circuit Gate for agy-bridge.
  *
  * Resolve / pin / cache WASM circuits, fail-closed on digest mismatch,
- * then stub-validate proof (replaceable with real ENI6MA ABI later).
+ * then validate via compile + ABI probe (DEMO-MINT is wasm-bindgen /
+ * build_minimal_proof — no freestanding verify yet).
  *
- * See docs/adr/0007-agy-behind-eni6ma-gate.md and README.md.
+ * See docs/CIRCUIT-ABI.md, docs/adr/0007-agy-behind-eni6ma-gate.md, README.md.
  */
 
 "use strict";
@@ -17,6 +18,11 @@ const path = require("path");
 const { URL } = require("url");
 
 const ALLOWED_HOSTS = new Set(["raw.githubusercontent.com", "github.com"]);
+
+/** Names that look like challenge / verify / prove APIs (case-insensitive). */
+const VERIFY_LIKE = /^(verify|validate|check_proof|verify_proof|check)$/i;
+const CHALLENGE_LIKE = /^(challenge|new_challenge|create_challenge|get_challenge)$/i;
+const PROVE_LIKE = /^(prove|build_minimal_proof|build_proof|generate_proof|mint_proof)$/i;
 
 /** Cache root: COMPASS_CIRCUIT_CACHE or ~/.compass/circuits/ */
 function cacheDir() {
@@ -80,7 +86,6 @@ function normalizeCircuitUrl(input) {
     );
   }
   if (host === "github.com") {
-    // /owner/repo/blob/ref/path... → raw.githubusercontent.com/owner/repo/ref/path...
     const parts = u.pathname.split("/").filter(Boolean);
     const blobIdx = parts.indexOf("blob");
     if (blobIdx >= 2 && parts.length > blobIdx + 2) {
@@ -101,7 +106,6 @@ function normalizeCircuitUrl(input) {
 function parseSha256Sidecar(text) {
   if (!text || typeof text !== "string") return null;
   const line = text.trim().split(/\r?\n/)[0] || "";
-  // "hex" or "hex  filename" or "hex *filename"
   const m = line.match(/^([a-fA-F0-9]{64})\b/);
   return m ? m[1].toLowerCase() : null;
 }
@@ -116,6 +120,19 @@ function normalizeClientSha(sha) {
     });
   }
   return s;
+}
+
+function envTruthy(name) {
+  const v = String(process.env[name] || "").toLowerCase();
+  return v === "1" || v === "true" || v === "yes";
+}
+
+function envFalsyDefaultTrue(name) {
+  // AGY_FAIL_OPEN defaults to "1" (truthy) when unset
+  const raw = process.env[name];
+  if (raw == null || raw === "") return true;
+  const v = String(raw).toLowerCase();
+  return v !== "0" && v !== "false" && v !== "no";
 }
 
 async function fetchBytes(url, { timeoutMs = 60000 } = {}) {
@@ -156,111 +173,333 @@ async function fetchSidecarSha(wasmUrl) {
   }
 }
 
-/**
- * Stub ENI6MA validate — real ABI can replace this later.
- * For now: proof must be non-empty object/string AND wasm must instantiate.
- */
-async function eni6maValidate(wasmBytes, proof, challengeId) {
-  const proofOk =
-    (typeof proof === "string" && proof.trim().length > 0) ||
-    (proof && typeof proof === "object" && !Array.isArray(proof) && Object.keys(proof).length > 0) ||
-    (typeof challengeId === "string" && challengeId.trim().length > 0);
+function isWbindgenNoise(name) {
+  return (
+    name.startsWith("__wbindgen") ||
+    name.startsWith("__wbg_") ||
+    name.startsWith("__externref_") ||
+    name === "__abort_handler" ||
+    name === "__instance_terminated" ||
+    name === "__data_end" ||
+    name === "__heap_base"
+  );
+}
 
-  if (!proofOk) {
-    return { ok: false, reason: "proof_or_challenge_empty" };
+/**
+ * Inventory exports/imports and classify known API shapes.
+ */
+function probeAbi(mod) {
+  const exportsList = WebAssembly.Module.exports(mod).map((e) => ({
+    name: e.name,
+    kind: e.kind,
+  }));
+  const importsList = WebAssembly.Module.imports(mod).map((i) => ({
+    module: i.module,
+    name: i.name,
+    kind: i.kind,
+  }));
+
+  const meaningful = exportsList.filter((e) => !isWbindgenNoise(e.name));
+  const exportNames = exportsList.map((e) => e.name);
+  const verifyExports = exportNames.filter((n) => VERIFY_LIKE.test(n));
+  const challengeExports = exportNames.filter((n) => CHALLENGE_LIKE.test(n));
+  const proveExports = exportNames.filter((n) => PROVE_LIKE.test(n));
+  const hasBuildMinimalProof = exportNames.includes("build_minimal_proof");
+  const wbindgen = importsList.some(
+    (i) =>
+      i.module === "__wbindgen_placeholder__" ||
+      i.module === "__wbindgen_externref_xform__" ||
+      i.module.startsWith("__wbindgen")
+  );
+
+  let shape = "opaque";
+  if (verifyExports.length && challengeExports.length) shape = "challenge_verify";
+  else if (verifyExports.length) shape = "verify";
+  else if (proveExports.length || hasBuildMinimalProof) shape = "prove_only";
+  else if (wbindgen) shape = "wbindgen_opaque";
+
+  return {
+    export_count: exportsList.length,
+    import_count: importsList.length,
+    meaningful_exports: meaningful,
+    verify_exports: verifyExports,
+    challenge_exports: challengeExports,
+    prove_exports: proveExports,
+    has_build_minimal_proof: hasBuildMinimalProof,
+    wbindgen,
+    shape,
+    import_modules: [...new Set(importsList.map((i) => i.module))],
+  };
+}
+
+/**
+ * Minimal stub import object so wasm-bindgen modules can soft-instantiate.
+ * Does not implement a real proof API — only load/ABI probe.
+ */
+function stubWbindgenImports(mod) {
+  const imports = WebAssembly.Module.imports(mod);
+  const tables = {};
+  const out = {};
+
+  for (const imp of imports) {
+    if (!out[imp.module]) out[imp.module] = {};
+    if (imp.kind === "function") {
+      out[imp.module][imp.name] = function stubFn() {
+        // describe / table helpers often need numeric returns
+        if (/grow/i.test(imp.name)) return 0;
+        if (/describe_cast/i.test(imp.name)) return 0;
+        if (/clone_ref|new_/i.test(imp.name)) return 0;
+        return undefined;
+      };
+    } else if (imp.kind === "table") {
+      if (!tables[imp.module]) {
+        tables[imp.module] = new WebAssembly.Table({ initial: 128, element: "anyfunc" });
+      }
+      out[imp.module][imp.name] = tables[imp.module];
+    } else if (imp.kind === "memory") {
+      out[imp.module][imp.name] = new WebAssembly.Memory({ initial: 256 });
+    } else if (imp.kind === "global") {
+      out[imp.module][imp.name] = new WebAssembly.Global({ value: "i32", mutable: true }, 0);
+    }
   }
 
-  try {
-    const mod = await WebAssembly.compile(wasmBytes);
+  // externref table commonly required by wbindgen
+  if (out.__wbindgen_externref_xform__ && !out.__wbindgen_externref_xform__.__wbindgen_externref_table) {
     try {
-      await WebAssembly.instantiate(mod, {});
-    } catch (instErr) {
-      // Many circuits need imports; compile success is enough for stub load-OK.
-      // Still require compile to succeed.
-      if (!mod) throw instErr;
+      out.wbg = out.wbg || {};
+      if (!out.wbg.__wbindgen_export_0) {
+        // some builds expect an externref table via export after instantiate
+      }
+    } catch (_) {}
+  }
+  return out;
+}
+
+async function softInstantiate(mod) {
+  // 1) empty imports
+  try {
+    const inst = await WebAssembly.instantiate(mod, {});
+    return { ok: true, mode: "empty_imports", instance: inst };
+  } catch (e1) {
+    // 2) stub wbindgen
+    try {
+      const imports = stubWbindgenImports(mod);
+      const inst = await WebAssembly.instantiate(mod, imports);
+      return { ok: true, mode: "stub_wbindgen", instance: inst };
+    } catch (e2) {
+      return {
+        ok: false,
+        mode: "instantiate_failed",
+        error: (e2 && e2.message) || (e1 && e1.message) || String(e2 || e1),
+      };
     }
-    return { ok: true, reason: "stub_eni6ma_ok" };
+  }
+}
+
+function hasNonEmptyProof(proof, challengeId) {
+  return (
+    (typeof proof === "string" && proof.trim().length > 0) ||
+    (proof && typeof proof === "object" && !Array.isArray(proof) && Object.keys(proof).length > 0) ||
+    (typeof challengeId === "string" && challengeId.trim().length > 0)
+  );
+}
+
+/**
+ * ENI6MA validate — digest already checked by resolveCircuit.
+ * DEMO-MINT: compile + abi_probe; wire verify when exports allow; else two-tier modes.
+ */
+async function eni6maValidate(wasmBytes, proof, challengeId) {
+  let mod;
+  try {
+    mod = await WebAssembly.compile(wasmBytes);
   } catch (e) {
     return {
       ok: false,
-      reason: `wasm_instantiate_failed: ${e && e.message ? e.message : e}`,
+      reason: `wasm_compile_failed: ${e && e.message ? e.message : e}`,
+      abi: null,
+      instantiate: null,
     };
   }
+
+  const abi = probeAbi(mod);
+  const inst = await softInstantiate(mod);
+
+  // If verify-shaped exports exist, attempt a best-effort call (future-proof).
+  if (abi.verify_exports.length && inst.ok && inst.instance) {
+    const exp = inst.instance.exports;
+    const name = abi.verify_exports[0];
+    const fn = exp[name];
+    if (typeof fn === "function") {
+      try {
+        // Unknown signature — do not pass untrusted buffers blindly.
+        // Record presence only; treat as probe until ABI is documented.
+        return {
+          ok: true,
+          reason: "verify_export_present_unwired",
+          abi,
+          instantiate: { ok: true, mode: inst.mode },
+          wired: false,
+          verify_export: name,
+        };
+      } catch (e) {
+        return {
+          ok: false,
+          reason: `verify_call_failed: ${e && e.message ? e.message : e}`,
+          abi,
+          instantiate: { ok: true, mode: inst.mode },
+        };
+      }
+    }
+  }
+
+  const proofOk = hasNonEmptyProof(proof, challengeId);
+
+  return {
+    ok: true,
+    reason: abi.has_build_minimal_proof
+      ? "abi_probe_build_minimal_proof"
+      : "abi_probe",
+    abi,
+    instantiate: {
+      ok: !!inst.ok,
+      mode: inst.mode,
+      error: inst.error || null,
+    },
+    proof_present: proofOk,
+    wired: false,
+  };
 }
 
 async function validateProof(wasmBytes, circuit) {
   const proof = circuit && circuit.proof;
   const challengeId = circuit && (circuit.challenge_id || circuit.challengeId);
-  const hasProof =
-    (typeof proof === "string" && proof.trim()) ||
-    (proof && typeof proof === "object" && Object.keys(proof).length > 0) ||
-    (typeof challengeId === "string" && challengeId.trim());
+  const hasProof = hasNonEmptyProof(proof, challengeId);
 
-  const gateDev =
-    String(process.env.AGY_GATE_DEV || "").toLowerCase() === "1" ||
-    String(process.env.AGY_GATE_DEV || "").toLowerCase() === "true" ||
-    String(process.env.AGY_GATE_DEV || "").toLowerCase() === "yes";
-  // "AGY_FAIL_OPEN gate mode" — treat truthy AGY_FAIL_OPEN as digest_only when no proof
-  const failOpenGate =
-    String(process.env.AGY_FAIL_OPEN || "1").toLowerCase() !== "0" &&
-    String(process.env.AGY_FAIL_OPEN || "1").toLowerCase() !== "false";
+  const gateDev = envTruthy("AGY_GATE_DEV");
+  const gateStrict = envTruthy("AGY_GATE_STRICT");
+  const failOpenGate = envFalsyDefaultTrue("AGY_FAIL_OPEN");
 
-  // Always try compile for load OK
-  let compileOk = false;
-  let compileErr = null;
-  try {
-    const mod = await WebAssembly.compile(wasmBytes);
-    compileOk = !!mod;
-    try {
-      await WebAssembly.instantiate(mod, {});
-    } catch (_) {
-      /* imports may be required; compile is enough */
-    }
-  } catch (e) {
-    compileErr = e && e.message ? e.message : String(e);
+  const result = await eni6maValidate(wasmBytes, proof, challengeId);
+  if (!result.ok && result.reason && result.reason.startsWith("wasm_compile_failed")) {
+    return {
+      ok: false,
+      mode: "validate_failed",
+      reason: result.reason,
+      validated: false,
+      abi: result.abi,
+    };
   }
 
+  const abiSummary = result.abi
+    ? {
+        shape: result.abi.shape,
+        export_count: result.abi.export_count,
+        meaningful_exports: result.abi.meaningful_exports,
+        prove_exports: result.abi.prove_exports,
+        verify_exports: result.abi.verify_exports,
+        challenge_exports: result.abi.challenge_exports,
+        has_build_minimal_proof: result.abi.has_build_minimal_proof,
+        wbindgen: result.abi.wbindgen,
+        instantiate: result.instantiate,
+      }
+    : null;
+
+  // Compile succeeded (eni6maValidate returns ok:true for probe path).
+  const compileOk = !!result.abi;
   if (!compileOk) {
     return {
       ok: false,
       mode: "validate_failed",
-      reason: `wasm_compile_failed: ${compileErr || "unknown"}`,
+      reason: result.reason || "wasm_compile_failed",
       validated: false,
+    };
+  }
+
+  // Soft-instantiate preferred for DEV digest_only.
+  const instOk = result.instantiate && result.instantiate.ok;
+
+  if (gateStrict && !hasProof) {
+    return {
+      ok: false,
+      mode: "proof_required",
+      reason: "AGY_GATE_STRICT=1 requires proof or challenge_id",
+      validated: false,
+      abi: abiSummary,
     };
   }
 
   if (!hasProof) {
-    if (gateDev || failOpenGate) {
+    if (gateDev) {
+      // DEV: digest-only after successful instantiate (or compile if soft-inst fails on opaque ABI)
+      if (instOk || result.abi.shape === "prove_only" || result.abi.shape === "wbindgen_opaque") {
+        return {
+          ok: true,
+          mode: "digest_only",
+          reason: instOk
+            ? "proof_missing_dev_digest_only_instantiated"
+            : "proof_missing_dev_digest_only_compile_ok",
+          validated: false,
+          warning: "digest_only",
+          abi: abiSummary,
+        };
+      }
+      return {
+        ok: false,
+        mode: "validate_failed",
+        reason: `dev_instantiate_failed: ${(result.instantiate && result.instantiate.error) || "unknown"}`,
+        validated: false,
+        abi: abiSummary,
+      };
+    }
+    if (failOpenGate) {
       return {
         ok: true,
-        mode: "digest_only",
-        reason: "proof_missing_dev_digest_only",
+        mode: "digest_ok",
+        reason: "proof_missing_fail_open_digest_ok_abi_probe",
         validated: false,
-        warning: "digest_only",
+        warning: "digest_ok",
+        abi: abiSummary,
       };
     }
     return {
       ok: false,
-      mode: "validate_failed",
+      mode: "proof_required",
       reason: "proof_or_challenge_id_required",
       validated: false,
+      abi: abiSummary,
     };
   }
 
-  const stub = await eni6maValidate(wasmBytes, proof, challengeId);
-  if (!stub.ok) {
+  // Proof present but ABI opaque / prove-only: accept as abi_probe (not cryptographically verified).
+  if (result.abi && (result.abi.verify_exports || []).length === 0) {
+    if (gateStrict) {
+      // Strict + proof present but no verify export: still require non-empty proof (already have it)
+      // but mark as abi_probe not fully validated.
+      return {
+        ok: true,
+        mode: "abi_probe",
+        reason: result.reason || "abi_probe_no_verify_export",
+        validated: false,
+        warning: "abi_probe_unverified",
+        abi: abiSummary,
+      };
+    }
     return {
-      ok: false,
-      mode: "validate_failed",
-      reason: stub.reason || "eni6ma_validate_failed",
+      ok: true,
+      mode: "abi_probe",
+      reason: result.reason || "abi_probe",
       validated: false,
+      warning: "abi_probe_unverified",
+      abi: abiSummary,
     };
   }
+
   return {
     ok: true,
-    mode: "stub_eni6ma",
-    reason: stub.reason,
-    validated: true,
+    mode: "eni6ma_verify_present",
+    reason: result.reason,
+    validated: !!result.wired,
+    abi: abiSummary,
   };
 }
 
@@ -306,7 +545,6 @@ async function resolveCircuit(circuit) {
       const bytes = await fsp.readFile(filePath);
       const actual = sha256Hex(bytes);
       if (actual !== clientSha) {
-        // Corrupt cache entry — remove and fall through
         try { await fsp.unlink(filePath); } catch (_) {}
       } else {
         return {
@@ -400,12 +638,10 @@ async function resolveCircuit(circuit) {
 
 /**
  * Full Gate: resolve + validate. Throws errors with .status for HTTP mapping.
- * Returns { ok, gate: { cached, sha256, source, validated, mode }, warning? }
+ * Returns { ok, gate: { cached, sha256, source, validated, mode, abi? }, warning? }
  */
 async function runCircuitGate(body) {
-  const required =
-    String(process.env.AGY_GATE_REQUIRED || "").toLowerCase() === "1" ||
-    String(process.env.AGY_GATE_REQUIRED || "").toLowerCase() === "true";
+  const required = envTruthy("AGY_GATE_REQUIRED");
 
   const circuit = extractCircuit(body);
   if (!circuit) {
@@ -440,6 +676,7 @@ async function runCircuitGate(body) {
       validated: false,
       mode: v.mode || "validate_failed",
     };
+    if (v.abi) err.gate.abi = summarizeAbiForHttp(v.abi);
     throw err;
   }
 
@@ -450,9 +687,28 @@ async function runCircuitGate(body) {
     validated: !!v.validated,
     mode: v.mode || "ok",
   };
+  if (v.abi) gate.abi = summarizeAbiForHttp(v.abi);
   const out = { ok: true, gate };
   if (v.warning) out.warning = v.warning;
   return out;
+}
+
+/** Trim ABI for HTTP responses (avoid huge export dumps). */
+function summarizeAbiForHttp(abi) {
+  if (!abi) return null;
+  return {
+    shape: abi.shape,
+    export_count: abi.export_count,
+    meaningful_exports: abi.meaningful_exports,
+    prove_exports: abi.prove_exports,
+    verify_exports: abi.verify_exports,
+    challenge_exports: abi.challenge_exports,
+    has_build_minimal_proof: abi.has_build_minimal_proof,
+    wbindgen: abi.wbindgen,
+    instantiate: abi.instantiate
+      ? { ok: abi.instantiate.ok, mode: abi.instantiate.mode }
+      : undefined,
+  };
 }
 
 module.exports = {
@@ -464,6 +720,8 @@ module.exports = {
   resolveCircuit,
   validateProof,
   eni6maValidate,
+  probeAbi,
   runCircuitGate,
   parseSha256Sidecar,
+  summarizeAbiForHttp,
 };

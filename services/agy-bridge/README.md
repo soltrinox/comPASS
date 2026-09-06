@@ -15,8 +15,9 @@ Binds `127.0.0.1` only.
 | `AGY_BRIDGE_PORT` | `8791` | Listen port |
 | `AGY_EXTRA_ARGS` | _(empty)_ | Extra args after `--print <prompt>` |
 | `AGY_TIMEOUT_MS` | `300000` | Spawn timeout |
-| `AGY_FAIL_OPEN` | `1` | On agy CLI failure return 200 stub; also enables Gate `digest_only` when proof missing |
-| `AGY_GATE_DEV` | _(unset)_ | `1` allow missing proof after digest OK (`mode: digest_only`) |
+| `AGY_FAIL_OPEN` | `1` | On agy CLI failure return 200 stub; also enables Gate `digest_ok` + ABI probe when proof missing |
+| `AGY_GATE_DEV` | _(unset)_ | `1` allow missing proof after digest + compile/soft-instantiate (`mode: digest_only`) |
+| `AGY_GATE_STRICT` | _(unset)_ | `1` reject missing/empty proof (`mode: proof_required`) |
 | `AGY_GATE_REQUIRED` | _(unset)_ | `1` reject requests with no `circuit` |
 | `COMPASS_CIRCUIT_CACHE` | `~/.compass/circuits/` | WASM cache dir (files named by sha256 hex) |
 
@@ -48,30 +49,36 @@ Pass under `compass.circuit` (preferred) or top-level `circuit`:
 |---|---|---|
 | `url` | on cache miss | HTTPS only; allowlisted hosts only |
 | `sha256` | preferred pin | 64 hex; mismatch → HTTP 403 fail closed |
-| `proof` / `challenge_id` | unless DEV | Stub validate; real ABI later |
+| `proof` / `challenge_id` | unless DEV / fail-open | Opaque DEMO-MINT has no freestanding verify; see ABI doc |
 
 ### Gate flow
 
 1. Resolve: cache by sha256, url index, or allowlisted fetch (+ optional sidecar).
 2. Recompute digest; mismatch → 403, never call agy.
-3. validateProof via WebAssembly.compile / instantiate.
-4. Missing proof: AGY_GATE_DEV=1 or AGY_FAIL_OPEN → mode digest_only.
-5. On pass → agy --print; response compass.gate meta.
+3. `eni6maValidate`: `WebAssembly.compile` + ABI probe (exports/imports) + soft-instantiate.
+4. Modes: `digest_ok` / `abi_probe` (records exports); `digest_only` when `AGY_GATE_DEV=1`; `proof_required` when `AGY_GATE_STRICT=1` and proof missing.
+5. On pass → agy --print; response `compass.gate` meta (may include trimmed `abi`).
 6. Strip compass/circuit from CLI path.
 
-See ADR docs/adr/0007-agy-behind-eni6ma-gate.md.
+See ADR `docs/adr/0007-agy-behind-eni6ma-gate.md` and **`docs/CIRCUIT-ABI.md`** (DEMO-MINT export inventory).
 
-### Replacing the ENI6MA stub
+### DEMO-MINT ABI (short)
 
-eni6maValidate in src/circuitGate.js is a thin stub. Replace with real ABI later.
+- wasm-bindgen module; semantic export **`build_minimal_proof`**
+- No `verify` / `challenge` freestanding exports today
+- Empty-import instantiate fails; Gate soft-instantiates with stub wbindgen imports for load OK
+- Full notes: [`docs/CIRCUIT-ABI.md`](docs/CIRCUIT-ABI.md)
 
 ## Setup
+
 Default URL http://127.0.0.1:8791
 
 ## Smoke
 
-Start bridge with AGY_GATE_DEV=1 then run scripts/smoke-gate.js
+Run node scripts/unit-gate.js then start the server and node scripts/smoke-gate.js
 
 ## Security
 
 No provider API keys. Allowlist fetch; digest fail-closed.
+
+See docs/client-example.json for an adapter override + circuit body.

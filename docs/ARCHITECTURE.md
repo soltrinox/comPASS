@@ -7,7 +7,7 @@
 **Charter:** [`CHARTER.md`](CHARTER.md)  
 **Decision:** [`adr/0005-eni6ma-gated-browser-agent.md`](adr/0005-eni6ma-gated-browser-agent.md) (Accepted 2026-09-06)
 
-One tab = one appliance. Product logic runs inside an in-page Wasmer (WASIX) sandbox. Policies and world-changing acts require an ENI6MA circuit ceremony. Cursor / IDE integration is **not** a product surface.
+One tab = one appliance. Full lifecycle & systems stack map: [`WASMER-DEPLOYMENT.md`](WASMER-DEPLOYMENT.md). Product logic runs inside an in-page Wasmer (WASIX) sandbox. Policies and world-changing acts require an ENI6MA circuit ceremony. Cursor / IDE integration is **not** a product surface.
 
 > **Supersedes (product runtime):** Track D “Route+Graph WASM read-only + Probe native sidecar,” Wasmer Edge FastAPI+Postgres as primary deploy, and Cursor Agent Chat advisory hooks as an enforcement path. Those remain historical Phase 1–2 notes in [`STACK.md`](STACK.md) / [`WASMER.md`](WASMER.md).
 
@@ -204,6 +204,7 @@ Single OpenAI-compatible ingress (`POST /v1/chat/completions`). Modes: **decide*
 | [`adr/0006-generic-llm-adapter.md`](adr/0006-generic-llm-adapter.md) | Accepted generic LLM adapter modes |
 | [`API.md`](API.md) | Route + adapter §6 |
 | [`WASMER.md`](WASMER.md) | Artifacts, ABI, Phase 3 browser notes |
+| [`WASMER-DEPLOYMENT.md`](WASMER-DEPLOYMENT.md) | Full deploy lifecycle, zone A–D stack map, Gate + agy-bridge, ports, cheat sheet |
 | [`STACK.md`](STACK.md) | Language/deps; historical process layout marked superseded |
 | [`API.md`](API.md) | Route/Graph API shapes |
 | [`CHARTER.md`](CHARTER.md) | Problem, wedge, free vs paid |
