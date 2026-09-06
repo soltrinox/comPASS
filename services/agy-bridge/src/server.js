@@ -15,7 +15,7 @@ const { spawn } = require("child_process");
 const express = require("express");
 const { runCircuitGate } = require("./circuitGate");
 
-const HOST = "127.0.0.1";
+const HOST = process.env.AGY_BRIDGE_HOST || "127.0.0.1";
 const PORT = Number(process.env.AGY_BRIDGE_PORT || 8791);
 const AGY_BIN = process.env.AGY_BIN || "agy";
 const AGY_EXTRA_ARGS = (process.env.AGY_EXTRA_ARGS || "")

@@ -12,6 +12,7 @@ Binds `127.0.0.1` only.
 | Variable | Default | Meaning |
 |---|---|---|
 | `AGY_BIN` | `agy` | CLI binary |
+| `AGY_BRIDGE_HOST` | `127.0.0.1` | Listen host |
 | `AGY_BRIDGE_PORT` | `8791` | Listen port |
 | `AGY_EXTRA_ARGS` | _(empty)_ | Extra args after `--print <prompt>` |
 | `AGY_TIMEOUT_MS` | `300000` | Spawn timeout |

@@ -1,0 +1,42 @@
+# comPASS local stack — default agy-bridge with fake-agy
+# docker compose up --build -d
+# See docs/DOCKER.md
+
+services:
+  agy-bridge:
+    build: ./services/agy-bridge
+    ports:
+      - "8791:8791"
+    environment:
+      AGY_BRIDGE_HOST: "0.0.0.0"
+      AGY_BRIDGE_PORT: "8791"
+      AGY_BIN: "/app/scripts/fake-agy.js"
+      AGY_GATE_DEV: "1"
+      COMPASS_CIRCUIT_CACHE: "/data/circuits"
+    volumes:
+      - agy-bridge-circuits:/data/circuits
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8791/healthz || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  # Optional: docker compose --profile live-agy up --build -d
+  # Mount host agy + credentials (advanced). Not required for default up.
+  agy-bridge-live:
+    profiles: ["live-agy"]
+    build: ./services/agy-bridge
+    network_mode: host
+    environment:
+      AGY_BRIDGE_HOST: "127.0.0.1"
+      AGY_BRIDGE_PORT: "8791"
+      AGY_BIN: "/usr/local/bin/agy"
+      AGY_GATE_DEV: "0"
+      COMPASS_CIRCUIT_CACHE: "/data/circuits"
+    volumes:
+      - agy-bridge-circuits:/data/circuits
+
+volumes:
+  agy-bridge-circuits:
