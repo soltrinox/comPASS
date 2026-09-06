@@ -43,10 +43,24 @@ jobs:
           shasum -a 256 ../artifacts/*.wasm | tee ../artifacts/SHA256SUMS
       - name: Install Wasmer
         run: |
-          curl -sSfL https://get.wasmer.io | sh
-          echo "$HOME/.wasmer/bin" >> "$GITHUB_PATH"
+          set -euo pipefail
+          # Official installer; pin so CI is reproducible (matches Track D Wasmer 7.4.x line).
+          curl -sSfL https://get.wasmer.io | sh -s "v7.4.0"
+          WASMER_BIN="$HOME/.wasmer/bin"
+          if [[ ! -x "$WASMER_BIN/wasmer" ]]; then
+            echo "Wasmer binary missing after install; listing $HOME/.wasmer:" >&2
+            ls -laR "$HOME/.wasmer" >&2 || true
+            exit 1
+          fi
+          echo "$WASMER_BIN" >> "$GITHUB_PATH"
+          # Same-step PATH so subsequent commands in later steps are not the only consumers.
+          echo "WASMER_BIN=$WASMER_BIN" >> "$GITHUB_ENV"
+          "$WASMER_BIN/wasmer" --version
       - name: Instantiate + decide fixture
         run: |
+          set -euo pipefail
+          export PATH="${WASMER_BIN:-$HOME/.wasmer/bin}:$PATH"
+          command -v wasmer
           wasmer --version
           wasmer validate wasmer/artifacts/compass_core_bg.wasm
           wasmer run wasmer/artifacts/compass-decide.wasm --volume "$PWD/wasmer:/wasmer" -- \
@@ -56,6 +70,8 @@ jobs:
           grep -q 'urn:mg:model:cheap' /tmp/wasm-decide.json
       - name: Browser module has no fetch/keys imports
         run: |
+          set -euo pipefail
+          export PATH="${WASMER_BIN:-$HOME/.wasmer/bin}:$PATH"
           wasmer inspect wasmer/artifacts/compass_core_bg.wasm | tee /tmp/inspect.txt
           ! grep -E 'fetch|keys' /tmp/inspect.txt
           test -f wasmer/browser/index.html
@@ -68,6 +84,8 @@ jobs:
           test -f test-results/j-wasmer-packaging/size-budget.json
       - name: Desktop shell packaging smoke
         run: |
+          set -euo pipefail
+          export PATH="${WASMER_BIN:-$HOME/.wasmer/bin}:$PATH"
           ./wasmer/desktop/run-decide.sh | tee /tmp/desktop-decide.json
           grep -q 'urn:mg:model:cheap' /tmp/desktop-decide.json
           COMPASS_FAIL_OPEN_DEMO=missing ./wasmer/desktop/run-decide.sh | tee /tmp/desktop-missing.json
@@ -84,10 +102,18 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-wasip1,wasm32-unknown-unknown
-      - name: Build WASM + install Wasmer
+      - name: Install Wasmer
         run: |
-          curl -sSfL https://get.wasmer.io | sh
-          echo "$HOME/.wasmer/bin" >> "$GITHUB_PATH"
+          set -euo pipefail
+          curl -sSfL https://get.wasmer.io | sh -s "v7.4.0"
+          WASMER_BIN="$HOME/.wasmer/bin"
+          test -x "$WASMER_BIN/wasmer"
+          echo "$WASMER_BIN" >> "$GITHUB_PATH"
+          echo "WASMER_BIN=$WASMER_BIN" >> "$GITHUB_ENV"
+          "$WASMER_BIN/wasmer" --version
+      - name: Build WASM artifacts
+        run: |
+          set -euo pipefail
           cd wasmer/crate
           cargo build --release --target wasm32-wasip1 --bin compass-decide
           mkdir -p ../artifacts
@@ -98,6 +124,9 @@ jobs:
           pip install -e ".[dev]"
       - name: Fail-open parity (native vs wasm)
         run: |
+          set -euo pipefail
+          export PATH="${WASMER_BIN:-$HOME/.wasmer/bin}:$PATH"
+          command -v wasmer
           python scripts/wasmer_parity.py
           python -m pytest tests/test_wasmer_parity.py -q
           test -f test-results/wasmer-parity/parity.json
