@@ -258,3 +258,8 @@ If no upstream can be resolved and dry-run is enabled (default in tests / when b
 | Persist | `RouteDecision` with `selection_mode` |
 
 ---
+
+## 7. Local agy-bridge + ENI6MA circuit Gate
+
+Local OpenAI-shaped bridge (`services/agy-bridge`) may sit behind or beside the generic adapter for air-gapped `agy --print` egress. Normative Gate behavior (circuit URL/sha256/proof, allowlisted fetch, cache, fail-closed digest, `compass.gate` response) is in [ADR 0007](adr/0007-agy-behind-eni6ma-gate.md) and `services/agy-bridge/README.md`. Request extension: `compass.circuit` (or top-level `circuit`) with `url`, `sha256`, optional `proof` / `challenge_id`.
+

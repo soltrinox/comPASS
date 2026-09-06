@@ -3,7 +3,8 @@
  * agy-bridge — thin local OpenAI-compatible chat → Google Antigravity CLI (agy).
  *
  * Browser / Wasmer agent → POST http://127.0.0.1:<port>/v1/chat/completions
- * → spawn `agy --print` / `-p` with last user message → wrap stdout as chat.completion.
+ * → ENI6MA circuit Gate (digest + stub validate) → spawn `agy --print`
+ * → wrap stdout as chat.completion.
  *
  * No provider API keys here; agy uses its own local auth. Bind loopback only.
  */
@@ -12,6 +13,7 @@
 
 const { spawn } = require("child_process");
 const express = require("express");
+const { runCircuitGate } = require("./circuitGate");
 
 const HOST = "127.0.0.1";
 const PORT = Number(process.env.AGY_BRIDGE_PORT || 8791);
@@ -26,20 +28,11 @@ const FAIL_OPEN =
   String(process.env.AGY_FAIL_OPEN || "1").toLowerCase() !== "0" &&
   String(process.env.AGY_FAIL_OPEN || "1").toLowerCase() !== "false";
 
-/**
- * TODO (ADR 0007 / Gate ENI6MA): digest / attestation check before egress.
- * Stub always passes so the bridge stays usable while Gate wiring lands.
- * See docs/adr/0005-eni6ma-gated-browser-agent.md and forthcoming ADR 0007.
- */
-function gateEni6maDigestCheck(_reqBody) {
-  // Always pass for now — replace with real Gate/ENI6MA verification.
-  return { ok: true, reason: "stub_pass" };
-}
-
 function stripCompass(body) {
   if (!body || typeof body !== "object") return body;
   const out = { ...body };
   delete out.compass;
+  delete out.circuit;
   return out;
 }
 
@@ -80,9 +73,9 @@ function extractLastUserMessage(body) {
   return "";
 }
 
-function openaiCompletion({ id, model, content, finishReason }) {
+function openaiCompletion({ id, model, content, finishReason, compass }) {
   const now = Math.floor(Date.now() / 1000);
-  return {
+  const out = {
     id: id || `chatcmpl-agy-${now}`,
     object: "chat.completion",
     created: now,
@@ -100,20 +93,21 @@ function openaiCompletion({ id, model, content, finishReason }) {
       total_tokens: 0,
     },
   };
+  if (compass) out.compass = compass;
+  return out;
 }
 
-function openaiError(message, type, status) {
-  return {
-    status: status || 500,
-    body: {
-      error: {
-        message: String(message || "agy-bridge error"),
-        type: type || "agy_bridge_error",
-        param: null,
-        code: type || "agy_bridge_error",
-      },
+function openaiError(message, type, status, compass) {
+  const body = {
+    error: {
+      message: String(message || "agy-bridge error"),
+      type: type || "agy_bridge_error",
+      param: null,
+      code: type || "agy_bridge_error",
     },
   };
+  if (compass) body.compass = compass;
+  return { status: status || 500, body };
 }
 
 /** Run `agy --print <prompt>`, capture stdout/stderr with timeout. */
@@ -178,6 +172,7 @@ app.get("/healthz", (_req, res) => {
     service: "agy-bridge",
     agy_bin: AGY_BIN,
     bind: `${HOST}:${PORT}`,
+    gate: "eni6ma-circuit",
   });
 });
 
@@ -190,26 +185,36 @@ app.get("/", (_req, res) => {
 
 app.post("/v1/chat/completions", async (req, res) => {
   const rawBody = req.body && typeof req.body === "object" ? req.body : {};
-  // Accept comPASS compass extension then strip (same as adapter).
+  // Accept comPASS compass extension then strip before agy (never leak to CLI).
   const body = stripCompass(rawBody);
   const model = typeof body.model === "string" && body.model ? body.model : "agy";
 
-  const gate = gateEni6maDigestCheck(rawBody);
-  if (!gate.ok) {
+  let gateResult;
+  try {
+    gateResult = await runCircuitGate(rawBody);
+  } catch (e) {
+    const status = e && e.status ? e.status : 403;
+    const code = e && e.code ? e.code : "compass_gate_denied";
+    const compass = e && e.gate ? { gate: e.gate } : undefined;
     const err = openaiError(
-      `Gate/ENI6MA check failed: ${gate.reason || "denied"}`,
-      "compass_gate_denied",
-      403
+      e && e.message ? e.message : "Gate/ENI6MA check failed",
+      code,
+      status,
+      compass
     );
     return res.status(err.status).json(err.body);
   }
+
+  const compassOut = { gate: gateResult.gate };
+  if (gateResult.warning) compassOut.gate_warning = gateResult.warning;
 
   const prompt = extractLastUserMessage(body);
   if (!prompt) {
     const err = openaiError(
       "No user message found in messages[] (or prompt/input/text)",
       "invalid_request_error",
-      400
+      400,
+      compassOut
     );
     return res.status(err.status).json(err.body);
   }
@@ -218,7 +223,8 @@ app.post("/v1/chat/completions", async (req, res) => {
     const err = openaiError(
       "stream=true is not supported by agy-bridge; omit stream or set false",
       "invalid_request_error",
-      400
+      400,
+      compassOut
     );
     return res.status(err.status).json(err.body);
   }
@@ -232,6 +238,7 @@ app.post("/v1/chat/completions", async (req, res) => {
         model,
         content: text || "(agy returned empty stdout)",
         finishReason: "stop",
+        compass: compassOut,
       })
     );
   }
@@ -250,11 +257,11 @@ app.post("/v1/chat/completions", async (req, res) => {
     const content =
       `[agy-bridge] agy invocation failed (fail-open).\n${detail || "unknown error"}`.trim();
     return res.status(200).json(
-      openaiCompletion({ model, content, finishReason: "stop" })
+      openaiCompletion({ model, content, finishReason: "stop", compass: compassOut })
     );
   }
 
-  const err = openaiError(detail || "agy failed", "agy_cli_error", 502);
+  const err = openaiError(detail || "agy failed", "agy_cli_error", 502, compassOut);
   return res.status(err.status).json(err.body);
 });
 

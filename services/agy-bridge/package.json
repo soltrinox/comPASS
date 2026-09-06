@@ -6,7 +6,9 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "smoke:gate": "node scripts/smoke-gate.js",
+    "test": "node scripts/smoke-gate.js"
   },
   "engines": {
     "node": ">=18"
