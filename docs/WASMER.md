@@ -1,8 +1,6 @@
-# Wasmer / WASM deploy runbook (Track D + J)
+# Wasmer / WASM deploy runbook (Track D + J → Phase 3)
 
-**Status (2026-09-05 PT):** Rust `compass-core` crate builds `wasm32-unknown-unknown` (browser) and `wasm32-wasip1` (desktop Wasmer). Artifacts hashed under `wasmer/artifacts/`. Fail-open parity script green vs Python `compass.core`. **Headless browser smoke** + **desktop packaged shell** added in Track J. Mobile device matrix remains **NOT_RUN** (ADR: `wasmer/mobile/NOT_RUN.md`).
-
-**Contract:** [`STACK.md`](STACK.md) §3 · **ABI:** [`abi/host-abi.v1.md`](abi/host-abi.v1.md)
+> **Phase 3 product runtime (2026-09-06):** browser-only agent via `@wasmer/sdk/browser` + ENI6MA Gate. See [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`adr/0005-eni6ma-gated-browser-agent.md`](adr/0005-eni6ma-gated-browser-agent.md). The Track D table below (Route/Graph read in WASM, Probe native sidecar) is **historical** for the Phase 1–2 cut and **superseded** as the product deploy target.
 
 ## What is in the module
 
@@ -121,3 +119,12 @@ No machine-specific absolute paths in module or glue (no `/Users/...` baked into
 brew install wasmer   # or: curl https://get.wasmer.io -sSfL | sh
 wasmer --version
 ```
+
+
+## Phase 3 browser appliance
+
+| In guest Wasmer (browser) | Host JS only | Out of product runtime |
+|---|---|---|
+| Route, Graph (SQLite/memory), comPREssOR, agent loop, `run_python` | Ceremony UI, Gate client, egress bridge, triggers, `ports.expose` | Native Probe/proxy sidecars; Edge managed Postgres as agent DB; Cursor hooks |
+
+**Pins:** package versions via `@=`; circuit + WASM artifacts via SHA-256 manifest at page recall. **COOP/COEP** required. Nested sandboxes for untrusted code.

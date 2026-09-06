@@ -1,132 +1,201 @@
 # comPASS Architecture
 
 **Product:** comPASS (sister to comPREssOR)  
-**Ground truth:** [`../PROTOTYPE.md`](../PROTOTYPE.md) §9–§13  
-**Charter:** [`CHARTER.md`](CHARTER.md)
+**Package:** `compass-router`  
+**Runtime (Phase 3):** sovereign **browser-only** Wasmer agent, ENI6MA-gated  
+**Ground truth (historical product brief):** [`../PROTOTYPE.md`](../PROTOTYPE.md) §9–§13  
+**Charter:** [`CHARTER.md`](CHARTER.md)  
+**Decision:** [`adr/0005-eni6ma-gated-browser-agent.md`](adr/0005-eni6ma-gated-browser-agent.md) (Accepted 2026-09-06)
 
-One engine, **three planes** separated by latency, credential, and failure boundaries. Four **tiers** map onto those planes. Cursor Agent Chat hooks **cannot** enforce model selection — advisory only.
+One tab = one appliance. Product logic runs inside an in-page Wasmer (WASIX) sandbox. Policies and world-changing acts require an ENI6MA circuit ceremony. Cursor / IDE integration is **not** a product surface.
 
----
-
-## 1. Three planes (hard boundaries)
-
-| Plane | Role | Latency | Credentials | Failure mode |
-|---|---|---|---|---|
-| **Probe** | Daemon: run probes, record observations, canary drift | Seconds–minutes OK | Holds provider API keys | Isolated process; **never blocks prompts**; **NEVER on the prompt path** |
-| **Graph** | Bitemporal capability store + bandit posterior | Read p95 low tens of ms | **No** provider keys | Stale-read OK; writes from Probe |
-| **Route** | Classify → score → decide; only hot-path component | Target p95 **< 50 ms** | **No** provider keys | **Fail-open** to configured default |
-
-### Credential boundary (stated twice)
-
-**Narrative.** The compressor `hook_cli.py` invariant is *"Never requires CURSOR_API_KEY."* Probe requires live provider credentials by definition. Therefore Probe **cannot** share the hook process. That is the concrete technical reason comPASS is a **sibling repository**, not a module inside `chat_compressor`. Provider keys stay in the Probe (native) process. Route and Graph never hold them. Browser WASM (Track D) must never receive raw key material.
-
-**Table.** See the Credentials column above: Probe holds keys; Graph and Route do not. Route failure is fail-open; Probe failure must not block prompts.
+> **Supersedes (product runtime):** Track D “Route+Graph WASM read-only + Probe native sidecar,” Wasmer Edge FastAPI+Postgres as primary deploy, and Cursor Agent Chat advisory hooks as an enforcement path. Those remain historical Phase 1–2 notes in [`STACK.md`](STACK.md) / [`WASMER.md`](WASMER.md).
 
 ---
 
-## 2. Four tiers mapped onto planes
+## 1. Zones
 
 ```mermaid
-flowchart LR
-  subgraph T1[Tier 1 Observatory]
-    Ingest[Catalog ingest HF/OpenRouter/Cursor]
-    Drift[Canary drift]
+flowchart TB
+  subgraph B[Zone B — Browser host JS]
+    UI[SPA / ceremony UI]
+    SDK["@wasmer/sdk/browser"]
+    SW[Service Worker / ports.expose]
+    Bridge[Egress JS bridge]
+    Trig[Triggers: manual cron event poll]
+    GateClient[ENI6MA Gate client]
   end
-  subgraph T2[Tier 2 Advisor]
-    Classify[Task classify]
-    Advise[Advisory file handoff CC-9]
+  subgraph A[Zone A — Wasmer sandbox WASIX]
+    Route[Route decide/advise]
+    Graph[Graph SQLite/memory]
+    Comp[comPREssOR in-process]
+    Loop[Session / hop / agent loop]
+    Extract[extractCode fence then JSON]
+    Runner[python main.py runner]
   end
-  subgraph T3[Tier 3 Router]
-    SDK[SDK wrapper]
-    Proxy[OpenAI-compatible proxy]
-    Env[Budget envelopes]
+  subgraph Nest[Nested sandbox]
+    Code[Untrusted model-suggested code]
   end
-  subgraph T4[Tier 4 Session orchestrator]
-    Hop[Per-turn hop + hop_legal]
-    Shape[Capability-aware payload shaping]
+  subgraph C[Zone C — Optional egress]
+    WISP[WISP proxy]
+    APIs[LLM / HTTP endpoints]
   end
-  Probe --> Graph
-  Graph --> Route
-  Ingest --> Graph
-  Drift --> Graph
-  Classify --> Route
-  Route --> Advise
-  Route --> SDK
-  Route --> Proxy
-  Route --> Hop
+  UI --> SDK
+  SDK --> A
+  Trig --> Loop
+  GateClient --> Bridge
+  GateClient --> Runner
+  Loop --> Extract --> Runner
+  Runner --> Nest
+  Bridge --> APIs
+  A -.->|guest TCP only if needed| WISP
+  SW -->|expose guest HTTP| UI
 ```
 
-| Tier | Name | Primary planes | Enforcement |
+| Zone | What | Owns product logic? |
+|---|---|---|
+| **A — Wasmer sandbox** | Pinned `python/python`, compass + comPREssOR, guest FS | **Yes** |
+| **B — Browser host** | Shell, COOP/COEP, SDK, ceremony UX, triggers, egress bridge, `ports.expose` | Glue only |
+| **C — Outside browser** | WISP and/or provider HTTP | Egress only — not our control plane |
+
+---
+
+## 2. Three planes (remapped for browser)
+
+Latency / credential / failure boundaries still hold; **process layout does not**.
+
+| Plane | Role (Phase 3) | Credentials | Failure |
 |---|---|---|---|
-| 1 | Observatory | Probe + Graph | None (catalog + drift) |
-| 2 | Advisor | Graph + Route (advise path) | Advisory only — Cursor hooks have **no model field** |
-| 3 | Router | Route + Graph read; proxy owns keys in service process | SDK wrapper; OpenAI-compatible proxy |
-| 4 | Session orchestrator | Route + compressor hop path | Per-turn hop gated by `hop_legal()` |
+| **Route** | Classify → score → decide inside sandbox | **No** provider keys | **Fail-open** to configured default |
+| **Graph** | Bitemporal capability store + bandit on **guest SQLite / memory** | **No** provider keys | Stale-read OK |
+| **Probe** | Offline fixtures by default; live catalog/provider calls only via **Gate + JS bridge** | Short-lived tokens injected at ceremony — **never** ambient keys in the static bundle | Must not block the agent loop; fail soft to fixtures |
+
+**comPREssOR** is an in-process Python library in the same sandbox (not a sidecar).  
+**Session / hop orchestrator** lives in-sandbox and replaces any Cursor hook path.
+
+### Credential rule (stated twice)
+
+1. Static page and guest image never ship long-lived provider secrets.  
+2. Live egress is Gate-checked and mediated by the host JS bridge (preferred) or optional WISP for raw guest TCP.
 
 ---
 
-## 3. Capability curvature
+## 3. ENI6MA authority (hard rule)
 
-Model capability is a **vector**, not a scalar (prototype §4). Axes measured separately because they dissociate in practice:
+**Policies and agent rules mutate only through the cryptographic interface.**
 
-- Language generation
-- Code generation
-- Code comprehension and localization
-- Multi-step planning
-- Agentic tool use
-- Recursion / iteration (build-test-fix to convergence)
-- Long-context fidelity
-- Structured output fidelity
-- Multimodal input / image generation
-- Refusal and safety posture
-- Latency profile (p50 and p95 separately)
+1. **Foundry** mints twin-circuit binaries (prover / verifier).  
+2. Resolve circuit: **local cache first**; else cloud/GitHub URL; recompute **SHA-256** (+ byte length). Mismatch → **fail closed**. Digest is the trust root — not the CDN host. Never trust a client-supplied digest without a pinned authority.  
+3. User/agent requests a **challenge** → returns a **proof** against that exact binary.  
+4. **Control** burns the nonce **before** validate (no replay).  
+5. **Gate** wraps every world-changing act: `policy.update`, `agent.schedule`, `run_python`, LLM call, tool/egress — bind → burn → validate.
 
-**Model cards = priors** (cheap, self-reported, never conclusions). **Probes = posteriors** (user task classes). Every capability figure carries `n` and `ci95` — never a bare mean. The router must distinguish "measured mediocre" from "barely measured."
-
-Scoring for the decision:
-
-```
-score(m, c) = E[quality(m, c)] − λ · E[cost(m, c)]
-```
-
-Bandit allocation of probe spend: Thompson sampling (UCB allowed) over `(TaskClass, ModelVersion)` arms.
+Start triggers (below) may **run** an agent only under an **already ceremony-bound** policy. Start ≠ authorize a policy change.
 
 ---
 
-## 4. Identity normalization
+## 4. Triggers
 
-- Identity of a **`ModelVersion`:** `(provider, served_id)`.
-- Link versions to a shared **`Model`** via `version_of` **only when** a behavioral fingerprint (canary set) agrees.
-- Evidence **pools** at `Model` (prior) and **measures** at `ModelVersion` (posterior).
-- On fingerprint shift: **supersede** the `ModelVersion` (close `valid_end`, set `status` to `superseded`) and open a new validity interval — never overwrite scores across a break.
+| Trigger | Mechanism (Zone B) |
+|---|---|
+| Manual | Run control in the page |
+| Cron | In-tab scheduler / Service Worker alarm within policy windows |
+| Event | Payload into exposed guest HTTP (`ports.expose`) |
+| Poll | Status/payload watch via JS bridge when net is allowed |
 
-Bitemporal fields on every capability-graph node: `valid_start`, `valid_end`, `status` ∈ `{active, superseded, deprecated}`.
-
-Schema: sibling **`model-graph.v1.json`** only. Do **not** widen `ctx-graph.v1`.
-
-Node kinds (core narrative set): `Model`, `TaskClass`, `Probe`, `Observation`, `PriceQuote`, `RouteDecision` (full enum in schema includes Provider, ModelVersion, CapabilityAxis, Policy).
+All share one Gate-checked policy blob installed by ceremony.
 
 ---
 
-## 5. Route hot path (summary)
+## 5. LLM → extract → Wasmer loop
 
-1. `classify(request, graph_snapshot) → TaskClass`
-2. Filter candidates by policy, data class, context window, availability
-3. `score = quality − λ·cost`; confidence gating — overlapping intervals prefer lower cost
-4. Consult budget envelope; raise λ near limit
-5. Persist `RouteDecision`; return choice + rationale
-6. On **any** error, timeout, empty candidates, or corrupt graph read → **fail-open** to configured default + logged reason
-
-In-IDE Cursor Agent Chat: **advisory only** (no model field in hooks). Real enforcement is SDK wrapper and local proxy (credentials in probe/route **service** process, never hook path).
-
-Wasmer cut (Track D contract in [`STACK.md`](STACK.md)): Route + Graph **READ** path only; Probe native sidecar; **no provider keys in browser WASM**.
+1. Agent requests an LLM call → **Gate** → host **JS bridge** (deny-by-default).  
+2. On reply, extract Python:  
+   - **First:** markdown fences (`python` / `py` / bare ``` if body looks like Python); close only on matching fence; never exec an open fence.  
+   - **Fallback** if empty/unusable: `tool_calls` / `run_python({code})` / JSON `{ "code": "..." }`.  
+3. Gate `run_python` (code hash in envelope) → write `main.py` on guest FS → `python /workspace/main.py` → capture stdout/stderr → Observation back into the loop.  
+4. Prefer file write over `python -c`. Nested sandbox when policy demands stronger isolation.  
+5. Host page must be cross-origin isolated (`COOP`/`COEP`, `window.crossOriginIsolated === true`).
 
 ---
 
-## 6. Equivalence and compressor coupling
+## 6. Persistence
 
-- Equivalence claim: **outcome-equivalence band**, never identical text.
-- Canonical compressor: `soltrinox/comPREssOR` @ **0.2.0**. Never implement against `CHAT-COMPRESSOR`.
-- No machine-specific absolute paths in any **code** examples that would land in the compressor.
+| Store | Phase 3 verdict |
+|---|---|
+| Guest SQLite / files on WASIX FS | **Primary** Graph + bandit + sessions |
+| In-memory Python | Demos only (lost on refresh) |
+| IndexedDB / OPFS ↔ `sandbox.fs` | Optional durable bridge across reloads |
+| Wasmer Edge managed Postgres | **Out of scope** for product runtime until Postgres-in-browser exists |
 
-See [`INTEGRATION.md`](INTEGRATION.md) for CC-1–CC-10 touchpoints (Track B owns code).
+Schema remains `model-graph/v1` (sibling to compressor `ctx-graph`; do not widen compressor schema).
+
+---
+
+## 7. Networking / egress
+
+| Path | How |
+|---|---|
+| UI ↔ agent API | Guest HTTP listener + `sandbox.ports.expose` |
+| Agent ↔ providers / poll targets | **JS bridge** (preferred), Gate + policy allowlist |
+| Guest raw TCP | Optional `network: { mode: 'wisp', url: 'wss://…' }` |
+| No bridge / no WISP | Offline / mocked Probe only |
+
+---
+
+## 8. Air-gap and page recall
+
+At recall (or first hydrate then cache), deliver:
+
+- App shell (SRI)  
+- `@wasmer/sdk` + workers  
+- Pinned `python/python@=…`  
+- compass / comPREssOR guest packages  
+- Twin-circuit binaries  
+- Artifact **manifest** per file: `{ sha256, byteLength, source }`
+
+After first successful hydrate, OPFS/IndexedDB cache supports offline. Sovereign mode: local LLM + local Control ledger.
+
+---
+
+## 9. Capability curvature & Route hot path
+
+Unchanged product science (prototype §4):
+
+- Capability is a **vector** (language, code gen, planning, tools, long-context, structured output, multimodal, safety, latency p50/p95, …).  
+- Model cards = priors; probes = posteriors; every figure carries `n` and `ci95`.  
+- `score(m, c) = E[quality] − λ · E[cost]`; Thompson/UCB over `(TaskClass, ModelVersion)`.  
+- Identity: `ModelVersion = (provider, served_id)`; bitemporal supersede on fingerprint break.  
+- Route steps: classify → filter → score → budget → persist `RouteDecision` → fail-open on any error.
+
+Enforcement is the **in-tab agent + Gate**, not IDE hooks.
+
+---
+
+## 10. Equivalence and compressor coupling
+
+- Outcome-equivalence band, never identical text.  
+- Canonical compressor: `soltrinox/comPREssOR` (hop-safe CC-1..CC-10). Never implement against archived `CHAT-COMPRESSOR`.  
+- See [`INTEGRATION.md`](INTEGRATION.md).
+
+---
+
+## 11. Explicit non-goals
+
+- Cursor plugin / IDE advisory as primary product path  
+- Native Probe / proxy / comPREssOR **sidecars** as default deploy  
+- Wasmer Edge app + managed Postgres as the agent control plane  
+- Long-lived multi-tenant server (each tab = one instance)  
+- Trusting client-supplied digests without pin authority  
+
+---
+
+## 12. Related docs
+
+| Doc | Role |
+|---|---|
+| [`adr/0005-eni6ma-gated-browser-agent.md`](adr/0005-eni6ma-gated-browser-agent.md) | Accepted deploy + authority decision |
+| [`WASMER.md`](WASMER.md) | Artifacts, ABI, Phase 3 browser notes |
+| [`STACK.md`](STACK.md) | Language/deps; historical process layout marked superseded |
+| [`API.md`](API.md) | Route/Graph API shapes |
+| [`CHARTER.md`](CHARTER.md) | Problem, wedge, free vs paid |

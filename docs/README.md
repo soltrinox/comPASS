@@ -11,10 +11,11 @@ Track A deliverables. Implementation is Tracks B–D. Product/GTM is Track E. **
 | Doc | Purpose |
 |---|---|
 | [`CHARTER.md`](CHARTER.md) | Problem, wedge, tiers 1–4, free vs paid, non-claims, success metrics |
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Probe / Graph / Route planes; Observatory / Advisor / Router / Session orchestrator; mermaid |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | **Phase 3:** browser Wasmer agent zones; ENI6MA Gate; planes remapped; extract→exec loop |
+| [`adr/0005-eni6ma-gated-browser-agent.md`](adr/0005-eni6ma-gated-browser-agent.md) | **Accepted:** browser-only + ENI6MA ceremony; supersedes sidecar/Cursor runtime |
 | [`API.md`](API.md) | Route classify/score/decide; fail-open; CC-9 advisory; enforcement targets |
-| [`STACK.md`](STACK.md) | Python 3.11+, SQLite/JSON/safetensors/NumPy; Wasmer Route+Graph read; Probe native |
-| [`WASMER.md`](WASMER.md) | Track D Wasmer runbook: core split, ABI, packaging status, fail-open parity |
+| [`STACK.md`](STACK.md) | Python 3.11+, SQLite/JSON/…; Phase 1–2 process layout marked superseded by ADR 0005 |
+| [`WASMER.md`](WASMER.md) | Wasmer artifacts/ABI + Phase 3 browser appliance notes |
 | [`RELEASE.md`](RELEASE.md) | Track L: version scheme, tag policy, TestPyPI/PyPI publish (no secrets) |
 | [`abi/host-abi.v1.md`](abi/host-abi.v1.md) | Host ABI v1 (storage/clock/log/config; keys forbidden) |
 | [`INTEGRATION.md`](INTEGRATION.md) | CC-1–CC-10 touchpoints; ingestion; classification reuse; bundle pointer |
@@ -35,5 +36,6 @@ Machine-facing mirrors (byte-identical schema + bundle stub):
 - Scoring: `quality − λ·cost`; Thompson/UCB over `(TaskClass, ModelVersion)`
 - Bitemporal: `valid_start`, `valid_end`, `status` ∈ `{active, superseded, deprecated}`
 - Equivalence: **outcome-equivalence band**, never identical text
-- Wasmer: Route + Graph **READ** only; Probe native sidecar; **no provider keys in browser WASM**
-- In-IDE Cursor Agent Chat: **advisory only** (no model field in hooks)
+- **Phase 3 runtime:** browser-only Wasmer agent + ENI6MA Gate ([ADR 0005](adr/0005-eni6ma-gated-browser-agent.md)); no Cursor/IDE product path
+- Egress: host JS bridge deny-by-default; optional WISP; no ambient provider keys in static page
+- Historical Track D: Route+Graph WASM read + Probe sidecar — superseded for product deploy
