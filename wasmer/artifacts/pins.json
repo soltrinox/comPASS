@@ -1,0 +1,17 @@
+{
+  "schema": "compass-eni6ma-pins/v1",
+  "notes": "Client-supplied URLs are hints only. These digests are the authority pins.",
+  "pins": {
+    "compass_core_bg.wasm": {
+      "sha256": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+      "path": "artifacts/compass_core_bg.wasm",
+      "role": "route_decide"
+    },
+    "eni6ma_demo_wasm_v1": {
+      "sha256": "853717e421a36fc93d0791d3f2718ecf3e9c449fb3c60d4084dedab3af75c389",
+      "path": "artifacts/eni6ma/demo-wasm/v1/eni6ma_wasm.wasm",
+      "role": "circuit_minimal_proof",
+      "source_ref": "eni6ma/REGISTRY@feat/wasm-circuits:circuits/demo-wasm/v1"
+    }
+  }
+}

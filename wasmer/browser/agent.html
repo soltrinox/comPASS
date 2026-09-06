@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'" />
+  <title>comPASS × ENI6MA agent stub</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, sans-serif; margin: 1.5rem; max-width: 52rem; background: #0f1115; color: #e8eaed; }
+    pre { background: #111; color: #eee; padding: 1rem; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+    .ok { color: #34d399; } .err { color: #f87171; }
+    button { margin-right: 0.5rem; background: #3b82f6; color: #fff; border: 0; border-radius: 8px; padding: 0.5rem 0.9rem; font-weight: 600; cursor: pointer; }
+    code { color: #93c5fd; }
+  </style>
+</head>
+<body>
+  <h1>comPASS × ENI6MA — digest-pinned stub</h1>
+  <p>Path-B loads pinned <code>eni6ma_wasm.wasm</code> from <code>artifacts/pins.json</code>, then runs <code>build_minimal_proof</code>. Compass pin check is available separately.</p>
+  <p id="status">idle</p>
+  <button id="eni">Run ENI6MA proof</button>
+  <button id="compass">Verify compass pin</button>
+  <pre id="out"></pre>
+  <script src="./circuitLoader.js"></script>
+  <script src="./wasmerRunner.js"></script>
+  <script type="module" src="./agent.js"></script>
+</body>
+</html>

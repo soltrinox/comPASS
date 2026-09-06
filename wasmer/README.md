@@ -77,6 +77,21 @@ wasmer run wasmer/artifacts/compass-decide.wasm --volume "$PWD/wasmer:/wasmer" -
 Native Python `compass.core.decide_from_snapshot` is the reference for reason codes.
 Divergence is a release blocker.
 
+## ENI6MA Path-B stub (agent)
+
+Digest-pinned circuit load + `build_minimal_proof` smoke:
+
+- `artifacts/pins.json` — authority digests (compass + `eni6ma_demo_wasm_v1`)
+- `artifacts/eni6ma/demo-wasm/v1/` — published WASM + sibling `.sha256` + wasm-bindgen `pkg/`
+- `browser/circuitLoader.js`, `wasmerRunner.js`, `agent.html`
+
+```bash
+cd wasmer && python3 -m http.server 8765
+# http://127.0.0.1:8765/browser/agent.html
+```
+
+Fail closed on digest mismatch. Full Gate envelope is not in this stub yet.
+
 ## Browser sandbox
 
 ```bash
