@@ -35,7 +35,6 @@ from urllib.parse import urlparse
 
 from compass.route.decide import RouteConfig, RouteDecisionResult
 from compass.route.envelope import BudgetEnvelope
-from compass.serve.sdk import route_chat_request
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +59,9 @@ class ProxyConfig:
             {"id": "strong-local", "quality": 0.9, "cost": 0.4},
         ]
     )
+    host_allowlist: list[str] | None = None
+    previous_model: str | None = None
+    compress_hook: Any | None = None
 
     def resolved_candidates(self) -> list[dict[str, Any]]:
         return list(self.candidates or self.default_candidates)
@@ -85,19 +87,12 @@ def route_completion_body(
     *,
     config: ProxyConfig | None = None,
 ) -> tuple[str, RouteDecisionResult, dict[str, Any]]:
-    """Run routing on a chat-completions body; return (model, decision, outbound_body)."""
+    """Run generic adapter; return (model, decision, outbound_body without compass)."""
+    from compass.serve.adapter import adapt_chat_completions, proxy_config_to_adapter
+
     cfg = config or ProxyConfig.from_env()
-    routed = route_chat_request(
-        body,
-        config=cfg.route_config,
-        candidates=cfg.resolved_candidates(),
-        envelope=cfg.envelope,
-        policy=cfg.policy,
-        store=cfg.store,
-    )
-    outbound = dict(body)
-    outbound["model"] = routed.model
-    return routed.model, routed.decision, outbound
+    result = adapt_chat_completions(body, config=proxy_config_to_adapter(cfg))
+    return result.model, result.decision, result.outbound_body
 
 
 def dry_run_response(
@@ -133,6 +128,7 @@ def dry_run_response(
             "upstream": None,
             "selected_model": model,
             "original_model": original_model,
+            "selection_mode": getattr(decision, "selection_mode", None),
             "route_decision": _decision_payload(decision),
         },
     }
@@ -173,14 +169,16 @@ def handle_chat_completions(
     config: ProxyConfig | None = None,
     inbound_headers: dict[str, str] | None = None,
 ) -> tuple[int, dict[str, Any] | bytes, str]:
-    """Core handler: decide → dry-run JSON or upstream forward.
+    """Core handler: adapter (decide/catalog/override) → dry-run or forward.
 
     Returns (http_status, payload, content_type). Payload is dict for dry-run
     / error JSON, or raw bytes when forwarding upstream.
     """
+    from compass.serve.adapter import adapt_chat_completions, proxy_config_to_adapter
+
     cfg = config or ProxyConfig.from_env()
     try:
-        model, decision, outbound = route_completion_body(body, config=cfg)
+        adapted = adapt_chat_completions(body, config=proxy_config_to_adapter(cfg))
     except Exception as exc:  # noqa: BLE001
         logger.exception("proxy routing failed")
         fo_model = (cfg.route_config or RouteConfig()).default_model_version_id
@@ -193,16 +191,43 @@ def handle_chat_completions(
         }
         return 200, err, "application/json"
 
-    if not cfg.upstream:
-        return (
-            200,
-            dry_run_response(model, decision, original_model=body.get("model")),
-            "application/json",
+    model, decision, outbound = adapted.model, adapted.decision, adapted.outbound_body
+
+    if adapted.denied:
+        payload = dry_run_response(model, decision, original_model=body.get("model"))
+        payload["compass"]["selection_mode"] = adapted.selection_mode
+        payload["compass"]["denied"] = True
+        payload["compass"]["deny_reason"] = adapted.deny_reason
+        return 403, payload, "application/json"
+
+    upstream = adapted.upstream_url
+    # Legacy: if adapter has no per-model upstream but ProxyConfig.upstream set, use it.
+    if not upstream and cfg.upstream:
+        base = cfg.upstream.rstrip("/")
+        upstream = (
+            base
+            if base.endswith("/v1/chat/completions")
+            else f"{base}/v1/chat/completions"
         )
+
+    if not upstream:
+        payload = dry_run_response(model, decision, original_model=body.get("model"))
+        payload["compass"]["selection_mode"] = adapted.selection_mode
+        payload["compass"]["compressed"] = adapted.compressed
+        return 200, payload, "application/json"
+
+    # forward_upstream expects base URL; strip completions suffix if present
+    forward_base = upstream
+    suffix = "/v1/chat/completions"
+    if forward_base.endswith(suffix):
+        forward_base = forward_base[: -len(suffix)] or forward_base
+
+    if "compass" in outbound:
+        outbound = {k: v for k, v in outbound.items() if k != "compass"}
 
     try:
         status, _hdrs, raw = forward_upstream(
-            cfg.upstream, outbound, headers=inbound_headers
+            forward_base, outbound, headers=inbound_headers
         )
         return status, raw, "application/json"
     except urllib.error.HTTPError as exc:
@@ -212,7 +237,8 @@ def handle_chat_completions(
         logger.exception("upstream forward failed; returning dry-run")
         payload = dry_run_response(model, decision, original_model=body.get("model"))
         payload["compass"]["upstream_error"] = type(exc).__name__
-        payload["compass"]["upstream"] = cfg.upstream
+        payload["compass"]["upstream"] = upstream
+        payload["compass"]["selection_mode"] = adapted.selection_mode
         return 200, payload, "application/json"
 
 

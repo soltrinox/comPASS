@@ -1,0 +1,24 @@
+{
+  "track": "O",
+  "modes": {
+    "decide": {
+      "selection_mode": "decide",
+      "model": "cheap",
+      "has_compass_outbound": false,
+      "upstream": "http://catalog-cheap.example/v1/chat/completions"
+    },
+    "catalog": {
+      "selection_mode": "catalog",
+      "model": "pricey",
+      "has_compass_outbound": false,
+      "upstream": "http://catalog-pricey.example/v1/chat/completions"
+    },
+    "proxy": {
+      "selection_mode": "proxy_override",
+      "model": "override",
+      "has_compass_outbound": false,
+      "upstream": "http://127.0.0.1:1/v1/chat/completions"
+    }
+  },
+  "ok": true
+}

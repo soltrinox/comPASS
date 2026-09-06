@@ -50,6 +50,7 @@ class RouteDecisionResult:
     trajectory_id: str | None = None
     episode_id: str | None = None
     hop_index: int | None = None
+    selection_mode: str | None = None  # decide | catalog | proxy_override
 
     def to_attrs(self) -> dict[str, Any]:
         attrs: dict[str, Any] = {
@@ -69,6 +70,8 @@ class RouteDecisionResult:
             attrs["episode_id"] = self.episode_id
         if self.hop_index is not None:
             attrs["hop_index"] = self.hop_index
+        if self.selection_mode is not None:
+            attrs["selection_mode"] = self.selection_mode
         return attrs
 
 

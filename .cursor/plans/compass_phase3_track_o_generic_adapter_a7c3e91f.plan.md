@@ -4,28 +4,28 @@ overview: Implement the normative generic LLM adapter (decide / catalog pin / pr
 todos:
   - id: o-api-freeze
     content: Treat docs/API.md §6 + ADR 0006 as frozen contract; add JSON Schema for compass extension if useful
-    status: pending
+    status: completed
   - id: o-mode-resolver
     content: "Implement selection_mode resolver: proxy_override > catalog > decide; persist RouteDecision.selection_mode"
-    status: pending
+    status: completed
   - id: o-extend-proxy
     content: Extend compass.serve.proxy (or new compass.serve.adapter) to honor compass.target / target_url / model_version_id; strip compass before forward
-    status: pending
+    status: completed
   - id: o-catalog-endpoints
     content: Resolve catalog ModelVersion → upstream base URL from Graph attrs; wire weighted candidates from store
-    status: pending
+    status: completed
   - id: o-compressor-hop
     content: On model change / compress.hop, call comPREssOR hop-safe forward inject before outbound; join trajectory_id
-    status: pending
+    status: completed
   - id: o-bridge-allowlist
     content: Browser JS bridge allowlist + Gate stub for proxy override hosts (deny-by-default)
-    status: pending
+    status: completed
   - id: o-tests
     content: "Tests: mode matrix, strip compass, dry-run, fallback_to_decide, fail-open; evidence under test-results/o-generic-adapter/"
-    status: pending
+    status: completed
   - id: o-docs-plans
     content: Link Track O from PLANS.md Phase 3; note ARCHITECTURE §10
-    status: pending
+    status: completed
 isProject: true
 ---
 
