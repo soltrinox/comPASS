@@ -9,6 +9,8 @@
 
 Normative companions: [`ARCHITECTURE.md`](ARCHITECTURE.md) · [`WASMER.md`](WASMER.md) · [`API.md`](API.md) · ADRs [0005](adr/0005-eni6ma-gated-browser-agent.md) / [0006](adr/0006-generic-llm-adapter.md) / [0007](adr/0007-agy-behind-eni6ma-gate.md) · Gate ABI notes [`../services/agy-bridge/docs/CIRCUIT-ABI.md`](../services/agy-bridge/docs/CIRCUIT-ABI.md).
 
+**Goals vs status audit:** [`AUDIT-GOALS-VS-BROWSER-STACK.md`](AUDIT-GOALS-VS-BROWSER-STACK.md) (Done / Partial / Not done against charter + ADRs 0005–0007).
+
 ---
 
 ## 1. Zone diagram
