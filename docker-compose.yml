@@ -1,5 +1,6 @@
-# comPASS local stack — default agy-bridge with fake-agy
+# comPASS local stack — agy-bridge + browser challenge client
 # docker compose up --build -d
+# Challenge UI: http://127.0.0.1:8088/
 # See docs/DOCKER.md
 
 services:
@@ -23,8 +24,24 @@ services:
       start_period: 10s
     restart: unless-stopped
 
+  browser-client:
+    build:
+      context: .
+      dockerfile: services/browser-client/Dockerfile
+    ports:
+      - "8088:80"
+    depends_on:
+      agy-bridge:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/healthz || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
   # Optional: docker compose --profile live-agy up --build -d
-  # Mount host agy + credentials (advanced). Not required for default up.
   agy-bridge-live:
     profiles: ["live-agy"]
     build: ./services/agy-bridge

@@ -1,6 +1,6 @@
-# Docker Compose — agy-bridge
+# Docker Compose — agy-bridge + browser challenge client
 
-Bring up the local **agy-bridge** (ENI6MA Gate → chat completions) without installing Google Antigravity.
+Bring up the local **agy-bridge** (ENI6MA Gate → chat completions) and the **browser challenge client** (Pass+-style handle / binary URL → digest-pin → prove → ask).
 
 **Prerequisite:** Docker Desktop must be running (`docker info` succeeds). On macOS: `open -a Docker`, then wait until the daemon is ready.
 
@@ -11,14 +11,21 @@ Bring up the local **agy-bridge** (ENI6MA Gate → chat completions) without ins
 docker compose up --build -d
 ```
 
-Health check:
+| Surface | URL |
+|---------|-----|
+| **Challenge UI** | http://127.0.0.1:8088/ |
+| agy-bridge health | http://127.0.0.1:8791/healthz |
+| browser-client health | http://127.0.0.1:8088/healthz |
 
-```bash
-curl -s http://127.0.0.1:8791/healthz
-# {"ok":true,"service":"agy-bridge",...}
-```
+### Challenge entry (like Pass+ / `circuit.eni6ma.com/passplus`)
 
-Sample completion (Gate DEV mode; circuit URL+sha256 for cache/fetch):
+- Handle: http://127.0.0.1:8088/challenge.html?handle=demo-wasm
+- Binary URL: http://127.0.0.1:8088/challenge.html?binary_url=https://raw.githubusercontent.com/eni6ma/REGISTRY/feat/wasm-circuits/circuits/demo-wasm/v1/eni6ma_wasm.wasm&sha256=853717e421a36fc93d0791d3f2718ecf3e9c449fb3c60d4084dedab3af75c389
+- Or click **Use local pin** to load `wasmer/artifacts` digest without GitHub.
+
+Flow: first paint is the challenge form → **Load & Prove** fetches via same-origin `/circuit-proxy` (allowlisted GitHub hosts) → SHA-256 fail-closed → DEMO-MINT `build_minimal_proof` in-tab → **Ask / execute** posts to `:8791` with `compass.circuit`.
+
+Sample completion (Gate DEV mode):
 
 ```bash
 curl -s http://127.0.0.1:8791/v1/chat/completions \
@@ -36,9 +43,7 @@ curl -s http://127.0.0.1:8791/v1/chat/completions \
   }'
 ```
 
-Default compose uses `scripts/fake-agy.js` (`AGY_BIN=/app/scripts/fake-agy.js`) so no live `agy` install is needed. Bind is `0.0.0.0` inside the container (`AGY_BRIDGE_HOST`); host port `8791`.
-
-Circuit WASM cache persists in volume `agy-bridge-circuits` → `/data/circuits`.
+Default compose uses `scripts/fake-agy.js` so no live `agy` install is needed.
 
 ## Stop
 
@@ -48,11 +53,4 @@ docker compose down
 
 ## Live Antigravity (advanced)
 
-Profile `live-agy` is documented in `docker-compose.yml`. It expects host networking and mounts for the real `agy` binary plus credentials. Default `docker compose up` does **not** require this.
-
-```bash
-# after editing mounts in docker-compose.yml
-docker compose --profile live-agy up --build -d
-```
-
-Local-only default without Docker still binds `127.0.0.1` (`AGY_BRIDGE_HOST` unset).
+Profile `live-agy` is documented in `docker-compose.yml`. Default `docker compose up` does **not** require it.
