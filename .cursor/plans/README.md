@@ -36,3 +36,13 @@ Do not delete unrelated plans in those directories. Same bytes in all three copi
 | L — PyPI release | [compass_track_l_pypi_release_43bd556a.plan.md](compass_track_l_pypi_release_43bd556a.plan.md) |
 | M — Probe credentials | [compass_track_m_probe_credentials_acfb34f5.plan.md](compass_track_m_probe_credentials_acfb34f5.plan.md) |
 | N — Paid pillars | [compass_track_n_paid_pillars_fae9b18d.plan.md](compass_track_n_paid_pillars_fae9b18d.plan.md) |
+
+## Phase 3 — Browser agent + status handoff
+
+| Track | Plan |
+| --- | --- |
+| O — Generic LLM adapter | [compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md](compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md) |
+| P3 Status — Grok→Cursor handoff | [compass_phase3_status_handoff_20260907.plan.md](compass_phase3_status_handoff_20260907.plan.md) |
+
+Canonical narrative status: [`../../docs/CURSOR-HANDOFF.md`](../../docs/CURSOR-HANDOFF.md)
+
