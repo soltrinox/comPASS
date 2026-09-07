@@ -1,6 +1,6 @@
 # comPASS program plans
 
-**Date:** 2026-09-05  
+**Date:** 2026-09-07  
 **Ground truth:** [`/Users/rosario/work/comPASS/PROTOTYPE.md`](/Users/rosario/work/comPASS/PROTOTYPE.md)  
 **Summary:** [`/Users/rosario/work/comPASS/SUMMARY/2026-09-03-comPASS-prototype-session.md`](/Users/rosario/work/comPASS/SUMMARY/2026-09-03-comPASS-prototype-session.md)  
 **Canonical compressor:** `git@github.com:soltrinox/comPREssOR.git` at [`/Users/rosario/work/comPREssOR`](/Users/rosario/work/comPREssOR) (engine 0.2.0, `main` @ `44460ba`, CC-1..CC-10)  
@@ -70,3 +70,14 @@ Browser-only Wasmer appliance (ADR 0005) and generic LLM adapter (ADR 0006).
 | Track | Name | Cursor plan (work) | User plans | Repo copy |
 | --- | --- | --- | --- | --- |
 | O | Generic LLM adapter | [`/Users/rosario/work/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md`](/Users/rosario/work/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md) | [`/Users/rosario/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md`](/Users/rosario/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_phase3_track_o_generic_adapter_a7c3e91f.plan.md) |
+| P3 Status | Phase 3 status handoff (Grok→Cursor) | [`/Users/rosario/work/.cursor/plans/compass_phase3_status_handoff_20260907.plan.md`](/Users/rosario/work/.cursor/plans/compass_phase3_status_handoff_20260907.plan.md) | [`/Users/rosario/.cursor/plans/compass_phase3_status_handoff_20260907.plan.md`](/Users/rosario/.cursor/plans/compass_phase3_status_handoff_20260907.plan.md) | [`/Users/rosario/work/comPASS/.cursor/plans/compass_phase3_status_handoff_20260907.plan.md`](/Users/rosario/work/comPASS/.cursor/plans/compass_phase3_status_handoff_20260907.plan.md) |
+
+### Phase 3 progress notes (2026-09-07 PT)
+
+- **Handoff:** [`docs/CURSOR-HANDOFF.md`](docs/CURSOR-HANDOFF.md) — open first in Cursor after leaving Grok Bot.
+- **Audit:** [`docs/AUDIT-GOALS-VS-BROWSER-STACK.md`](docs/AUDIT-GOALS-VS-BROWSER-STACK.md); stack map [`docs/WASMER-DEPLOYMENT.md`](docs/WASMER-DEPLOYMENT.md).
+- Track O generic adapter **completed** (ADR 0006 / `src/compass/serve/adapter.py` + tests).
+- ADRs **0005** (browser ENI6MA agent), **0007** (agy behind Gate) Accepted; agy-bridge + Compose on `:8791`.
+- **PR #2** Docker `browser-client` challenge UI on `:8088` (handle / binary_url → digest-pin → minimal proof → Ask Gate) — merge + smoke still open.
+- **Outstanding:** six-color ceremony UX, verify+burn ledger, full agent boot page, real comPREssOR hop inject, live-agy optional.
+

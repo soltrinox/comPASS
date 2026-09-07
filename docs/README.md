@@ -19,6 +19,7 @@ Track A deliverables. Implementation is Tracks B–D. Product/GTM is Track E. **
 | [`WASMER.md`](WASMER.md) | Wasmer artifacts/ABI + Phase 3 browser appliance notes |
 | [`WASMER-DEPLOYMENT.md`](WASMER-DEPLOYMENT.md) | **Phase 3 lifecycle:** zones A–D, Gate auth, adapter→bridge→agy, module maps, ports, operator cheat sheet |
 | [`AUDIT-GOALS-VS-BROWSER-STACK.md`](AUDIT-GOALS-VS-BROWSER-STACK.md) | **Goals vs build:** charter + Phase 3 goals mapped to Done/Partial/Not; browser stack tree + module audit |
+| [`CURSOR-HANDOFF.md`](CURSOR-HANDOFF.md) | **Cursor handoff (2026-09-07):** Phase 3 status, compose ports, PR #2, next todos |
 | [`RELEASE.md`](RELEASE.md) | Track L: version scheme, tag policy, TestPyPI/PyPI publish (no secrets) |
 | [`abi/host-abi.v1.md`](abi/host-abi.v1.md) | Host ABI v1 (storage/clock/log/config; keys forbidden) |
 | [`INTEGRATION.md`](INTEGRATION.md) | CC-1–CC-10 touchpoints; ingestion; classification reuse; bundle pointer |
