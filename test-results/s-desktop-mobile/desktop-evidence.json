@@ -1,0 +1,143 @@
+{
+  "stage": "s-desktop-mobile",
+  "plan_todo": "b3-desktop",
+  "mobile_coverage": "none \u2014 desktop-only files; B4 owns mobile",
+  "script": "wasmer/desktop/run-decide.sh",
+  "wasmer": "wasmer 7.4.0",
+  "parity_script_untouched": "scripts/wasmer_parity.py still runs wasmer on the loose wasm artifact",
+  "run_order": [
+    "1 registry-by-name if requested (COMPASS_WASMER_USE_REGISTRY / --registry)",
+    "2 local .webc (wasmer package build if missing) \u2014 default today",
+    "3 air-gap wasmer/artifacts/compass-decide.wasm"
+  ],
+  "cases": [
+    {
+      "name": "fixture_min",
+      "webc_rc": 0,
+      "wasm_rc": 0,
+      "webc_stderr": [
+        "[run-decide] using existing webc compass-decide-0.1.0.webc",
+        "[run-decide] source=webc input=compass-decide-0.1.0.webc"
+      ],
+      "wasm_stderr": [
+        "[run-decide] source=wasm input=wasmer/artifacts/compass-decide.wasm"
+      ],
+      "packaged": {
+        "abi_max": "1.999.0",
+        "abi_min": "1.0.0",
+        "constraints_applied": [],
+        "decided_at": "2026-09-05T00:00:00Z",
+        "default_reason": null,
+        "fail_open": false,
+        "lambda": 1.0,
+        "module_version": "0.1.0",
+        "rationale": "highest score under quality\u2212\u03bb\u00b7cost",
+        "score": 0.6,
+        "scores": {
+          "urn:mg:model:cheap": 0.6,
+          "urn:mg:model:pricey": 0.25
+        },
+        "selected_model_version_id": "urn:mg:model:cheap",
+        "task_class_id": "code_generation"
+      },
+      "loose": {
+        "abi_max": "1.999.0",
+        "abi_min": "1.0.0",
+        "constraints_applied": [],
+        "decided_at": "2026-09-05T00:00:00Z",
+        "default_reason": null,
+        "fail_open": false,
+        "lambda": 1.0,
+        "module_version": "0.1.0",
+        "rationale": "highest score under quality\u2212\u03bb\u00b7cost",
+        "score": 0.6,
+        "scores": {
+          "urn:mg:model:cheap": 0.6,
+          "urn:mg:model:pricey": 0.25
+        },
+        "selected_model_version_id": "urn:mg:model:cheap",
+        "task_class_id": "code_generation"
+      },
+      "identical_parsed": true,
+      "compare_errors": []
+    },
+    {
+      "name": "fail_open_missing",
+      "webc_rc": 0,
+      "wasm_rc": 0,
+      "webc_stderr": [
+        "[run-decide] using existing webc compass-decide-0.1.0.webc",
+        "[run-decide] source=webc input=compass-decide-0.1.0.webc"
+      ],
+      "wasm_stderr": [
+        "[run-decide] source=wasm input=wasmer/artifacts/compass-decide.wasm"
+      ],
+      "packaged": {
+        "abi_max": "1.999.0",
+        "abi_min": "1.0.0",
+        "constraints_applied": [],
+        "decided_at": "2026-09-05T00:00:00Z",
+        "default_reason": "snapshot_missing",
+        "fail_open": true,
+        "lambda": 1.0,
+        "module_version": "0.1.0",
+        "rationale": "fail-open: snapshot_missing",
+        "score": -0.5,
+        "scores": {
+          "default": -0.5
+        },
+        "selected_model_version_id": "default",
+        "task_class_id": "general"
+      },
+      "loose": {
+        "abi_max": "1.999.0",
+        "abi_min": "1.0.0",
+        "constraints_applied": [],
+        "decided_at": "2026-09-05T00:00:00Z",
+        "default_reason": "snapshot_missing",
+        "fail_open": true,
+        "lambda": 1.0,
+        "module_version": "0.1.0",
+        "rationale": "fail-open: snapshot_missing",
+        "score": -0.5,
+        "scores": {
+          "default": -0.5
+        },
+        "selected_model_version_id": "default",
+        "task_class_id": "general"
+      },
+      "identical_parsed": true,
+      "compare_errors": []
+    }
+  ],
+  "registry_by_name": {
+    "grade": "PARTIAL",
+    "runtime": "NOT_RUN",
+    "reason": "Wasmer registry publish is NOT_RUN: no login, namespace compass unclaimed. run-decide.sh implements wasmer run <name>@<version> and falls through. This capture uses COMPASS_WASMER_REGISTRY_ONLY=1 so the hop cannot hide behind local .webc.",
+    "command": "COMPASS_WASMER_USE_REGISTRY=1 COMPASS_WASMER_REGISTRY_ONLY=1 ./wasmer/desktop/run-decide.sh --registry",
+    "rc": 1,
+    "stdout_empty": true,
+    "stderr_tail": [
+      "[run-decide] trying registry-by-name: wasmer run compass/decide@0.1.0",
+      "[run-decide] publish state is NOT_RUN until wasmer/PUBLISH-NOT_RUN.md flips; this hop is expected to fail until a human wasmer login + namespace claim + wasmer publish .",
+      "[run-decide] source=registry input=compass/decide@0.1.0",
+      "error: Unable to find \"compass/decide@^0.1.0\" in the registry",
+      "\u2570\u2500\u25b6 1: failed to query package 'compass/decide@^0.1.0': not found",
+      "[run-decide] source=registry failed rc=1 input=compass/decide@0.1.0",
+      "[run-decide] registry-by-name PARTIAL (code present) / runtime NOT_RUN: compass/decide@0.1.0 is not on the registry. Falling through. See wasmer/PUBLISH-NOT_RUN.md.",
+      "[run-decide] COMPASS_WASMER_REGISTRY_ONLY=1 \u2014 not falling through"
+    ],
+    "publish_state_ref": "wasmer/PUBLISH-NOT_RUN.md",
+    "faked": false,
+    "honest_failure_logged": true
+  },
+  "registry_fallthrough": {
+    "rc": 0,
+    "stderr_mentions_fallthrough": true,
+    "stderr_mentions_webc": true,
+    "selected_model_version_id": "urn:mg:model:cheap"
+  },
+  "errors": [],
+  "ok": true,
+  "captured_at": "2026-09-08T03:46:19Z"
+}

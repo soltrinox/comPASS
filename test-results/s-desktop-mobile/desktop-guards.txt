@@ -1,0 +1,36 @@
+# Desktop B3 guards — captured 2026-09-08T03:46:19Z
+
+Commands run from repo root with .venv/bin/python. Full pytest was not run.
+
+$ python scripts/wasmer_desktop_packaged.py
+exit=0
+ok: true
+errors: []
+registry_by_name: grade=PARTIAL runtime=NOT_RUN
+evidence: test-results/s-desktop-mobile/desktop-evidence.json
+
+$ python scripts/wasmer_parity.py
+exit=0
+ok: true
+errors: []
+note: this script still shells `wasmer run` on wasmer/artifacts/compass-decide.wasm (Python vs loose wasm). Not changed.
+
+$ python scripts/wasmer_size_budget.py
+exit=0
+ok: true
+browser_cdylib_bytes=103980 budget_bytes=150000
+SHA256SUMS: all MATCH (compass-decide.wasm, compass_core.wasm, compass_core_bg.wasm, eni6ma demo wasm)
+note: this script rewrites test-results/j-wasmer-packaging/size-budget.json. That file was already dirty in the working tree from another stage and was left uncommitted here.
+
+$ python -m pytest tests/test_wasmer_desktop_packaged.py tests/test_wasmer_parity.py tests/test_wasmer_size_budget.py -q
+....                                                                     [100%]
+exit=0
+passed=4 failed=0
+
+Fresh `wasmer package build` on this tree is reproducible with itself
+(sha256 ee7fab4d7ac38a6519e9207a7b138d05a487a1b46fc758c9c3d3f0eb3637c7b5).
+Unpacked module bytes still MATCH B1 SHA256SUMS / the B1 webc payload
+(cmp modules/compass-decide and modules/compass-core). The outer .webc
+wrapper digest can differ from wasmer/artifacts/PACKAGE-DIGESTS.json
+without moving the trust root; do not treat a wrapper-fingerprint drift
+as a module change.

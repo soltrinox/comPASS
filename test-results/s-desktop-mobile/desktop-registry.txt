@@ -1,0 +1,17 @@
+# registry-by-name — captured 2026-09-08T03:46:19Z
+# Grade: PARTIAL (code present). Runtime: NOT_RUN. Not faked.
+rc=1
+stdout_empty=True
+stderr:
+[run-decide] trying registry-by-name: wasmer run compass/decide@0.1.0
+[run-decide] publish state is NOT_RUN until wasmer/PUBLISH-NOT_RUN.md flips; this hop is expected to fail until a human wasmer login + namespace claim + wasmer publish .
+[run-decide] source=registry input=compass/decide@0.1.0
+error: Unable to find "compass/decide@^0.1.0" in the registry
+╰─▶ 1: failed to query package 'compass/decide@^0.1.0': not found
+[run-decide] source=registry failed rc=1 input=compass/decide@0.1.0
+[run-decide] registry-by-name PARTIAL (code present) / runtime NOT_RUN: compass/decide@0.1.0 is not on the registry. Falling through. See wasmer/PUBLISH-NOT_RUN.md.
+[run-decide] COMPASS_WASMER_REGISTRY_ONLY=1 — not falling through
+
+fallthrough_rc=0
+fallthrough_logged=True
+fallthrough_source_webc=True

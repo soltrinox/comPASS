@@ -137,13 +137,25 @@ B1, which is not permitted to move the trust root.
    under `published`, and set `publish_state` to `PUBLISHED`. It must reconcile
    against the local `.webc` digest above; if it does not, stop — that is a trust
    root violation, not a formatting difference.
-5. **Flip this file** to PUBLISHED with the version, date, and registry URL. Then
-   unblock B3: rewrite `wasmer/desktop/run-decide.sh` to
-   `wasmer run compass/decide@0.1.0` with the local artifact path retained as the
-   air-gap fallback.
+5. **Flip this file** to PUBLISHED with the version, date, and registry URL.
+   B3 already wired `wasmer/desktop/run-decide.sh` to try
+   `wasmer run compass/decide@0.1.0` when requested, then local `.webc`, then
+   the air-gap wasm path. Flipping this file is what turns that first hop from
+   a caught NOT_RUN into a live registry run.
 6. **Repoint the stale docs** that still describe the manifest as living under
    `wasmer/desktop/`: `docs/WASMER.md` line 63 and `docs/WASMER-DEPLOYMENT.md`
    line 172. Left untouched here because `docs/` was owned by a parallel agent.
+
+## Downstream B3 (2026-09-07)
+
+`wasmer/desktop/run-decide.sh` now implements the three-hop order:
+
+1. Opt-in `wasmer run compass/decide@0.1.0` (`COMPASS_WASMER_USE_REGISTRY=1` / `--registry`)
+2. Local `compass-decide-0.1.0.webc` (default; `wasmer package build` if missing)
+3. Air-gap `wasmer/artifacts/compass-decide.wasm`
+
+A successful local `.webc` run is **not** a published-package run. Registry-by-name
+stays PARTIAL / NOT_RUN until this file flips to PUBLISHED.
 
 ## Alternatives considered
 
