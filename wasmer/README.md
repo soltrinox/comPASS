@@ -7,6 +7,8 @@
 | Python `compass.core` (wasm-boundary stand-in) | **READY** | Import-graph + fail-open tests |
 | Browser sandbox `.wasm` | **READY** | `artifacts/compass_core_bg.wasm` + `browser/` + headless smoke |
 | Desktop Wasmer embed | **READY** | `artifacts/compass-decide.wasm` + `desktop/run-decide.sh` shell |
+| Local `.webc` package | **READY** | Root `wasmer.toml` → `wasmer package build`, both modules, reproducible |
+| Wasmer registry publish | **NOT_RUN** | See `PUBLISH-NOT_RUN.md` — no credential, `compass` namespace unclaimed |
 | Mobile Wasmer | **NOT_RUN** | See `mobile/NOT_RUN.md` — same module bytes when a host exists |
 
 ## Artifacts (hashed)
@@ -46,9 +48,14 @@ wasmer/
   crate/                 # Rust compass-core (cdylib + WASI bin)
   artifacts/             # hashed .wasm outputs
   browser/               # CSP sandbox page + JS glue + smoke package.json
-  desktop/               # packaged Wasmer shell (run-decide.sh, wasmer.toml)
+  desktop/               # packaged Wasmer shell (run-decide.sh)
   mobile/                # NOT_RUN ADR + next steps
+  PUBLISH-NOT_RUN.md     # registry publish state + unblocking steps
 ```
+
+The package manifest is `wasmer.toml` at the **repo root** (promoted from
+`desktop/` so one `compass/decide` package covers both the WASI binary and the
+browser cdylib).
 
 ## Run (Python stand-in)
 

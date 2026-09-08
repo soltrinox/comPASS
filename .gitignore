@@ -14,6 +14,10 @@ build/
 *.log
 test-results/**/*.log.txt
 !test-results/**/.gitkeep
+
+# Wasmer package build output (reproducible from wasmer.toml; digest recorded
+# in wasmer/artifacts/PACKAGE-DIGESTS.json)
+*.webc
 .DS_Store
 
 # Rust / Wasmer crate

@@ -1,0 +1,49 @@
+# comPASS Wasmer package manifest — canonical, repo root (Track J / plan B1).
+#
+# Registry publish is the primary distribution path. One package carries both
+# execution surfaces so desktop and browser resolve the same bytes:
+#   - compass-decide  WASI binary, `wasmer run compass/decide`
+#   - compass-core    wasm32-unknown-unknown cdylib for the browser sandbox
+# Local `wasmer run wasmer/artifacts/compass-decide.wasm` via
+# wasmer/desktop/run-decide.sh remains the offline/air-gap fallback.
+#
+# Digest-as-trust-root (ADR 0005): both module sources are pinned in
+# wasmer/artifacts/SHA256SUMS, and compass_core_bg.wasm additionally in
+# wasmer/artifacts/pins.json. Publishing must not alter those bytes; reconcile
+# with `python scripts/wasmer_size_budget.py` before and after any publish.
+# Package-level digests: wasmer/artifacts/PACKAGE-DIGESTS.json.
+#
+# Publish state: NOT_RUN — see wasmer/PUBLISH-NOT_RUN.md.
+
+[package]
+name = "compass/decide"
+version = "0.1.0"
+description = "comPASS Route+Graph decide — WASI binary plus browser cdylib, no provider keys"
+license = "Apache-2.0"
+license-file = "LICENSE"
+readme = "wasmer/README.md"
+repository = "https://github.com/soltrinox/comPASS"
+
+# WASI decide binary. Reads a host-supplied snapshot, emits a decide envelope.
+[[module]]
+name = "compass-decide"
+source = "wasmer/artifacts/compass-decide.wasm"
+abi = "wasi"
+
+# Browser Route+Graph read core (wasm-bindgen cdylib, empty import table).
+# No command: instantiated by the host page / @wasmer/sdk, not run standalone.
+[[module]]
+name = "compass-core"
+source = "wasmer/artifacts/compass_core_bg.wasm"
+abi = "none"
+
+[[command]]
+name = "compass-decide"
+module = "compass-decide"
+runner = "wasi"
+
+# Guest path matches the `--volume "$PWD/wasmer:/wasmer"` mapping used by
+# run-decide.sh and scripts/wasmer_parity.py, so `--snapshot
+# /wasmer/fixtures/snapshot_min.json` behaves identically local and published.
+[fs]
+"/wasmer/fixtures" = "wasmer/fixtures"
