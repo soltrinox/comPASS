@@ -69,6 +69,25 @@ python scripts/sync_schema.py                  # repair
 python -m pytest tests/test_schema.py          # 10 passed
 ```
 
+## Commit-history note (concurrent branch work)
+
+Four commits were made for this stage. Three are intact:
+
+| Commit | Todo |
+|---|---|
+| `1e75e66` | `a1-framework` — add `docs/FRAMEWORK.md` |
+| `3a95d5c` | `a3-schema` — checksum guard + `scripts/sync_schema.py` |
+| `6c4df27` | this evidence directory |
+
+The fourth, `a84612f` (`a2-demote`), was absorbed into `3816465` when a concurrent
+agent working the Part B todos on this same branch ran `git commit --amend` while
+`a84612f` was `HEAD`. **No content was lost:** all seven files in `3816465` are
+byte-identical to `a84612f`, verified with `git diff a84612f HEAD -- <path>` per file.
+Only the commit message for that change now reads as the Part B author's. History was
+deliberately **not** rewritten to repair the attribution, because the concurrent agent
+was still committing and a rebase would have clobbered its work. `a84612f` remains in
+the reflog if the mapping ever needs to be shown.
+
 ## Grade
 
 | Item | Grade |
