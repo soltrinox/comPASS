@@ -1,7 +1,8 @@
 # comPASS Charter
 
 **Product placeholder:** comPASS (sister to comPREssOR)  
-**Ground truth:** [`../PROTOTYPE.md`](../PROTOTYPE.md)  
+**Ground truth:** [`FRAMEWORK.md`](FRAMEWORK.md) — canonical framework document  
+**Origin brief (historical):** [`../PROTOTYPE.md`](../PROTOTYPE.md)  
 **Architecture:** [`ARCHITECTURE.md`](ARCHITECTURE.md)  
 **Canonical compressor:** `soltrinox/comPREssOR` @ engine **0.2.0** — never implement against `CHAT-COMPRESSOR` (0.1.3)
 
@@ -46,7 +47,7 @@ Four capability tiers, each **independently shippable**, each strictly harder th
 | Tier | Name | What it does |
 |---|---|---|
 | **1** | **Observatory** | Live catalog: endpoints, price, latency p50/p95, context window, rate limits, availability, licence/data posture; canary drift on fixed ids. Useful with no routing. |
-| **2** | **Advisor** | Task classification + surfaced (not enforced) recommendation with measured scores and cost. Only tier expressible inside Cursor Agent Chat (hooks have no model field). |
+| **2** | **Advisor** | Task classification + surfaced (not enforced) recommendation with measured scores and cost. Surface is the in-tab agent; the IDE advisory path is **not** a product surface ([ADR 0005](adr/0005-eni6ma-gated-browser-agent.md)). |
 | **3** | **Router** | Real enforcement at owned call sites: SDK wrapper, OpenAI-compatible proxy, budget envelopes, policy constraints, escalation ladders. |
 | **4** | **Session orchestrator** | Per-turn routing inside one continuous session (hop + `hop_legal`, capability-aware payload shaping). Differentiated; requires compressor CC-1–CC-10. |
 
@@ -93,7 +94,7 @@ Stated so marketing and docs cannot overstate:
 1. **Not identical output across models.** Equivalence is an **outcome-equivalence band** on oracle-bearing task classes. Never identical or near-identical text.
 2. **Not solved cross-hop credit assignment.** Persist `RouteDecision` + recipient lineage for later re-attribution; do not claim solved credit.
 3. **Not a replacement for OpenRouter / LiteLLM.** Consume them as catalog/execution substrate and gateway plumbing.
-4. **In-Cursor Agent Chat is advisory only.** Hook return shapes have no model field; Tier 2 advice only inside Agent Chat.
+4. **No IDE enforcement, and no IDE product path.** Hook return shapes have no model field, so that surface could only ever advise; [ADR 0005](adr/0005-eni6ma-gated-browser-agent.md) removed it from the product entirely. Enforcement is the in-tab agent plus the generic adapter ([ADR 0006](adr/0006-generic-llm-adapter.md)).
 
 Additional posture: do not publish aggregate leaderboards from private probes; every capability figure carries `n` and `ci95`.
 
@@ -131,8 +132,9 @@ Additional product metrics:
 
 ## References
 
+- [`FRAMEWORK.md`](FRAMEWORK.md) — canonical framework; resolves conflicts between these documents
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) — planes, tiers, identity normalization
-- [`../PROTOTYPE.md`](../PROTOTYPE.md) — full product and integration specification
+- [`../PROTOTYPE.md`](../PROTOTYPE.md) — historical origin brief (2026-09-03)
 - [`API.md`](API.md) — Route plane + advisory contracts
 - [`INTEGRATION.md`](INTEGRATION.md) — compressor CC-* touchpoints (Track B owns code)
 - [`RISKS.md`](RISKS.md) — risk register

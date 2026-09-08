@@ -3,13 +3,15 @@
 Track A deliverables. Implementation is Tracks B–D. Product/GTM is Track E. **Do not edit compressor source from this track.**
 
 **Product placeholder:** comPASS (sister to comPREssOR)  
-**Ground truth:** [`../PROTOTYPE.md`](../PROTOTYPE.md)  
+**Ground truth:** [`FRAMEWORK.md`](FRAMEWORK.md) — canonical framework document  
+**Origin brief (historical):** [`../PROTOTYPE.md`](../PROTOTYPE.md) — superseded in part by ADR 0005/0006/0007  
 **Canonical compressor:** `soltrinox/comPREssOR` @ **0.2.0** — never `CHAT-COMPRESSOR`
 
 ## Index
 
 | Doc | Purpose |
 |---|---|
+| [`FRAMEWORK.md`](FRAMEWORK.md) | **Canonical:** single framework document — ADR 0001–0007 as current, supersession ledger, status |
 | [`CHARTER.md`](CHARTER.md) | Problem, wedge, tiers 1–4, free vs paid, non-claims, success metrics |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | **Phase 3:** browser Wasmer agent zones; ENI6MA Gate; planes remapped; extract→exec loop |
 | [`adr/0005-eni6ma-gated-browser-agent.md`](adr/0005-eni6ma-gated-browser-agent.md) | **Accepted:** browser-only + ENI6MA ceremony; supersedes sidecar/Cursor runtime |
@@ -28,10 +30,12 @@ Track A deliverables. Implementation is Tracks B–D. Product/GTM is Track E. **
 | [`schema/model-graph.v1.json`](schema/model-graph.v1.json) | Sibling capability-graph JSON Schema (`model-graph/v1`) — do not widen `ctx-graph.v1` |
 | [`schema/statenode-meta.v1.md`](schema/statenode-meta.v1.md) | CC-1 recipient fields on `StateNode.meta` |
 
-Machine-facing mirrors (byte-identical schema + bundle stub):
+Schema copies — canonical plus generated mirrors (see [`FRAMEWORK.md`](FRAMEWORK.md) §8):
 
-- `/Users/rosario/work/comPASS/schema/model-graph.v1.json`
-- `/Users/rosario/work/comPASS/schema/bundle.v1.json`
+- [`../src/compass/schema/model-graph.v1.json`](../src/compass/schema/model-graph.v1.json) — **canonical**, loaded at runtime, ships in the wheel
+- [`../schema/model-graph.v1.json`](../schema/model-graph.v1.json) — generated mirror (`python scripts/sync_schema.py`)
+- [`schema/model-graph.v1.json`](schema/model-graph.v1.json) — generated mirror
+- [`../schema/bundle.v1.json`](../schema/bundle.v1.json) — portable-bundle stub (single copy)
 
 ## Locked invariants (quick)
 
@@ -42,4 +46,7 @@ Machine-facing mirrors (byte-identical schema + bundle stub):
 - Equivalence: **outcome-equivalence band**, never identical text
 - **Phase 3 runtime:** browser-only Wasmer agent + ENI6MA Gate ([ADR 0005](adr/0005-eni6ma-gated-browser-agent.md)); no Cursor/IDE product path
 - Egress: host JS bridge deny-by-default; optional WISP; no ambient provider keys in static page
+- Schema: one canonical `model-graph.v1.json` under `src/compass/schema/`; mirrors generated, drift-guarded in `tests/test_schema.py`
 - Historical Track D: Route+Graph WASM read + Probe sidecar — superseded for product deploy
+
+Full invariant list and the supersession ledger: [`FRAMEWORK.md`](FRAMEWORK.md) §10 and Appendix B.
