@@ -31,3 +31,19 @@ wasmer/browser/vendor/
 # Local Node microservices (agy-bridge, etc.)
 node_modules/
 services/**/node_modules/
+
+# Mobile host build products and copied wasm (sync-assets.sh)
+wasmer/mobile/shared/compass_core_bg.wasm
+wasmer/mobile/shared/snapshot_min.json
+wasmer/mobile/ios/Resources/*
+!wasmer/mobile/ios/Resources/.gitkeep
+wasmer/mobile/ios/DerivedData/
+wasmer/mobile/ios/build/
+wasmer/mobile/ios/*.xcuserdatad
+wasmer/mobile/ios/**/xcuserdata/
+wasmer/mobile/android/.gradle/
+wasmer/mobile/android/app/build/
+wasmer/mobile/android/build/
+wasmer/mobile/android/local.properties
+wasmer/mobile/android/app/src/main/assets/*
+!wasmer/mobile/android/app/src/main/assets/.gitkeep

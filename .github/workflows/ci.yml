@@ -155,16 +155,22 @@ jobs:
           python -m pytest tests/test_wasmer_parity.py -q
           test -f test-results/wasmer-parity/parity.json
 
-  # Mobile Wasmer device matrix: explicit NOT_RUN (no device farm in CI).
-  # Desktop packaged shell + browser headless covered elsewhere (wasmer-browser.yml / desktop/).
+  # Mobile hosts: sources + status file. Runtime grade is iOS PARTIAL / Android
+  # NOT_RUN until an emulator or device log exists (see wasmer-mobile.yml).
   mobile:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Assert mobile NOT_RUN docs present
+      - name: Assert mobile host trees and status ADR
         run: |
+          set -euo pipefail
           test -f wasmer/mobile/NOT_RUN.md
+          test -f wasmer/mobile/shared/host.js
+          test -d wasmer/mobile/ios/Sources
+          test -d wasmer/mobile/android/app/src/main/java
           test -f wasmer/desktop/run-decide.sh
-          echo "mobile Wasmer target: NOT_RUN — see wasmer/mobile/NOT_RUN.md"
-          echo "Desktop shell: wasmer/desktop/run-decide.sh (packaged beyond raw wasm bytes)"
+          echo "status ADR: wasmer/mobile/NOT_RUN.md"
+          echo "iOS simulator / Android emulator: workflow wasmer-mobile.yml"
+          echo "Desktop shell: wasmer/desktop/run-decide.sh"
           echo "Browser headless: workflow wasmer-browser.yml"
+

@@ -1,0 +1,25 @@
+{
+  "overall": "PARTIAL",
+  "full_requires_physical_device": true,
+  "ios": {
+    "grade": "PARTIAL",
+    "host": "ios-wkwebview-simulator",
+    "evidence": "mobile-ios-simulator.json"
+  },
+  "android": {
+    "grade": "NOT_RUN",
+    "reason": "Android SDK missing",
+    "evidence": "mobile-android.json"
+  },
+  "shared_glue": {
+    "grade": "glue-only",
+    "not_a_device_run": true,
+    "evidence": "mobile-glue-check.json"
+  },
+  "size_budget": {
+    "ok": true,
+    "browser_cdylib_bytes": 103980,
+    "sha256": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "evidence": "mobile-size-budget.json"
+  }
+}

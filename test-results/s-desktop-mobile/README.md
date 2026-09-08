@@ -1,11 +1,46 @@
-# s-desktop-mobile — stage evidence (plan B3 desktop only)
+# s-desktop-mobile — stage evidence (B3 desktop + B4 mobile)
+
+Captured on branch `feat/consolidation-and-wasmer`.
+
+Desktop files (`desktop-*.log.txt`, `desktop-evidence.json`) are **B3** and must not be deleted. Mobile files below are **B4**.
+
+## B4 mobile hosts (2026-09-07 PT / 2026-09-08Z)
+
+| Path | Grade | Notes |
+|---|---|---|
+| iOS WKWebView Simulator | **PARTIAL** | `simctl` install/launch on iPhone 16 Pro (iOS 18.6). fixture_min → `urn:mg:model:cheap`; missing → `snapshot_missing`; digest matches `SHA256SUMS`. Not a physical device (**not FULL**). |
+| Android WebView | **NOT_RUN** | Host sources present. No Android SDK (`ANDROID_HOME` unset). Not faked. |
+| Shared JS glue (Node) | glue-only | Same `host.js`; **not** a mobile run. |
+| Size budget | FULL | `compass_core_bg.wasm` 103980 ≤ 150000; hash unchanged |
+
+### Mobile artifacts
+
+| File | Contents |
+|---|---|
+| `mobile-ios-simulator.json` | Simulator grade + JS report |
+| `mobile-ios-simulator-*.log.txt` | xcodebuild + simctl transcript (gitignored `*.log.txt`) |
+| `mobile-android.json` | Honest SDK-missing NOT_RUN |
+| `mobile-glue-check.json` | Node instantiate + parity |
+| `mobile-size-budget.json` | cdylib size + digest |
+| `mobile-hosts-summary.json` | Overall PARTIAL |
+
+### Re-run mobile
+
+```bash
+./scripts/validate-wasmer-mobile.sh
+# pieces:
+node scripts/wasmer_mobile_glue_check.mjs
+python scripts/wasmer_size_budget.py
+./wasmer/mobile/ios/run-simulator.sh
+./wasmer/mobile/android/run-emulator.sh
+```
+
+Xcode 26.2 on this machine had no `xcodebuild -destination` simulator entries (iOS 26.2 runtime/component missing). The runner builds `-sdk iphonesimulator` and uses `simctl`. Install the iOS 26.2 Simulator runtime for scheme-based `xcodebuild test`.
+
+## B3 desktop reconcile (unchanged)
 
 Stage: **B3 desktop reconcile** (`b3-desktop`).
 Captured 2026-09-07 PT (2026-09-08Z) on branch `feat/consolidation-and-wasmer`.
-
-**Mobile is not covered here.** B4 owns Android/iOS hosts. These files are
-desktop-only so a later mobile stage can share this directory without this
-stage claiming that work.
 
 ## Outcome
 
@@ -43,8 +78,10 @@ stage claiming that work.
 | Registry hop fails with "not found" / NOT_RUN | `desktop-registry.txt` |
 | Registry then falls through to webc and still decides | `desktop-evidence.json` `registry_fallthrough` |
 | `wasmer_parity.py` / `wasmer_size_budget.py` still green | `desktop-guards.txt` |
+| iOS Simulator decide parity | `mobile-ios-simulator.json` |
+| Android emulator | `mobile-android.json` (NOT_RUN) |
 
-## Re-run
+## Re-run desktop
 
 ```bash
 python scripts/wasmer_desktop_packaged.py
@@ -55,6 +92,4 @@ python -m pytest tests/test_wasmer_desktop_packaged.py tests/test_wasmer_parity.
 
 ## Not covered here
 
-Mobile hosts, registry publish, browser `@wasmer/sdk`, full pytest, and the
-cross-cutting proof report. `docs/` WASMER path references are owned by a
-parallel consolidation agent.
+Registry publish, browser `@wasmer/sdk` (B2), full pytest, and the cross-cutting proof report.
