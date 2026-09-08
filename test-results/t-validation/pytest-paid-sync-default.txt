@@ -1,0 +1,18 @@
+# python -m pytest tests/test_paid_sync.py -v --tb=short -o addopts=
+# interpreter: comPASS .venv (Python 3.13.7)
+# captured 2026-09-07 PT (TS 20260907-212310)
+# exit=0
+#
+# chat_compressor is not importable here (ModuleNotFoundError / missing
+# safetensors). compass.bundle.export_bundle therefore uses the local
+# free fallback. This is NOT a fix of the sibling engine.
+
+collected 5 items
+
+tests/test_paid_sync.py::test_manual_local_bundle_round_trip_without_paid_flag PASSED
+tests/test_paid_sync.py::test_manual_compass_bundle_api_stays_free PASSED
+tests/test_paid_sync.py::test_automated_sync_blocked_without_paid_flag PASSED
+tests/test_paid_sync.py::test_automated_sync_raises_when_not_fail_open PASSED
+tests/test_paid_sync.py::test_automated_round_trip_with_paid_flag PASSED
+
+5 passed in 0.04s

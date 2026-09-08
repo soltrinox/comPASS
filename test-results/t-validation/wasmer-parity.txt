@@ -1,0 +1,12 @@
+# python scripts/wasmer_parity.py
+# captured 2026-09-07 PT (TS 20260907-212310)
+# exit=0
+
+core decide fail-open: snapshot_missing → default
+core decide fail-open: snapshot_corrupt → default
+core decide fail-open: no_candidates → default
+{
+  "ok": true,
+  "errors": [],
+  "evidence": "test-results/wasmer-parity/parity.json"
+}

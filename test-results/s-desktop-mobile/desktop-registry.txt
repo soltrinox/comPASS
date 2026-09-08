@@ -1,4 +1,4 @@
-# registry-by-name — captured 2026-09-08T03:46:19Z
+# registry-by-name — captured 2026-09-08T04:23:44Z
 # Grade: PARTIAL (code present). Runtime: NOT_RUN. Not faked.
 rc=1
 stdout_empty=True

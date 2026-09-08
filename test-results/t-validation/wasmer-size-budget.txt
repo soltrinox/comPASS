@@ -1,3 +1,9 @@
+# python scripts/wasmer_size_budget.py
+# captured 2026-09-07 PT (TS 20260907-212310)
+# exit=0
+# also writes test-results/j-wasmer-packaging/size-budget.json
+# (this run added the eni6ma Path-B digest-only entry that SHA256SUMS already lists)
+
 {
   "ok": true,
   "budget_bytes": 150000,
@@ -21,3 +27,6 @@
   },
   "errors": []
 }
+
+browser cdylib compass_core_bg.wasm: 103980 bytes <= 150000
+digest-as-trust-root: sha256_actual == sha256_expected for every SHA256SUMS key
