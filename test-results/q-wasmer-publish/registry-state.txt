@@ -1,0 +1,35 @@
+# Wasmer registry state probe — captured 2026-09-08T03:29:55Z
+
+$ which wasmer && wasmer --version
+/opt/homebrew/bin/wasmer
+wasmer 7.4.0
+
+$ wasmer whoami
+error: Not logged in registry wasmer.io
+
+$ wasmer config get registry.url
+https://registry.wasmer.io/graphql
+
+$ wasmer config get registry.token   # empty output == no token
+(end of token output)
+
+$ env | grep -c WASMER_TOKEN
+0
+
+$ wasmer publish --dry-run .
+You are not logged in. Use the `--token` flag or log in (use `wasmer login`) to publish a package.
+error: Stopping execution as the user is not logged in.
+exit=1
+
+--- registry GraphQL (https://registry.wasmer.io/graphql) ---
+
+query: getNamespace(name:"compass")
+{"data":{"getNamespace":null}}
+query: getUser(username:"compass")
+{"data":{"getUser":null}}
+query: getPackage(name:"compass/decide")
+{"data":{"getPackage":null}}
+CONTROL query (proves the probe works): getNamespace(name:"wasmer")
+{"data":{"getNamespace":{"name":"wasmer","createdAt":"2022-02-15T19:40:20.25664Z"}}}
+CONTROL query: getPackage(name:"python/python")
+{"data":{"getPackage":{"name":"python/python","lastVersion":{"version":"3.13.18"}}}}
