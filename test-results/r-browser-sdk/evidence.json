@@ -1,0 +1,136 @@
+{
+  "stage": "B2",
+  "target": "browser-@wasmer/sdk",
+  "recorded_at": "2026-09-08T03:54:29.637Z",
+  "grade": "PARTIAL",
+  "pass": true,
+  "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob:; worker-src 'self' blob: 'wasm-unsafe-eval' 'unsafe-eval'; connect-src 'self' http://127.0.0.1:8791 http://localhost:8791 https://raw.githubusercontent.com https://github.com https://objects.githubusercontent.com https://registry.wasmer.io https://cdn.wasmer.io; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'",
+  "python_pin": "python/python@=3.13.18",
+  "sdk_npm": "0.11.0",
+  "registry_compass": "NOT_RUN",
+  "cases": {
+    "isolated_headers": {
+      "status": 200,
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob:; worker-src 'self' blob: 'wasm-unsafe-eval' 'unsafe-eval'; connect-src 'self' http://127.0.0.1:8791 http://localhost:8791 https://raw.githubusercontent.com https://github.com https://objects.githubusercontent.com https://registry.wasmer.io https://cdn.wasmer.io; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'",
+      "coop": "same-origin",
+      "coep": "require-corp",
+      "corp": "cross-origin"
+    },
+    "fallback_headers": {
+      "status": 200,
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob:; worker-src 'self' blob: 'wasm-unsafe-eval' 'unsafe-eval'; connect-src 'self' http://127.0.0.1:8791 http://localhost:8791 https://raw.githubusercontent.com https://github.com https://objects.githubusercontent.com https://registry.wasmer.io https://cdn.wasmer.io; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'",
+      "coop": null,
+      "coep": null,
+      "corp": "cross-origin"
+    },
+    "isolated_nav_csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob:; worker-src 'self' blob: 'wasm-unsafe-eval' 'unsafe-eval'; connect-src 'self' http://127.0.0.1:8791 http://localhost:8791 https://raw.githubusercontent.com https://github.com https://objects.githubusercontent.com https://registry.wasmer.io https://cdn.wasmer.io; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'",
+    "isolated": {
+      "isolated": true,
+      "ready": "1",
+      "sdk": "1",
+      "host": "FULL",
+      "webc": "FULL",
+      "python": "FULL",
+      "report": {
+        "isolated": true,
+        "sdk": {
+          "imported": true,
+          "ready": true,
+          "error": null
+        },
+        "compass_host": {
+          "grade": "FULL",
+          "source": "/artifacts/compass_core_bg.wasm",
+          "decision": {
+            "abi_max": "1.999.0",
+            "abi_min": "1.0.0",
+            "constraints_applied": [],
+            "decided_at": "2026-09-05T00:00:00Z",
+            "default_reason": null,
+            "fail_open": false,
+            "lambda": 1,
+            "module_version": "0.1.0",
+            "rationale": "highest score under quality−λ·cost",
+            "score": 0.6,
+            "scores": {
+              "urn:mg:model:cheap": 0.6,
+              "urn:mg:model:pricey": 0.25
+            },
+            "selected_model_version_id": "urn:mg:model:cheap",
+            "task_class_id": "code_generation"
+          },
+          "missing_reason": "snapshot_missing",
+          "corrupt_reason": "snapshot_corrupt",
+          "error": null
+        },
+        "compass_webc": {
+          "grade": "FULL",
+          "source": "local_webc",
+          "bytes": 258019,
+          "decision": {
+            "abi_max": "1.999.0",
+            "abi_min": "1.0.0",
+            "constraints_applied": [],
+            "decided_at": "2026-09-05T00:00:00Z",
+            "default_reason": null,
+            "fail_open": false,
+            "lambda": 1,
+            "module_version": "0.1.0",
+            "rationale": "highest score under quality−λ·cost",
+            "score": 0.6,
+            "scores": {
+              "urn:mg:model:cheap": 0.6,
+              "urn:mg:model:pricey": 0.25
+            },
+            "selected_model_version_id": "urn:mg:model:cheap",
+            "task_class_id": "code_generation"
+          },
+          "stdout_ok": true,
+          "error": null
+        },
+        "python": {
+          "grade": "FULL",
+          "pin": "python/python@=3.13.18",
+          "output": "zone-a-python-ok",
+          "error": null,
+          "source": "registry"
+        },
+        "registry_compass": {
+          "attempted": false,
+          "note": "NOT_RUN — wasmer/PUBLISH-NOT_RUN.md; no fake registry fetch"
+        }
+      },
+      "sharedArrayBuffer": true
+    },
+    "fallback": {
+      "isolated": false,
+      "ready": "1",
+      "sdk": {
+        "isolated": false,
+        "imported": false,
+        "ready": false,
+        "skipped": "not_cross_origin_isolated",
+        "error": null
+      },
+      "fixture": {
+        "abi_max": "1.999.0",
+        "abi_min": "1.0.0",
+        "constraints_applied": [],
+        "decided_at": "2026-09-05T00:00:00Z",
+        "default_reason": null,
+        "fail_open": false,
+        "lambda": 1,
+        "module_version": "0.1.0",
+        "rationale": "highest score under quality−λ·cost",
+        "score": 0.6,
+        "scores": {
+          "urn:mg:model:cheap": 0.6,
+          "urn:mg:model:pricey": 0.25
+        },
+        "selected_model_version_id": "urn:mg:model:cheap",
+        "task_class_id": "code_generation"
+      }
+    }
+  },
+  "blocker": "compass/decide registry fetch NOT_RUN (publish blocked); local webc + python/python@=3.13.18 succeeded"
+}

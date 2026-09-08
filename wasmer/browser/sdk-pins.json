@@ -1,0 +1,22 @@
+{
+  "schema": "compass-wasmer-sdk-pins/v1",
+  "notes": "npm pin is exact. Wasmer registry pin uses @= so the resolved artifact is reproducible. compass/decide is NOT fetched from the registry (publish NOT_RUN).",
+  "npm": {
+    "@wasmer/sdk": "0.11.0",
+    "browser_entrypoint": "@wasmer/sdk/browser"
+  },
+  "registry_packages": {
+    "python": "python/python@=3.13.18"
+  },
+  "local_guest": {
+    "webc": "compass-decide-0.1.0.webc",
+    "wasm": "../artifacts/compass_core_bg.wasm",
+    "abi_export": "compass_decide_json"
+  },
+  "fetch_origins_verified": {
+    "graphql": "https://registry.wasmer.io/graphql",
+    "python_download_host": "https://cdn.wasmer.io",
+    "python_download_verified_at": "2026-09-08",
+    "python_download_evidence": "getPackage(name:\"python/python\").lastVersion.distribution.downloadUrl for 3.13.18"
+  }
+}

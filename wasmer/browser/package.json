@@ -2,10 +2,15 @@
   "name": "compass-wasmer-browser-smoke",
   "private": true,
   "version": "0.1.0",
-  "description": "Headless browser smoke for wasmer/browser (Track J). No provider keys.",
+  "description": "Headless browser smoke for wasmer/browser (Track J + B2 SDK). No provider keys.",
   "type": "module",
   "scripts": {
-    "smoke": "node ../../scripts/wasmer_browser_smoke.mjs"
+    "postinstall": "node ./vendor-sdk.mjs",
+    "smoke": "node ../../scripts/wasmer_browser_smoke.mjs",
+    "smoke:sdk": "node ../../scripts/wasmer_browser_sdk_smoke.mjs"
+  },
+  "dependencies": {
+    "@wasmer/sdk": "0.11.0"
   },
   "devDependencies": {
     "playwright": "^1.49.0"

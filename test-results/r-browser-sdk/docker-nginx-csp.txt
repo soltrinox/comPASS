@@ -1,0 +1,11 @@
+# nginx (Docker compass-browser-client:b2) document headers — 2026-09-08
+
+curl -sS -D - -o /dev/null http://127.0.0.1:18088/zonea.html
+
+HTTP/1.1 200 OK
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp
+Cross-Origin-Resource-Policy: cross-origin
+Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob:; worker-src 'self' blob: 'wasm-unsafe-eval' 'unsafe-eval'; connect-src 'self' http://127.0.0.1:8791 http://localhost:8791 https://raw.githubusercontent.com https://github.com https://objects.githubusercontent.com https://registry.wasmer.io https://cdn.wasmer.io; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'
+
+Also 200: /healthz, /vendor/@wasmer/sdk/dist/index.js, /vendor/@wasmer/sdk/pkg/wasmer_sdk_js_bg.wasm, /fixtures/snapshot_min.json, /artifacts/compass_core_bg.wasm

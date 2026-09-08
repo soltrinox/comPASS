@@ -25,6 +25,8 @@ wasmer/crate/target/
 
 # Track J browser smoke
 wasmer/browser/node_modules/
+# Copied from node_modules/@wasmer/sdk by wasmer/browser/vendor-sdk.mjs (postinstall)
+wasmer/browser/vendor/
 
 # Local Node microservices (agy-bridge, etc.)
 node_modules/

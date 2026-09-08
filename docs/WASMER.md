@@ -41,6 +41,7 @@ Module size budget (browser cdylib): **≤ 150000 bytes** (~146 KiB). Guard: `py
 - No `eval` of host secrets into the module.
 - Do not expose `fetch` import on the browser build (verified: empty import table).
 - Chrome requires `script-src 'self' 'wasm-unsafe-eval'` for `WebAssembly.instantiate` (set in `wasmer/browser/index.html`).
+- `@wasmer/sdk/browser` additionally needs `worker-src 'self' blob: 'wasm-unsafe-eval' 'unsafe-eval'`, `blob:` on `script-src`, `'unsafe-eval'` (SDK wasm-bindgen `new Function` in WASIX workers; `'wasm-unsafe-eval'` is not enough), and `connect-src` to `https://registry.wasmer.io` (GraphQL) plus `https://cdn.wasmer.io` (package bytes; verified from `python/python@=3.13.18` `distribution.downloadUrl`). COOP `same-origin` / COEP `require-corp` stay as-is.
 - Fail-open if instantiate/decide throws → configured default + `module_trap`.
 - Sandbox page: `wasmer/browser/` (serve `wasmer/` over HTTP).
 - Headless hooks: `window.__COMPASS_SMOKE__`, `?smoke=1`, `data-smoke-ready`.
@@ -60,7 +61,7 @@ Workflow: `.github/workflows/wasmer-browser.yml` (no provider keys; uploads `tes
 
 ## Desktop / mobile packaging
 
-- **Desktop (FULL packaging path):** `./wasmer/desktop/run-decide.sh` — volume map, defaults, fail-open demos; see `wasmer/desktop/README.md` + `wasmer.toml`.
+- **Desktop (FULL packaging path):** `./wasmer/desktop/run-decide.sh` — volume map, defaults, fail-open demos; see `wasmer/desktop/README.md`. Package manifest: repo-root [`wasmer.toml`](../wasmer.toml) (not `wasmer/desktop/wasmer.toml`).
 - **Mobile:** **NOT_RUN** — no CI device farm. Exact next steps: [`wasmer/mobile/NOT_RUN.md`](../wasmer/mobile/NOT_RUN.md). Reuse `compass_core_bg.wasm` when a Wasmer-capable mobile host exists.
 
 ## Fail-open parity

@@ -169,7 +169,7 @@ Schema: `model-graph/v1` (sibling to compressor `ctx-graph`; do not widen compre
 | `artifacts/eni6ma/demo-wasm/v1/` | Path-B DEMO-MINT circuit + `pkg/` glue |
 | `artifacts/pins.json` | Authority digests |
 | `browser/` | `index.html`, `circuitLoader.js`, `wasmerRunner.js`, `bridge.js`, `agent.*`, `sandbox.js` |
-| `desktop/` | `run-decide.sh`, `wasmer.toml` |
+| `desktop/` | `run-decide.sh` (root [`wasmer.toml`](../wasmer.toml) is the package manifest) |
 | `crate/` | Rust → wasm build |
 | `mobile/` | **NOT_RUN** device farm |
 

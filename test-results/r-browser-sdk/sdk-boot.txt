@@ -1,0 +1,10 @@
+[2026-09-08T03:54:29.637Z] reusing local webc /Users/rosario/work/comPASS/test-results/r-browser-sdk/compass-decide-0.1.0.webc bytes=258019
+[2026-09-08T03:54:29.646Z] isolated http://127.0.0.1:8766/
+[2026-09-08T03:54:29.646Z] fallback  http://127.0.0.1:8767/
+[2026-09-08T03:54:29.661Z] isolated zonea.html status=200 csp="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob:; worker-src 'self' blob: 'wasm-unsafe-eval' 'unsafe-eval'; connect-src 'self' http://127.0.0.1:8791 http://localhost:8791 https://raw.githubusercontent.com https://github.com https://objects.githubusercontent.com https://registry.wasmer.io https://cdn.wasmer.io; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'" coop=same-origin coep=require-corp
+[2026-09-08T03:54:29.685Z] fallback index.html status=200 csp="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob:; worker-src 'self' blob: 'wasm-unsafe-eval' 'unsafe-eval'; connect-src 'self' http://127.0.0.1:8791 http://localhost:8791 https://raw.githubusercontent.com https://github.com https://objects.githubusercontent.com https://registry.wasmer.io https://cdn.wasmer.io; img-src 'self' data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'none'" coop= coep=
+[2026-09-08T03:54:33.562Z] launched headless channel=chrome
+[2026-09-08T03:54:37.155Z] goto http://127.0.0.1:8766/browser/zonea.html?python=1
+[2026-09-08T03:54:43.596Z] isolated crossOriginIsolated=true sdk=1 host=FULL webc=FULL python=FULL
+[2026-09-08T03:54:45.847Z] fallback isolated=false ready=1 sdk_skipped=not_cross_origin_isolated fixture=urn:mg:model:cheap
+[2026-09-08T03:54:45.847Z] RESULT grade=PARTIAL pass=true python=FULL webc=FULL
