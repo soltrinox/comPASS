@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -15,6 +16,21 @@ from compass.schema import (
     load_schema_path,
     package_schema_path,
 )
+
+# Canonical schema lives at src/compass/schema/model-graph.v1.json — loader.py reads it
+# at runtime and it is the only copy packaged into the sdist/wheel. These two are
+# generated mirrors, written by scripts/sync_schema.py and never edited by hand.
+MIRROR_RELPATHS = ("schema/model-graph.v1.json", "docs/schema/model-graph.v1.json")
+
+
+def _repo_root() -> Path | None:
+    """Repo checkout root, or None when tests run against an installed distribution."""
+    root = Path(__file__).resolve().parents[1]
+    return root if (root / "pyproject.toml").is_file() else None
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def test_package_schema_exists_and_loads():
@@ -57,14 +73,52 @@ def test_node_kinds_match_contract():
     assert "TaskClass" in NODE_KINDS
 
 
-def test_docs_mirror_matches_package(tmp_path: Path):
-    """Repo docs/schema and packaged schema should stay in sync when both present."""
+def test_canonical_schema_is_the_packaged_copy():
+    """The canonical file must stay inside the package so it ships in the wheel."""
+    packaged = package_schema_path().resolve()
+    assert packaged.parent.name == "schema"
+    assert packaged.parent.parent.name == "compass"
+    root = _repo_root()
+    if root is None:
+        pytest.skip("not a repo checkout; canonical path check needs the source tree")
+    assert packaged == (root / "src" / "compass" / "schema" / "model-graph.v1.json").resolve()
+
+
+def test_docs_mirror_matches_package():
+    """Repo and docs mirrors must parse equal to the packaged canonical schema."""
+    root = _repo_root()
+    if root is None:
+        pytest.skip("not a repo checkout; mirrors are not packaged")
     packaged = json.loads(package_schema_path().read_text(encoding="utf-8"))
-    docs = Path("docs/schema/model-graph.v1.json")
-    repo = Path("schema/model-graph.v1.json")
-    for mirror in (docs, repo):
-        if mirror.exists():
-            assert json.loads(mirror.read_text(encoding="utf-8")) == packaged
+    for relpath in MIRROR_RELPATHS:
+        mirror = root / relpath
+        assert mirror.is_file(), f"missing mirror {relpath} — run: python scripts/sync_schema.py"
+        assert json.loads(mirror.read_text(encoding="utf-8")) == packaged, (
+            f"{relpath} differs from canonical — run: python scripts/sync_schema.py"
+        )
+
+
+def test_schema_mirrors_have_no_checksum_drift():
+    """Byte-exact guard: all three copies must share one sha256.
+
+    Semantic equality is not enough — reformatting a mirror would silently make the
+    three files diverge on disk while still parsing equal, and consumers that pin the
+    digest (page-recall manifest, SHA256SUMS) would then disagree with the wheel.
+    """
+    root = _repo_root()
+    if root is None:
+        pytest.skip("not a repo checkout; mirrors are not packaged")
+    canonical = root / "src" / "compass" / "schema" / "model-graph.v1.json"
+    assert canonical.is_file(), "canonical schema missing from src/compass/schema/"
+    digests = {"src/compass/schema/model-graph.v1.json": _sha256(canonical)}
+    for relpath in MIRROR_RELPATHS:
+        mirror = root / relpath
+        assert mirror.is_file(), f"missing mirror {relpath} — run: python scripts/sync_schema.py"
+        digests[relpath] = _sha256(mirror)
+    assert len(set(digests.values())) == 1, (
+        "model-graph.v1.json checksum drift — run: python scripts/sync_schema.py\n"
+        + "\n".join(f"  {d}  {p}" for p, d in digests.items())
+    )
 
 
 def test_supersede_closes_old_opens_new():
