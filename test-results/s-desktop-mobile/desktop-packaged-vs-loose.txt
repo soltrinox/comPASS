@@ -1,4 +1,4 @@
-# packaged .webc vs loose wasm — captured 2026-09-08T04:23:44Z
+# packaged .webc vs loose wasm — captured 2026-09-18T22:20:56Z
 # wasmer: wasmer 7.4.0
 # script: wasmer/desktop/run-decide.sh
 
