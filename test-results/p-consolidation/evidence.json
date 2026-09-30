@@ -1,0 +1,76 @@
+{
+  "stage": "p-consolidation",
+  "scope": ["a1-framework", "a2-demote", "a3-schema"],
+  "date_utc": "2026-09-08T03:32:28Z",
+  "branch": "feat/consolidation-and-wasmer",
+  "base_head": "c6f5aa0",
+  "a1_framework": {
+    "grade": "FULL",
+    "artifact": "docs/FRAMEWORK.md",
+    "adrs_stated_as_current": ["0001", "0002", "0003", "0004", "0005", "0006", "0007"],
+    "supersession_ledger_entries": 9,
+    "relative_links_checked": 179,
+    "relative_links_broken": 0,
+    "absolute_path_hits": 0
+  },
+  "a2_demote": {
+    "grade": "FULL",
+    "prototype_banner_present": true,
+    "prototype_points_at_framework": true,
+    "prototype_diff_numstat": "24 1",
+    "prototype_diff_hunks": 1,
+    "prototype_heading_count_before": 67,
+    "prototype_heading_count_after": 67,
+    "ground_truth_repointed": [
+      "PLANS.md:4",
+      "docs/README.md:6",
+      "docs/CHARTER.md:4",
+      "docs/ARCHITECTURE.md:6",
+      "README.md:13"
+    ]
+  },
+  "a3_schema": {
+    "grade": "FULL",
+    "canonical": "src/compass/schema/model-graph.v1.json",
+    "canonical_rationale": "read at runtime by compass.schema.loader; only copy present in sdist and wheel",
+    "mirrors": ["schema/model-graph.v1.json", "docs/schema/model-graph.v1.json"],
+    "generator": "scripts/sync_schema.py",
+    "generator_check_exit": 0,
+    "digest_all_three": "7fe7ea117cf40a692d9d62907a722a529cfcd437ab43873d4d8bf16d86c3bae0",
+    "schema_bytes_modified": false,
+    "guards_added": [
+      "tests/test_schema.py::test_schema_mirrors_have_no_checksum_drift",
+      "tests/test_schema.py::test_canonical_schema_is_the_packaged_copy"
+    ],
+    "guard_negative_control": {
+      "injected_drift_digest": "4d66f123e759ca7391d702b45024f6d92392feb1cff25b07a8c36d3f90873a45",
+      "drift_kind": "byte-level only (reformat; parses equal)",
+      "sync_check_exit": 1,
+      "checksum_guard_failed": true,
+      "pre_existing_semantic_test_failed": false,
+      "repaired_by": "python scripts/sync_schema.py",
+      "post_repair_pytest": "10 passed"
+    }
+  },
+  "tests": {
+    "tests/test_schema.py": { "passed": 10, "failed": 0 },
+    "full_unit_suite": { "passed": 182, "failed": 1 }
+  },
+  "known_pre_existing_failure": {
+    "test": "tests/test_paid_sync.py::test_manual_compass_bundle_api_stays_free",
+    "error": "AttributeError: 'str' object has no attribute 'lineage'",
+    "location": "sibling comPREssOR engine/src/chat_compressor/bundle.py:117",
+    "caused_by_this_stage": false,
+    "verification": "reproduced with this branch's edits stashed (1 failed, 4 passed)",
+    "grade": "NOT_FIXED / out of scope (ADR 0002/0003 edit surface)"
+  },
+  "not_run": {
+    "part_b_wasmer": "owned by a parallel agent; nothing under wasmer/ or services/ touched",
+    "cross_cutting_proof_report": "owned by a later dedicated validation agent",
+    "browser_smoke_size_budget_parity": "not re-run this stage; no artifact or module bytes changed"
+  },
+  "logs": [
+    "consolidation-validation-20260907-203228.log.txt",
+    "schema-drift-guard-20260907-203059.log.txt"
+  ]
+}

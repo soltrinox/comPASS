@@ -114,6 +114,39 @@
     }
   }
 
+  async function trySdk() {
+    const sdk = {
+      isolated: window.crossOriginIsolated === true,
+      imported: false,
+      ready: false,
+      skipped: null,
+      error: null,
+    };
+    window.__COMPASS_SDK__ = sdk;
+    document.documentElement.dataset.smokeIsolated = sdk.isolated ? "1" : "0";
+    if (!sdk.isolated) {
+      sdk.skipped = "not_cross_origin_isolated";
+      document.documentElement.dataset.smokeSdk = "skipped";
+      return;
+    }
+    try {
+      // Dynamic import of the package "./browser" entry (dist/index.js).
+      // Static import is documented to crash workers. Bare specifier avoided
+      // so CSP does not need an import-map inline script.
+      const { Wasmer } = await import("./vendor/@wasmer/sdk/dist/index.js");
+      sdk.imported = true;
+      const wasmer = new Wasmer();
+      await wasmer.ready();
+      sdk.ready = true;
+      document.documentElement.dataset.smokeSdk = "1";
+      try { await wasmer.close(); } catch { /* ignore */ }
+    } catch (e) {
+      sdk.error = String(e);
+      document.documentElement.dataset.smokeSdk = "0";
+      // Fail-open: raw instantiate already succeeded in loadModule().
+    }
+  }
+
   async function boot() {
     try {
       await loadModule();
@@ -124,6 +157,7 @@
       document.documentElement.dataset.smokeError = String(e);
       return;
     }
+    await trySdk();
     // Auto-run fixture decide when ?smoke=1 (headless CI).
     const params = new URLSearchParams(location.search);
     if (params.get("smoke") === "1") {
@@ -151,6 +185,8 @@
 
   window.__COMPASS_SMOKE__ = {
     ready: () => document.documentElement.dataset.smokeReady === "1",
+    isolated: () => window.crossOriginIsolated === true,
+    sdk: () => window.__COMPASS_SDK__,
     fixture: FIXTURE,
     decideFixture: () => {
       const d = decide("implement a function", JSON.stringify(FIXTURE), "2026-09-05T00:00:00Z");

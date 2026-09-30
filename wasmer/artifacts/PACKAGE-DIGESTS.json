@@ -1,0 +1,51 @@
+{
+  "schema": "compass-wasmer-package-digests/v1",
+  "notes": "Package-level digests for the root wasmer.toml. Module digests must reconcile against SHA256SUMS (ADR 0005 digest-as-trust-root). The 'published' block stays null until wasmer/PUBLISH-NOT_RUN.md flips to PUBLISHED.",
+  "package": {
+    "name": "compass/decide",
+    "version": "0.1.0",
+    "manifest": "wasmer.toml",
+    "publish_state": "NOT_RUN",
+    "publish_state_ref": "wasmer/PUBLISH-NOT_RUN.md"
+  },
+  "local_package": {
+    "filename": "compass-decide-0.1.0.webc",
+    "sha256": "fe2dfc91893d692cb350ae92dee38a6c71bd669fd1fd847359f0fab2ffe8b5d9",
+    "bytes": 258019,
+    "built_by": "wasmer 7.4.0",
+    "built_at": "2026-09-07T00:00:00Z",
+    "reproducible": true,
+    "reproducibility_scope": "Byte-identical across repeated builds from an unchanged tree. The webc embeds the [package].readme and license-file contents, so editing wasmer/README.md or LICENSE changes this digest even though the module bytes do not move. Module digests below are the stable trust root; this one is a build fingerprint.",
+    "build_command": "wasmer package build -o test-results/q-wasmer-publish/compass-decide-0.1.0.webc .",
+    "committed": false,
+    "committed_note": "Build output, gitignored. Rebuild from the manifest to reproduce this digest."
+  },
+  "modules": {
+    "compass-decide": {
+      "abi": "wasi",
+      "source": "wasmer/artifacts/compass-decide.wasm",
+      "sha256": "e77301bed6f3bcdf8541ba7256cb6a4e58e1da62d7a98edb52fa27bdc1fee553",
+      "bytes": 135419,
+      "sha256sums_key": "compass-decide.wasm",
+      "reconciled": true
+    },
+    "compass-core": {
+      "abi": "none",
+      "source": "wasmer/artifacts/compass_core_bg.wasm",
+      "sha256": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+      "bytes": 103980,
+      "sha256sums_key": "compass_core_bg.wasm",
+      "pins_json_key": "compass_core_bg.wasm",
+      "reconciled": true
+    }
+  },
+  "fs": {
+    "/wasmer/fixtures": {
+      "source": "wasmer/fixtures",
+      "files": {
+        "snapshot_min.json": "8318571b06d35c805b21c404a3dc076a1af2be055f3c9fab037abd27404df6a4"
+      }
+    }
+  },
+  "published": null
+}

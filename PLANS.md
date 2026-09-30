@@ -1,7 +1,8 @@
 # comPASS program plans
 
 **Date:** 2026-09-07  
-**Ground truth:** [`/Users/rosario/work/comPASS/PROTOTYPE.md`](/Users/rosario/work/comPASS/PROTOTYPE.md)  
+**Ground truth:** [`docs/FRAMEWORK.md`](docs/FRAMEWORK.md) — canonical framework document  
+**Origin brief (historical):** [`PROTOTYPE.md`](PROTOTYPE.md) — 2026-09-03, superseded in part by ADR 0005/0006/0007  
 **Summary:** [`/Users/rosario/work/comPASS/SUMMARY/2026-09-03-comPASS-prototype-session.md`](/Users/rosario/work/comPASS/SUMMARY/2026-09-03-comPASS-prototype-session.md)  
 **Canonical compressor:** `git@github.com:soltrinox/comPREssOR.git` at [`/Users/rosario/work/comPREssOR`](/Users/rosario/work/comPREssOR) (engine 0.2.0, `main` @ `44460ba`, CC-1..CC-10)  
 **Public sibling:** [`https://github.com/soltrinox/comPASS`](https://github.com/soltrinox/comPASS) @ `16e22ec`

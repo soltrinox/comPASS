@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "grade": "NOT_RUN",
+  "reason": "Android SDK missing",
+  "host": "android-webview",
+  "device": false,
+  "emulator": false,
+  "compile": false
+}

@@ -7,7 +7,9 @@
 | Python `compass.core` (wasm-boundary stand-in) | **READY** | Import-graph + fail-open tests |
 | Browser sandbox `.wasm` | **READY** | `artifacts/compass_core_bg.wasm` + `browser/` + headless smoke |
 | Desktop Wasmer embed | **READY** | `artifacts/compass-decide.wasm` + `desktop/run-decide.sh` shell |
-| Mobile Wasmer | **NOT_RUN** | See `mobile/NOT_RUN.md` — same module bytes when a host exists |
+| Local `.webc` package | **READY** | Root `wasmer.toml` → `wasmer package build`, both modules, reproducible |
+| Wasmer registry publish | **NOT_RUN** | See `PUBLISH-NOT_RUN.md` — no credential, `compass` namespace unclaimed |
+| Mobile Wasmer | **PARTIAL** | iOS Simulator host; Android NOT_RUN — `mobile/NOT_RUN.md` |
 
 ## Artifacts (hashed)
 
@@ -46,9 +48,14 @@ wasmer/
   crate/                 # Rust compass-core (cdylib + WASI bin)
   artifacts/             # hashed .wasm outputs
   browser/               # CSP sandbox page + JS glue + smoke package.json
-  desktop/               # packaged Wasmer shell (run-decide.sh, wasmer.toml)
-  mobile/                # NOT_RUN ADR + next steps
+  desktop/               # packaged Wasmer shell (run-decide.sh)
+  mobile/                # iOS WKWebView + Android WebView hosts; status in NOT_RUN.md
+  PUBLISH-NOT_RUN.md     # registry publish state + unblocking steps
 ```
+
+The package manifest is `wasmer.toml` at the **repo root** (promoted from
+`desktop/` so one `compass/decide` package covers both the WASI binary and the
+browser cdylib).
 
 ## Run (Python stand-in)
 
@@ -126,4 +133,14 @@ COMPASS_FAIL_OPEN_DEMO=corrupt ./wasmer/desktop/run-decide.sh
 
 ```bash
 python scripts/wasmer_size_budget.py
+```
+
+## Mobile hosts
+
+```bash
+./scripts/validate-wasmer-mobile.sh
+# iOS Simulator only:
+./wasmer/mobile/ios/run-simulator.sh
+# Android (NOT_RUN without SDK):
+./wasmer/mobile/android/run-emulator.sh
 ```

@@ -1,0 +1,55 @@
+{
+  "kind": "mobile-shared-glue",
+  "not_a_device_run": true,
+  "artifact": "wasmer/artifacts/compass_core_bg.wasm",
+  "expected_sha256": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+  "pin_file": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+  "actual_sha256": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+  "size_bytes": 103980,
+  "ok": true,
+  "glue": {
+    "ok": true,
+    "expected_sha256": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "actual_sha256": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "digest_match": true,
+    "js_digest": "sha-256",
+    "import_table": "empty",
+    "fixture_min": {
+      "abi_max": "1.999.0",
+      "abi_min": "1.0.0",
+      "constraints_applied": [],
+      "decided_at": "2026-09-05T00:00:00Z",
+      "default_reason": null,
+      "fail_open": false,
+      "lambda": 1,
+      "module_version": "0.1.0",
+      "rationale": "highest score under quality−λ·cost",
+      "score": 0.6,
+      "scores": {
+        "urn:mg:model:cheap": 0.6,
+        "urn:mg:model:pricey": 0.25
+      },
+      "selected_model_version_id": "urn:mg:model:cheap",
+      "task_class_id": "code_generation"
+    },
+    "missing": {
+      "abi_max": "1.999.0",
+      "abi_min": "1.0.0",
+      "constraints_applied": [],
+      "decided_at": "2026-09-05T00:00:00Z",
+      "default_reason": "snapshot_missing",
+      "fail_open": true,
+      "lambda": 1,
+      "module_version": "0.1.0",
+      "rationale": "fail-open: snapshot_missing",
+      "score": -0.5,
+      "scores": {
+        "default": -0.5
+      },
+      "selected_model_version_id": "default",
+      "task_class_id": "general"
+    },
+    "error": null
+  },
+  "error": null
+}

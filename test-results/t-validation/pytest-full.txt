@@ -1,0 +1,13 @@
+# python -m pytest   (addopts -q from pyproject.toml)
+# captured 2026-09-07 PT (TS 20260907-212310)
+# interpreter: .venv/bin/python (Python 3.13.7)
+# exit=0
+#
+# chat_compressor is NOT importable in this venv (no safetensors), so
+# compass.bundle.export_bundle uses the local fallback. The sibling-engine
+# failure is reproduced separately in pytest-paid-sync-compressor-venv.txt.
+
+........................................................................ [ 38%]
+........................................................................ [ 77%]
+.........................................                                [100%]
+185 passed in 4.01s

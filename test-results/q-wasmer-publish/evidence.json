@@ -1,0 +1,158 @@
+{
+  "stage": "q-wasmer-publish",
+  "plan_todos": [
+    "b1-namespace",
+    "b1-publish"
+  ],
+  "branch": "feat/consolidation-and-wasmer",
+  "captured_at": "2026-09-08T03:30:00Z",
+  "outcome": "PARTIAL",
+  "outcome_detail": "Offline packaging complete and verified; registry publish NOT_RUN (no credential, namespace unclaimed).",
+  "b1_namespace": {
+    "result": "BLOCKED",
+    "cli": {
+      "path": "/opt/homebrew/bin/wasmer",
+      "version": "wasmer 7.4.0",
+      "present": true
+    },
+    "auth": {
+      "whoami": "error: Not logged in registry wasmer.io",
+      "registry_url": "https://registry.wasmer.io/graphql",
+      "config_token_present": false,
+      "env_WASMER_TOKEN_present": false
+    },
+    "namespace_probe": {
+      "endpoint": "https://registry.wasmer.io/graphql",
+      "getNamespace_compass": null,
+      "getUser_compass": null,
+      "getPackage_compass_decide": null,
+      "control_getNamespace_wasmer": "exists (createdAt 2022-02-15T19:40:20.25664Z)",
+      "control_getPackage_python_python": "exists (lastVersion 3.13.18)",
+      "interpretation": "compass is unclaimed, not taken by a third party. Controls prove the probe is sound.",
+      "search_note": "wasmer package search compass returns only unrelated third-party packages with 'compass' inside the package name, none in a 'compass' namespace."
+    },
+    "fallback_namespace_chosen": null,
+    "fallback_rationale": "No name collision exists, so no fallback is needed. The blocker is the missing credential.",
+    "actions_declined": [
+      "create a Wasmer account",
+      "publish under a guessed or squatted namespace",
+      "fabricate a publish transcript"
+    ],
+    "evidence": "registry-state.txt"
+  },
+  "b1_publish": {
+    "result": "NOT_RUN",
+    "reason": "wasmer publish --dry-run . exits 1 with 'You are not logged in.' \u2014 the dry run is server-aware and cannot be used offline.",
+    "not_run_doc": "wasmer/PUBLISH-NOT_RUN.md",
+    "manifest": {
+      "path": "wasmer.toml",
+      "promoted_from": "wasmer/desktop/wasmer.toml",
+      "package_name": "compass/decide",
+      "version": "0.1.0",
+      "modules": [
+        "compass-decide (wasi)",
+        "compass-core (none)"
+      ],
+      "commands": [
+        "compass-decide -> compass-decide, runner wasi"
+      ],
+      "fs_mappings": {
+        "/wasmer/fixtures": "wasmer/fixtures"
+      },
+      "validation": {
+        "command": "wasmer package build --check .",
+        "exit_code": 0,
+        "negative_controls": [
+          "missing module source -> exit 1",
+          "abi = \"bogus\" -> exit 1, 'expected one of none, wasi, wasm4'"
+        ]
+      }
+    },
+    "local_package": {
+      "filename": "compass-decide-0.1.0.webc",
+      "sha256": "fe2dfc91893d692cb350ae92dee38a6c71bd669fd1fd847359f0fab2ffe8b5d9",
+      "bytes": 258019,
+      "reproducible": true,
+      "reproducibility_note": "Byte-identical across repeated builds from an unchanged tree. The webc embeds [package].readme and license-file contents, so editing wasmer/README.md or LICENSE moves this digest with no module change; treat it as a build fingerprint, not the trust root.",
+      "committed": false,
+      "gitignore_rule": "test-results/**/*.webc",
+      "contents": {
+        "modules/compass-decide": "e77301bed6f3bcdf8541ba7256cb6a4e58e1da62d7a98edb52fa27bdc1fee553",
+        "modules/compass-core": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+        "wasmer.toml": "22a144a3e52b7a7af27a2cc3aa47272b2593deb48d7f2aa6465db99bac45549b",
+        "wasmer/fixtures/snapshot_min.json": "8318571b06d35c805b21c404a3dc076a1af2be055f3c9fab037abd27404df6a4"
+      }
+    },
+    "digest_reconciliation": {
+      "trust_root": "ADR 0005 digest-as-trust-root",
+      "against": "wasmer/artifacts/SHA256SUMS",
+      "compass-decide": "MATCH",
+      "compass-core_vs_compass_core_bg.wasm": "MATCH",
+      "recorded_in": "wasmer/artifacts/PACKAGE-DIGESTS.json",
+      "pins_json_touched": false,
+      "artifacts_modified": false
+    },
+    "packaged_execution": {
+      "command": "wasmer run <webc> -- --request 'implement a function' --snapshot /wasmer/fixtures/snapshot_min.json --now 2026-09-05T00:00:00Z",
+      "selected_model_version_id": "urn:mg:model:cheap",
+      "task_class_id": "code_generation",
+      "fail_open": false,
+      "score": 0.6,
+      "vs_loose_artifact_run": "IDENTICAL"
+    },
+    "evidence": "package-build.txt"
+  },
+  "guards": {
+    "note": "Neither script reads wasmer.toml; both resolve wasmer/artifacts/ directly. Run anyway to prove the manifest move caused no regression.",
+    "wasmer_size_budget.py": {
+      "exit_code": 0,
+      "ok": true,
+      "browser_cdylib_bytes": 103980,
+      "budget_bytes": 150000
+    },
+    "wasmer_parity.py": {
+      "exit_code": 0,
+      "ok": true,
+      "parity_json_changed": false
+    },
+    "pytest": {
+      "selection": [
+        "tests/test_wasmer_size_budget.py",
+        "tests/test_wasmer_parity.py",
+        "tests/test_wasm_boundary.py",
+        "tests/test_release_metadata.py"
+      ],
+      "exit_code": 0,
+      "passed": 13,
+      "failed": 0
+    },
+    "evidence": "guards.txt",
+    "size_budget_side_effect": "scripts/wasmer_size_budget.py rewrites test-results/j-wasmer-packaging/size-budget.json. The committed copy predates the eni6ma artifact entry in SHA256SUMS, so a run adds it. Reverted here to leave that stage's evidence to its owner; the refresh is harmless and 'ok': true either way."
+  },
+  "findings_for_downstream": [
+    {
+      "id": "stale-doc-refs",
+      "severity": "low",
+      "detail": "docs/WASMER.md line 63 and docs/WASMER-DEPLOYMENT.md line 172 still place wasmer.toml under wasmer/desktop/. Left untouched because docs/ was owned by a parallel agent.",
+      "owner": "docs consolidation stage"
+    },
+    {
+      "id": "builder-paths-in-wasm",
+      "severity": "medium",
+      "detail": "Both committed .wasm artifacts embed absolute builder paths (~17-19 occurrences of /Users/<user>/.asdf/... rust panic locations). Pre-existing since the initial commit, not introduced by B1, but publishing would expose them publicly. Fix by rebuilding with --remap-path-prefix, which changes digests and therefore needs its own change.",
+      "owner": "pre-publish hygiene, before wasmer publish"
+    },
+    {
+      "id": "b3-desktop-blocked",
+      "severity": "high",
+      "detail": "B3 cannot run the published package by name. It can run the local .webc by path (packaged command plus bundled fixture both verified) with the raw .wasm path as offline fallback, graded PARTIAL.",
+      "owner": "b3-desktop"
+    },
+    {
+      "id": "stale-size-budget-json",
+      "severity": "low",
+      "detail": "test-results/j-wasmer-packaging/size-budget.json is stale: it lacks the eni6ma/demo-wasm/v1/eni6ma_wasm.wasm entry that a current run of scripts/wasmer_size_budget.py produces. Reverted rather than refreshed, to stay out of another stage's evidence.",
+      "owner": "validation stage"
+    }
+  ]
+}

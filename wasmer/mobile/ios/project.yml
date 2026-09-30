@@ -1,0 +1,71 @@
+name: CompassMobileHost
+options:
+  bundleIdPrefix: org.compass.wasmer
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  defaultConfig: Debug
+settings:
+  PRODUCT_BUNDLE_IDENTIFIER: org.compass.wasmer.mobilehost
+  GENERATE_INFOPLIST_FILE: YES
+  INFOPLIST_KEY_UILaunchScreen_Generation: YES
+  INFOPLIST_KEY_CFBundleDisplayName: Compass Host
+  INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+  CODE_SIGN_IDENTITY: "-"
+  CODE_SIGNING_REQUIRED: NO
+  CODE_SIGNING_ALLOWED: NO
+  DEVELOPMENT_TEAM: ""
+  SWIFT_VERSION: "5.0"
+  TARGETED_DEVICE_FAMILY: "1,2"
+  IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+targets:
+  CompassMobileHost:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+      - path: Resources
+        optional: true
+        buildPhase: resources
+        excludes:
+          - ".gitkeep"
+    preBuildScripts:
+      - name: Sync compass_core_bg.wasm from SHA256SUMS
+        basedOnDependencyAnalysis: false
+        script: |
+          set -euo pipefail
+          "${SRCROOT}/../sync-assets.sh"
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: org.compass.wasmer.mobilehost
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_UILaunchScreen_Generation: YES
+      CODE_SIGN_IDENTITY: "-"
+      CODE_SIGNING_REQUIRED: NO
+      CODE_SIGNING_ALLOWED: NO
+      PRODUCT_NAME: CompassMobileHost
+    scheme:
+      testTargets:
+        - CompassMobileHostTests
+  CompassMobileHostTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: CompassMobileHost
+    settings:
+      GENERATE_INFOPLIST_FILE: YES
+      PRODUCT_BUNDLE_IDENTIFIER: org.compass.wasmer.mobilehost.tests
+      CODE_SIGNING_ALLOWED: NO
+      TEST_HOST: "$(BUILT_PRODUCTS_DIR)/CompassMobileHost.app/CompassMobileHost"
+      BUNDLE_LOADER: "$(TEST_HOST)"
+schemes:
+  CompassMobileHost:
+    build:
+      targets:
+        CompassMobileHost: all
+        CompassMobileHostTests: [test]
+    test:
+      targets:
+        - CompassMobileHostTests
+      gatherCoverageData: false

@@ -1,0 +1,8 @@
+# python scripts/sync_schema.py --check
+# captured 2026-09-07 PT (TS 20260907-212310)
+# exit=0
+
+canonical src/compass/schema/model-graph.v1.json sha256=7fe7ea117cf40a692d9d62907a722a529cfcd437ab43873d4d8bf16d86c3bae0
+[PASS] in sync schema/model-graph.v1.json
+[PASS] in sync docs/schema/model-graph.v1.json
+[PASS] all model-graph.v1.json copies share one digest

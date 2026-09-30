@@ -1,0 +1,59 @@
+# Offline manifest validation + local package build — captured 2026-09-08T03:34:16Z
+# Repo root manifest: wasmer.toml (promoted from wasmer/desktop/wasmer.toml)
+
+$ wasmer package build --check .
+exit=0   (silent + 0 == valid)
+
+--- negative controls: prove --check actually validates ---
+$ manifest with a missing module source
+error: While parsing the manifest (loaded from /private/tmp/wtcheck/wasmer.toml)
+│   1: Unable to load the "wasmer.toml" manifest
+│   2: Unable to read the "nope" module's file from "/private/tmp/wtcheck/does-not-exist.wasm"
+╰─▶ 3: No such file or directory (os error 2)
+exit=1
+
+$ manifest with abi = "bogus"
+╰─▶ 1: TOML parse error at line 8, column 7
+         |
+       8 | abi = "bogus"
+         |       ^^^^^^^
+       unknown variant `bogus`, expected one of `none`, `wasi`, `wasm4`
+       
+exit=1
+
+--- package identity ---
+$ wasmer package build <repo>   # run from an empty dir, filename is CLI-chosen
+compass-decide-0.1.0.webc
+  => namespace=compass name=decide version=0.1.0
+
+--- build ---
+$ wasmer package build -o test-results/q-wasmer-publish/compass-decide-0.1.0.webc .
+  258019 bytes
+
+$ shasum -a 256 <webc>
+fe2dfc91893d692cb350ae92dee38a6c71bd669fd1fd847359f0fab2ffe8b5d9  test-results/q-wasmer-publish/compass-decide-0.1.0.webc
+
+$ second independent build into /tmp (reproducibility)
+fe2dfc91893d692cb350ae92dee38a6c71bd669fd1fd847359f0fab2ffe8b5d9  /tmp/repro2.webc
+
+NOTE: the webc embeds [package].readme and license-file contents, so editing
+wasmer/README.md or LICENSE moves this digest with no module change. The module
+digests below are the stable trust root.
+
+--- unpacked package contents (sha256, bytes, path) ---
+9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db    103980  modules/compass-core
+e77301bed6f3bcdf8541ba7256cb6a4e58e1da62d7a98edb52fa27bdc1fee553    135419  modules/compass-decide
+22a144a3e52b7a7af27a2cc3aa47272b2593deb48d7f2aa6465db99bac45549b       457  wasmer.toml
+8318571b06d35c805b21c404a3dc076a1af2be055f3c9fab037abd27404df6a4       551  wasmer/fixtures/snapshot_min.json
+
+--- reconciliation vs wasmer/artifacts/SHA256SUMS (ADR 0005 trust root) ---
+modules/compass-decide   vs SHA256SUMS compass-decide.wasm   : MATCH  e77301bed6f3bcdf8541ba7256cb6a4e58e1da62d7a98edb52fa27bdc1fee553
+modules/compass-core     vs SHA256SUMS compass_core_bg.wasm  : MATCH  9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db
+
+--- packaged run vs loose-artifact run ---
+$ wasmer run <webc> -- --request "implement a function" --snapshot /wasmer/fixtures/snapshot_min.json --now 2026-09-05T00:00:00Z
+{"abi_max":"1.999.0","abi_min":"1.0.0","constraints_applied":[],"decided_at":"2026-09-05T00:00:00Z","default_reason":null,"fail_open":false,"lambda":1.0,"module_version":"0.1.0","rationale":"highest score under quality−λ·cost","score":0.6,"scores":{"urn:mg:model:cheap":0.6,"urn:mg:model:pricey":0.25},"selected_model_version_id":"urn:mg:model:cheap","task_class_id":"code_generation"}
+$ wasmer run wasmer/artifacts/compass-decide.wasm --volume "$PWD/wasmer:/wasmer" -- (same args)
+{"abi_max":"1.999.0","abi_min":"1.0.0","constraints_applied":[],"decided_at":"2026-09-05T00:00:00Z","default_reason":null,"fail_open":false,"lambda":1.0,"module_version":"0.1.0","rationale":"highest score under quality−λ·cost","score":0.6,"scores":{"urn:mg:model:cheap":0.6,"urn:mg:model:pricey":0.25},"selected_model_version_id":"urn:mg:model:cheap","task_class_id":"code_generation"}
+
+diff: IDENTICAL

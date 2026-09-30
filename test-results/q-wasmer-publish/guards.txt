@@ -1,0 +1,54 @@
+# Existing-guard regression after manifest promotion — captured 2026-09-08T03:30:34Z
+
+Neither scripts/wasmer_size_budget.py nor scripts/wasmer_parity.py reads wasmer.toml;
+both resolve artifacts from wasmer/artifacts/ directly. Run anyway to prove no regression.
+
+$ .venv/bin/python scripts/wasmer_size_budget.py
+{
+  "ok": true,
+  "budget_bytes": 150000,
+  "sizes": {
+    "compass-decide.wasm": 135419,
+    "compass_core.wasm": 103980,
+    "compass_core_bg.wasm": 103980,
+    "eni6ma/demo-wasm/v1/eni6ma_wasm.wasm": 600779
+  },
+  "sha256_expected": {
+    "compass-decide.wasm": "e77301bed6f3bcdf8541ba7256cb6a4e58e1da62d7a98edb52fa27bdc1fee553",
+    "compass_core.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "compass_core_bg.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "eni6ma/demo-wasm/v1/eni6ma_wasm.wasm": "853717e421a36fc93d0791d3f2718ecf3e9c449fb3c60d4084dedab3af75c389"
+  },
+  "sha256_actual": {
+    "compass-decide.wasm": "e77301bed6f3bcdf8541ba7256cb6a4e58e1da62d7a98edb52fa27bdc1fee553",
+    "compass_core.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "compass_core_bg.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "eni6ma/demo-wasm/v1/eni6ma_wasm.wasm": "853717e421a36fc93d0791d3f2718ecf3e9c449fb3c60d4084dedab3af75c389"
+  },
+  "errors": []
+}
+exit=0
+
+$ .venv/bin/python scripts/wasmer_parity.py
+core decide fail-open: snapshot_missing → default
+core decide fail-open: snapshot_corrupt → default
+core decide fail-open: no_candidates → default
+{
+  "ok": true,
+  "errors": [],
+  "evidence": "<repo>/test-results/wasmer-parity/parity.json"
+}
+exit=0
+
+$ git diff --stat test-results/wasmer-parity/parity.json
+(no output — parity.json byte-identical to committed version)
+
+$ .venv/bin/python -m pytest tests/test_wasmer_size_budget.py tests/test_wasmer_parity.py tests/test_wasm_boundary.py tests/test_release_metadata.py -q
+.............                                                            [100%]
+exit=0
+
+--- note: size-budget.json side effect ---
+scripts/wasmer_size_budget.py rewrites test-results/j-wasmer-packaging/size-budget.json.
+The committed copy predates the eni6ma entry in SHA256SUMS, so a fresh run adds it.
+That refresh was reverted here (git checkout) to leave the j-wasmer-packaging stage's
+evidence to its owner. Both versions report "ok": true.

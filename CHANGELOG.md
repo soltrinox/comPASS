@@ -7,6 +7,9 @@ Versioning follows [SemVer](https://semver.org/) as described in [`docs/RELEASE.
 
 ## [Unreleased]
 
+- Wasmer mobile hosts — iOS WKWebView **PARTIAL** on Simulator (`compass_decide_json` parity vs Python); Android WebView tree **NOT_RUN** (no SDK). Evidence `test-results/s-desktop-mobile/mobile-*.json`.
+- Docs consolidation — `docs/FRAMEWORK.md` is now the canonical framework document (ADR 0001–0007 stated as current, supersession ledger in Appendix B); `PROTOTYPE.md` demoted to historical origin brief; "Ground truth" pointers repointed.
+- Schema single-source — `src/compass/schema/model-graph.v1.json` is canonical (the only copy in the sdist/wheel); `schema/` and `docs/schema/` are generated mirrors written by `scripts/sync_schema.py`; `tests/test_schema.py` fails on checksum drift. Evidence `test-results/p-consolidation/`.
 - Track N — paid pillars test-ready: `compass.sync` (paid automate / free manual), `compass.fleet` stub (opt-in), `compass.serve.governance` hooks; evidence `test-results/n-paid-pillars/`.
 - Phase 2 **test-ready stack exit** flipped 2026-09-05 (PT) — F–N evidence present; **not** production-ready / SLA.
 

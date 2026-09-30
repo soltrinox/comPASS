@@ -1,0 +1,92 @@
+name: Wasmer mobile hosts
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  glue-and-android-sources:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Size budget + shared glue
+        run: |
+          set -euo pipefail
+          python scripts/wasmer_size_budget.py
+          chmod +x wasmer/mobile/sync-assets.sh
+          ./wasmer/mobile/sync-assets.sh
+          node scripts/wasmer_mobile_glue_check.mjs
+      - name: Assert host trees
+        run: |
+          set -euo pipefail
+          test -f wasmer/mobile/NOT_RUN.md
+          test -d wasmer/mobile/ios/Sources
+          test -d wasmer/mobile/android/app/src/main/java
+          test -f wasmer/mobile/shared/host.js
+      - name: Android emulator (honest skip on ubuntu without device farm)
+        run: |
+          set +e
+          ./wasmer/mobile/android/run-emulator.sh
+          RC=$?
+          set -e
+          if [ "$RC" -eq 0 ]; then
+            echo "[PASS] unexpected emulator success on ubuntu — keep evidence"
+          elif [ "$RC" -eq 2 ]; then
+            echo "[NOT_RUN] Android emulator not available on this runner (expected unless SDK is provisioned)"
+          else
+            echo "[FAIL] Android runner exit $RC"
+            exit "$RC"
+          fi
+      - name: Upload mobile glue evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s-desktop-mobile-glue
+          path: |
+            test-results/s-desktop-mobile/mobile-glue-check.json
+            test-results/s-desktop-mobile/mobile-glue-check-*.log.txt
+            test-results/s-desktop-mobile/mobile-android.json
+            test-results/s-desktop-mobile/mobile-android-*.log.txt
+          if-no-files-found: warn
+
+  ios-simulator:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install xcodegen
+        run: brew install xcodegen
+      - name: iOS Simulator decide parity
+        run: |
+          set +e
+          chmod +x wasmer/mobile/ios/run-simulator.sh wasmer/mobile/sync-assets.sh
+          ./wasmer/mobile/ios/run-simulator.sh
+          RC=$?
+          set -e
+          if [ "$RC" -eq 0 ]; then
+            echo "[PASS] iOS simulator"
+          elif [ "$RC" -eq 2 ]; then
+            echo "[NOT_RUN] iOS simulator unavailable on this runner — not faked"
+          else
+            echo "[FAIL] iOS simulator tests"
+            exit "$RC"
+          fi
+      - name: Upload iOS evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: s-desktop-mobile-ios
+          path: |
+            test-results/s-desktop-mobile/mobile-ios-simulator.json
+            test-results/s-desktop-mobile/mobile-ios-simulator-*.log.txt
+          if-no-files-found: warn

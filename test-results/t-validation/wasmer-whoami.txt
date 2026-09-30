@@ -1,0 +1,5 @@
+# wasmer --version && wasmer whoami
+# captured 2026-09-07 PT (TS 20260907-212310)
+
+wasmer 7.4.0
+error: Not logged in registry wasmer.io

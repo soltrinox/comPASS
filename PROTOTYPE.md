@@ -1,6 +1,29 @@
 # comPASS — Capability-Routed Model Selection with Portable Session State
 
-**Status:** Prototype specification (pre-implementation)
+> **HISTORICAL — origin brief, 2026-09-03. Superseded in part; not the current architecture.**
+>
+> This document is the **provenance record** for comPASS: the original prototype specification, kept
+> unedited in its body so the reasoning that produced the product remains readable. It is **no longer
+> ground truth.**
+>
+> **Canonical document:** [`docs/FRAMEWORK.md`](docs/FRAMEWORK.md) — read that first.
+>
+> Superseded here, by Accepted ADRs:
+>
+> | Section | Superseded by |
+> |---|---|
+> | §9 three-plane **process layout** (Probe daemon sidecar, IDE hook, local proxy) — the plane *boundaries* still hold, the process topology does not | [ADR 0005](docs/adr/0005-eni6ma-gated-browser-agent.md) — browser-only Wasmer appliance |
+> | §13.1 "advisory, inside Cursor" as Tier 2's primary enforcement surface | [ADR 0005](docs/adr/0005-eni6ma-gated-browser-agent.md) — no Cursor/IDE product path; [ADR 0006](docs/adr/0006-generic-llm-adapter.md) — the generic LLM adapter is the enforcement target |
+> | §13.1 OpenAI-compatible proxy as three separate enforcement targets | [ADR 0006](docs/adr/0006-generic-llm-adapter.md) — one ingress, three selection modes |
+> | Appendix A.1 open naming decision | [ADR 0001](docs/adr/0001-product-name.md) — **comPASS** / `compass-router`, accepted |
+> | §17.1 working-copy disposition | [ADR 0002](docs/adr/0002-working-copy-disposition.md) / [ADR 0003](docs/adr/0003-archive-disposition.md) |
+> | §12.4 reward attribution left open | [ADR 0004](docs/adr/0004-reward-attribution.md) — recording mechanism decided; credit assignment still **not** claimed solved |
+>
+> Product science (§4 capability curvature, §10 schema rationale, §12 statistical discipline, §16
+> equivalence band) and the non-claims are **unchanged and still current**. The full conflict list is
+> the supersession ledger in [`docs/FRAMEWORK.md`](docs/FRAMEWORK.md) Appendix B.
+
+**Status:** Prototype specification (pre-implementation) — **historical**, see banner above
 **Date:** 2026-09-03
 **Working name:** `comPASS` (placeholder — see Appendix A)
 **Sibling engine:** `comPREssOR` — `git@github.com:soltrinox/comPREssOR.git`, engine version `0.2.0`

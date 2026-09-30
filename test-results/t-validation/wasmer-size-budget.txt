@@ -1,0 +1,32 @@
+# python scripts/wasmer_size_budget.py
+# captured 2026-09-07 PT (TS 20260907-212310)
+# exit=0
+# also writes test-results/j-wasmer-packaging/size-budget.json
+# (this run added the eni6ma Path-B digest-only entry that SHA256SUMS already lists)
+
+{
+  "ok": true,
+  "budget_bytes": 150000,
+  "sizes": {
+    "compass-decide.wasm": 135419,
+    "compass_core.wasm": 103980,
+    "compass_core_bg.wasm": 103980,
+    "eni6ma/demo-wasm/v1/eni6ma_wasm.wasm": 600779
+  },
+  "sha256_expected": {
+    "compass-decide.wasm": "e77301bed6f3bcdf8541ba7256cb6a4e58e1da62d7a98edb52fa27bdc1fee553",
+    "compass_core.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "compass_core_bg.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "eni6ma/demo-wasm/v1/eni6ma_wasm.wasm": "853717e421a36fc93d0791d3f2718ecf3e9c449fb3c60d4084dedab3af75c389"
+  },
+  "sha256_actual": {
+    "compass-decide.wasm": "e77301bed6f3bcdf8541ba7256cb6a4e58e1da62d7a98edb52fa27bdc1fee553",
+    "compass_core.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "compass_core_bg.wasm": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "eni6ma/demo-wasm/v1/eni6ma_wasm.wasm": "853717e421a36fc93d0791d3f2718ecf3e9c449fb3c60d4084dedab3af75c389"
+  },
+  "errors": []
+}
+
+browser cdylib compass_core_bg.wasm: 103980 bytes <= 150000
+digest-as-trust-root: sha256_actual == sha256_expected for every SHA256SUMS key

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>comPASS Zone A — @wasmer/sdk boot</title>
+  <link rel="icon" href="data:," />
+  <style>
+    body { font-family: ui-sans-serif, system-ui, sans-serif; margin: 1.5rem; max-width: 52rem; }
+    pre { background: #111; color: #eee; padding: 1rem; overflow: auto; }
+    .ok { color: #0a0; } .err { color: #a00; }
+  </style>
+</head>
+<body>
+  <h1>Zone A — Wasmer SDK + compass guest</h1>
+  <p>
+    Dynamic <code>import("@wasmer/sdk/browser")</code>, guarded on
+    <code>window.crossOriginIsolated</code>. Compass guest is the local
+    package / <code>compass_core_bg.wasm</code>, not registry
+    <code>compass/decide</code>. Python pin is <code>python/python@=3.13.18</code>.
+  </p>
+  <p id="status">idle</p>
+  <pre id="out"></pre>
+  <script type="module" src="./zonea.js"></script>
+</body>
+</html>

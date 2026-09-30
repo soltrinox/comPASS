@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "grade": "PARTIAL",
+  "simulator_udid": "78A230B2-6D84-44B4-8838-BA91D49CCE2B",
+  "host": "ios-wkwebview-simulator",
+  "device": false,
+  "emulator": true,
+  "run_path": "simctl-install-launch",
+  "js_report": {
+    "actual_sha256": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "digest_match": true,
+    "error": null,
+    "expected_sha256": "9ad58acccd85e361baf9a789cdd82e95cb264dd9ddc9691236200c6ceb2507db",
+    "fixture_min": {
+      "abi_max": "1.999.0",
+      "abi_min": "1.0.0",
+      "constraints_applied": [],
+      "decided_at": "2026-09-05T00:00:00Z",
+      "default_reason": null,
+      "fail_open": false,
+      "lambda": 1,
+      "module_version": "0.1.0",
+      "rationale": "highest score under quality\u2212\u03bb\u00b7cost",
+      "score": 0.6,
+      "scores": {
+        "urn:mg:model:cheap": 0.6,
+        "urn:mg:model:pricey": 0.25
+      },
+      "selected_model_version_id": "urn:mg:model:cheap",
+      "task_class_id": "code_generation"
+    },
+    "import_table": "empty",
+    "js_digest": "skipped_no_subtle",
+    "missing": {
+      "abi_max": "1.999.0",
+      "abi_min": "1.0.0",
+      "constraints_applied": [],
+      "decided_at": "2026-09-05T00:00:00Z",
+      "default_reason": "snapshot_missing",
+      "fail_open": true,
+      "lambda": 1,
+      "module_version": "0.1.0",
+      "rationale": "fail-open: snapshot_missing",
+      "score": -0.5,
+      "scores": {
+        "default": -0.5
+      },
+      "selected_model_version_id": "default",
+      "task_class_id": "general"
+    },
+    "ok": true
+  },
+  "reason": null
+}

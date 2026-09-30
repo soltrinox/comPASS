@@ -10,7 +10,8 @@ Contracts and architecture live under [`docs/`](docs/).
 
 | Doc | Purpose |
 | --- | --- |
-| [`PROTOTYPE.md`](PROTOTYPE.md) | Ground-truth product prototype (§9–§17) |
+| [`docs/FRAMEWORK.md`](docs/FRAMEWORK.md) | **Canonical framework** — start here; ADR 0001–0007 as current |
+| [`PROTOTYPE.md`](PROTOTYPE.md) | Historical origin brief (2026-09-03); superseded in part |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Three planes, four tiers, credential boundary |
 | [`docs/API.md`](docs/API.md) | Route plane API, fail-open, advisory contract |
 | [`docs/STACK.md`](docs/STACK.md) | Stack + Wasmer boundary (Track D contract) |

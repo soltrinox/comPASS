@@ -1,0 +1,13 @@
+# python -m pytest tests/test_schema.py -v
+# captured 2026-09-07 PT (TS 20260907-212310)
+# exit=0
+
+============================= test session starts ==============================
+platform darwin -- Python 3.13.7, pytest-9.1.1, pluggy-1.6.0
+rootdir: comPASS (repo root)
+configfile: pyproject.toml
+collected 10 items
+
+tests/test_schema.py ..........                                          [100%]
+
+============================== 10 passed in 0.04s ==============================

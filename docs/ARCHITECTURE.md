@@ -3,7 +3,8 @@
 **Product:** comPASS (sister to comPREssOR)  
 **Package:** `compass-router`  
 **Runtime (Phase 3):** sovereign **browser-only** Wasmer agent, ENI6MA-gated  
-**Ground truth (historical product brief):** [`../PROTOTYPE.md`](../PROTOTYPE.md) §9–§13  
+**Canonical framework:** [`FRAMEWORK.md`](FRAMEWORK.md)  
+**Origin brief (historical):** [`../PROTOTYPE.md`](../PROTOTYPE.md) §9–§13  
 **Charter:** [`CHARTER.md`](CHARTER.md)  
 **Decision:** [`adr/0005-eni6ma-gated-browser-agent.md`](adr/0005-eni6ma-gated-browser-agent.md) (Accepted 2026-09-06)
 

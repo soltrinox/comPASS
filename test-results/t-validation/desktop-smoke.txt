@@ -1,0 +1,18 @@
+# ./wasmer/desktop/run-decide.sh
+# captured 2026-09-07 PT (TS 20260907-212310)
+# exit=0
+# default hop: local .webc (not registry)
+
+## stderr
+[run-decide] using existing webc compass-decide-0.1.0.webc
+[run-decide] source=webc input=compass-decide-0.1.0.webc
+
+## stdout (decide envelope)
+{"abi_max":"1.999.0","abi_min":"1.0.0","constraints_applied":[],"decided_at":"2026-09-05T00:00:00Z","default_reason":null,"fail_open":false,"lambda":1.0,"module_version":"0.1.0","rationale":"highest score under quality−λ·cost","score":0.6,"scores":{"urn:mg:model:cheap":0.6,"urn:mg:model:pricey":0.25},"selected_model_version_id":"urn:mg:model:cheap","task_class_id":"code_generation"}
+
+## package fingerprint (outer .webc; not the module trust root)
+# repo-root compass-decide-0.1.0.webc  258019 bytes
+# sha256=ee7fab4d7ac38a6519e9207a7b138d05a487a1b46fc758c9c3d3f0eb3637c7b5
+# B1 recorded fingerprint fe2dfc91… is the q-wasmer-publish copy; the wrapper
+# digest moves when wasmer/README.md or LICENSE is edited (see PUBLISH-NOT_RUN.md).
+# Module digests still MATCH wasmer/artifacts/SHA256SUMS.

@@ -1,0 +1,32 @@
+# Diagnostic only — not the default comPASS pytest.
+# PYTHONPATH=src:../comPREssOR/engine/src
+# interpreter: ../comPREssOR/engine/.venv/bin/python (Python 3.12.11)
+# pytest tests/test_paid_sync.py::test_manual_compass_bundle_api_stays_free -v --tb=short
+# captured 2026-09-07 PT (TS 20260907-212310)
+# exit=1
+#
+# Graded NOT_FIXED / out of scope (ADR 0002/0003). This tree does not edit
+# the sibling engine. Do not "fix" tests/test_paid_sync.py for this.
+
+=== default comPASS venv + PYTHONPATH engine/src ===
+ModuleNotFoundError: No module named 'safetensors'
+(chat_compressor.__init__ → handle → store → safetensors)
+
+=== engine venv import ===
+file ../comPREssOR/engine/src/chat_compressor/bundle.py
+
+=== engine venv + compass src pytest ===
+collected 1 item
+
+tests/test_paid_sync.py::test_manual_compass_bundle_api_stays_free FAILED
+
+tests/test_paid_sync.py:60: in test_manual_compass_bundle_api_stays_free
+    export_bundle(str(src), dest=str(bundle), agent_id="free")
+src/compass/bundle.py:33: in export_bundle
+    return _export(_graph_root, **_kwargs)
+../comPREssOR/engine/src/chat_compressor/bundle.py:117: in export_bundle
+    lineage = store.lineage(agent_id)
+E   AttributeError: 'str' object has no attribute 'lineage'
+
+FAILED tests/test_paid_sync.py::test_manual_compass_bundle_api_stays_free
+1 failed in 0.08s

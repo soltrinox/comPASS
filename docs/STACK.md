@@ -1,6 +1,6 @@
 # comPASS Stack & Wasmer runtime
 
-> **Superseded for product runtime (ADR 0005, 2026-09-06):** Phase 3 is the **browser-only ENI6MA-gated Wasmer agent** — see [`ARCHITECTURE.md`](ARCHITECTURE.md). The Cursor-hook / Probe-sidecar process layout below remains the Phase 1–2 engineering contract for offline `compass-router` libraries and CI; it is **not** the shipping appliance topology.
+> **Superseded for product runtime (ADR 0005, 2026-09-06):** Phase 3 is the **browser-only ENI6MA-gated Wasmer agent** — see [`FRAMEWORK.md`](FRAMEWORK.md) (canonical) and [`ARCHITECTURE.md`](ARCHITECTURE.md). The IDE-hook / Probe-sidecar process layout in §2–§3 below remains the Phase 1–2 engineering contract for offline `compass-router` libraries and CI; it is **not** the shipping appliance topology. Its §3 security requirements are still enforced.
 
 
 **Product:** comPASS (sister to comPREssOR)  

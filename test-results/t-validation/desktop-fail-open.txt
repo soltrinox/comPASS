@@ -1,0 +1,10 @@
+# COMPASS_FAIL_OPEN_DEMO=missing ./wasmer/desktop/run-decide.sh
+# captured 2026-09-07 PT (TS 20260907-212310)
+# exit=0
+
+## stderr
+[run-decide] using existing webc compass-decide-0.1.0.webc
+[run-decide] source=webc input=compass-decide-0.1.0.webc
+
+## stdout
+{"abi_max":"1.999.0","abi_min":"1.0.0","constraints_applied":[],"decided_at":"2026-09-05T00:00:00Z","default_reason":"snapshot_missing","fail_open":true,"lambda":1.0,"module_version":"0.1.0","rationale":"fail-open: snapshot_missing","score":-0.5,"scores":{"default":-0.5},"selected_model_version_id":"default","task_class_id":"general"}
